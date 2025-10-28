@@ -40,34 +40,40 @@ export const subscribeToStudyGuide = async (name, email) => {
     const shouldSendEmail = EMAIL_MODE === 'production' && isEmailConfigured();
 
     if (shouldSendEmail) {
-      // PRODUCTION MODE - Send actual email via EmailJS
+      // PRODUCTION MODE - Send actual email via EmailJS with Week 1 content
+
+      // Week 1 Content
+      const week1 = {
+        title: "The Beginning: Early Christianity",
+        subtitle: "How it all started",
+        introduction: "Welcome to your journey through church history! Think of this first week as meeting the ancestors of all Christian denominations today. We're going back to the very beginning - to Jesus's followers and the first few centuries of Christianity. No complex theology required - just curiosity about how a small group in ancient Jerusalem became a worldwide movement.",
+        keyTopics: [
+          "The Apostolic Age (33 AD onward) - The first followers of Jesus",
+          "How the early church organized itself",
+          "The first major councils and why they mattered",
+          "How Christianity spread across the Roman Empire"
+        ],
+        beginnerExplanation: "Think of the early church like a startup that grew rapidly across the ancient world. The apostles (Jesus's closest followers) were like the founding team, spreading the message and establishing communities. As Christianity grew, leaders had to figure out: What do we actually believe? How should we organize? What makes someone a Christian? The big church councils (like Nicaea in 325 AD) were essentially board meetings where leaders hammered out the core beliefs that nearly all Christians still share today - like the Trinity and Jesus being both fully God and fully human.",
+        reflectionQuestions: [
+          "What surprises you most about how Christianity began?",
+          "Why do you think Christianity spread so quickly in the ancient world?",
+          "How do you think the early church differs from churches today?"
+        ],
+        practicalApplication: "This week, visit the Catholic and Orthodox sections of our app (www.churchexplorer.org). These two traditions have the most direct connection to the early church. Notice what they preserve from ancient Christianity - liturgies, creeds, church structure. You might be surprised how much of modern Christianity traces back to those first few centuries!",
+        appLinks: "Catholic, Orthodox, Bible Timeline"
+      };
+
       const templateParams = {
         to_name: name,
         to_email: email,
-        from_name: 'Church Explorer Study Guide',
-        reply_to: 'noreply@churchexplorer.org',
-        subject: 'Welcome to Your 8-Week Church History Journey!',
-        message: `Welcome to the Church Explorer 8-Week Study Guide!
-
-You're about to embark on an exciting journey through 2,000 years of church history. Don't worry if you're new to this - we've designed this course specifically for beginners with no prior knowledge required.
-
-Your Week 1 lesson "The Beginning: Early Christianity" will arrive next Monday at 9am.
-
-What to Expect Each Week:
-✓ Simple, jargon-free explanations of church history
-✓ Thought-provoking reflection questions
-✓ Practical ways to apply what you learn
-✓ Interactive content to explore in our web app
-
-In the meantime, you can preview all the lessons and explore the interactive denomination explorer here:
-👉 https://www.churchexplorer.org
-
-Questions? Just reply to this email - we're here to help!
-
-Best regards,
-The Church Explorer Team
-
-P.S. You can unsubscribe at any time. We respect your privacy and will never share your email address.`,
+        week_title: week1.title,
+        week_subtitle: week1.subtitle,
+        week_introduction: week1.introduction,
+        week_key_topics: week1.keyTopics.join('\n• '),
+        week_beginner_explanation: week1.beginnerExplanation,
+        week_reflection_questions: week1.reflectionQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n'),
+        week_practical_application: week1.practicalApplication,
+        week_app_links: week1.appLinks
       };
 
       const response = await emailjs.send(
