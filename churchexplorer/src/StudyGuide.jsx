@@ -615,6 +615,24 @@ const StudyGuide = () => {
         "The rise of non-denominational megachurches",
         "Contemporary worship and practical teaching styles"
       ],
+      detailedContent: [
+        {
+          heading: "The Stone-Campbell Restoration Movement",
+          text: "In the early 1800s on the American frontier, several independent leaders had the same idea: denominational divisions were unbiblical. Christians should unite by abandoning all creeds and traditions, returning to the simple New Testament pattern. Barton W. Stone in Kentucky and Thomas and Alexander Campbell in Pennsylvania led separate movements that eventually merged. Their slogan: 'No creed but Christ, no book but the Bible, no name but Christian.' They rejected denominational names, calling themselves simply 'Christians' or 'Disciples of Christ.' They practiced weekly communion, believer's baptism by immersion, and congregational autonomy. But ironically, they became denominations themselves: Churches of Christ (the most conservative, rejecting instrumental music as unauthorized by the New Testament), Christian Churches/Churches of Christ (moderate, allowing instruments), and Disciples of Christ (most progressive, joining ecumenical movements)."
+        },
+        {
+          heading: "Restorationist Logic and Challenges",
+          text: "Restorationists use a 'command, example, and necessary inference' hermeneutic (method of interpretation). If the New Testament commands it, shows an example of it, or logically requires it, churches should do it. If not, they shouldn't. This sounds simple but creates challenges. The New Testament shows churches meeting in homes - should modern churches avoid church buildings? Early Christians shared possessions (Acts 2) - should we? Churches of Christ famously reject instrumental music because the New Testament only mentions singing. Critics argue this approach is selective and impossible - we can't fully recreate first-century context. Restorationists counter that while cultural details change, essential patterns of worship, organization, and doctrine can be restored. The movement's appeal: cutting through centuries of tradition to pure, biblical Christianity."
+        },
+        {
+          heading: "The Non-Denominational Revolution",
+          text: "In the late 20th century, a different 'back to basics' movement emerged: non-denominational churches. Unlike Restorationists who wanted to restore first-century forms, non-denominational churches wanted to strip away anything that hindered reaching unchurched people. They asked: 'What if we removed denominational labels, traditional liturgy, hymns, and religious jargon? What if church felt accessible, relevant, and practical?' The result: mega-churches like Willow Creek, Saddleback, and countless others. Features include: contemporary worship (rock band, not organ), casual dress, practical sermons on marriage, parenting, finances, state-of-the-art production, multiple service times, and extensive programs. While avoiding 'denominational' labels, most are evangelical in theology, just repackaged for modern culture. Critics say they're shallow entertainment. Advocates argue they're effectively reaching people traditional churches can't."
+        },
+        {
+          heading: "Irony and Questions",
+          text: "Both movements contain irony. Restorationists wanted to end denominations but created new ones. Non-denominational churches claim no denomination but often function like independent Baptist or evangelical churches. Both face questions: Is unity possible through uniformity (Restorationists) or informality (non-denominational)? Can you really have 'no creed' without smuggling in unstated assumptions? Can contemporary relevance maintain doctrinal depth? These movements represent enduring Christian impulses: (1) the desire to return to origins, stripping away accumulated tradition; (2) the desire to reach outsiders effectively. Every era faces the tension between staying rooted in the past and speaking meaningfully to the present. These movements lean hard toward 'back to basics' but define 'basics' very differently."
+        }
+      ],
       beginnerExplanation: "Restorationists (Churches of Christ, Christian Churches) believe Christians should only do what's explicitly found in the New Testament - no creeds, no instrumental music (for some), just Bible. Non-denominational churches take a different approach: they focus on practical teaching, contemporary worship, and avoid denominational labels. Both represent attempts to simplify Christianity, but in different ways.",
       reflectionQuestions: [
         "Is it really possible to practice Christianity exactly as the first century church did?",
@@ -622,7 +640,64 @@ const StudyGuide = () => {
         "How do non-denominational churches differ from traditional Protestant denominations?"
       ],
       practicalApplication: "Compare the Restorationist and Non-Denominational sections. Notice how Restorationists are more specific about restoring first-century practices, while non-denominational churches are more pragmatic and contemporary. Many non-denominational churches are actually quite evangelical in theology despite avoiding the label.",
-      appLinks: ["Restorationist", "Non-Denominational", "Worship Experiences"]
+      appLinks: ["Restorationist", "Non-Denominational", "Worship Experiences"],
+      quiz: [
+        {
+          question: "What was the main slogan of the Stone-Campbell Restoration Movement?",
+          options: [
+            "Faith alone, Scripture alone",
+            "No creed but Christ, no book but the Bible",
+            "Back to the Bible",
+            "Sola Scriptura"
+          ],
+          correctAnswer: 1,
+          explanation: "The Restoration Movement's slogan was 'No creed but Christ, no book but the Bible, no name but Christian.' They sought to unite Christians by abandoning all creeds and traditions."
+        },
+        {
+          question: "Why do Churches of Christ (a Restorationist group) reject instrumental music?",
+          options: [
+            "Instruments are too expensive",
+            "The New Testament only mentions singing, not instruments",
+            "They prefer silence",
+            "Organs are too loud"
+          ],
+          correctAnswer: 1,
+          explanation: "Churches of Christ reject instrumental music because the New Testament only explicitly mentions singing in worship. Following their 'command, example, and necessary inference' approach, they view instruments as unauthorized additions."
+        },
+        {
+          question: "What is a key feature of non-denominational megachurches?",
+          options: [
+            "Latin liturgy and Gregorian chants",
+            "Formal robes and traditional hymns",
+            "Contemporary worship and practical teaching",
+            "Silent meditation"
+          ],
+          correctAnswer: 2,
+          explanation: "Non-denominational megachurches typically feature contemporary worship (with rock bands), casual atmosphere, and practical sermons on everyday topics like marriage, parenting, and finances."
+        },
+        {
+          question: "Which Restoration Movement denomination is the most conservative?",
+          options: [
+            "Disciples of Christ",
+            "Christian Churches/Churches of Christ",
+            "Churches of Christ",
+            "United Church of Christ"
+          ],
+          correctAnswer: 2,
+          explanation: "Churches of Christ is the most conservative branch of the Restoration Movement, maintaining strict adherence to New Testament patterns including rejecting instrumental music and remaining separate from ecumenical movements."
+        },
+        {
+          question: "What is the irony about both Restorationist and non-denominational movements?",
+          options: [
+            "They use the same worship style",
+            "They wanted to end denominations but effectively created new ones",
+            "They all meet on Saturday",
+            "They reject baptism"
+          ],
+          correctAnswer: 1,
+          explanation: "The irony is that both movements sought to overcome denominationalism, but Restorationists created new denominations (Churches of Christ, etc.) and non-denominational churches effectively function as a distinct category - they became what they sought to avoid."
+        }
+      ]
     },
     {
       week: 8,
@@ -635,6 +710,24 @@ const StudyGuide = () => {
         "How to visit different churches respectfully",
         "Finding a church home that fits your beliefs and needs"
       ],
+      detailedContent: [
+        {
+          heading: "What All Christians Share",
+          text: "Despite 2,000 years of division, all major Christian traditions affirm core beliefs found in the ancient creeds: (1) The Trinity - one God in three persons: Father, Son, and Holy Spirit; (2) The Incarnation - Jesus is fully God and fully human; (3) Jesus's death and resurrection provide salvation; (4) The Bible is authoritative Scripture; (5) The church is Christ's body on earth; (6) Baptism and communion (Eucharist) are important practices; (7) Jesus will return. These agreements, established in the first few centuries, unite Orthodox, Catholic, and Protestant Christians. When you visit any of these churches, you'll encounter variations on these shared truths. The fact that Catholics, Orthodox, Lutherans, Baptists, and Pentecostals all confess the Apostles' Creed shows their fundamental unity, despite very real differences in practice and emphasis."
+        },
+        {
+          heading: "Major Dividing Lines",
+          text: "Denominations primarily differ on five questions: (1) Authority: Is Scripture alone sufficient (Protestant), or do tradition and church teaching also carry weight (Catholic, Orthodox)? (2) Salvation: Are we saved by faith alone (Protestant) or faith plus sacraments and good works (Catholic, Orthodox)? (3) Sacraments: Two (Baptist, most Protestant) or seven (Catholic, Orthodox)? Symbol or means of grace? Infant or believer's baptism? (4) Church Leadership: Episcopal (bishops), Presbyterian (elders), or Congregational (local autonomy)? Is there a Pope? (5) Worship: Formal liturgy (Catholic, Orthodox, Anglican, Lutheran) or informal flexibility (Baptist, non-denominational, Pentecostal)? Your answer to these five questions will largely determine which traditions you find comfortable. No position is inherently 'better' - each reflects different ways of understanding Scripture and tradition."
+        },
+        {
+          heading: "Visiting Churches Respectfully",
+          text: "Exploring different churches helps you experience what you've learned. Guidelines for respectful visits: (1) Check the church website for dress code expectations - some prefer formal, others are casual; (2) Arrive 10 minutes early to observe and get oriented; (3) Follow along as best you can - it's okay to not participate in communion if you're unfamiliar; (4) Stand when others stand, sit when they sit; (5) Ask questions afterward, not during the service; (6) Don't critique or argue - you're a guest learning their tradition; (7) Notice what resonates: the music, the sermon, the community feel, the liturgy; (8) Visit at least twice - first visits can be awkward anywhere; (9) Remember that no single service captures a tradition fully. Use this app's Worship Experiences section as a guide to know what to expect and what to observe."
+        },
+        {
+          heading: "Finding Your Church Home",
+          text: "Choosing a church is deeply personal. Consider: (1) Theology - Do you agree with their core beliefs? Check their website's 'What We Believe' section. (2) Worship Style - Does the music, liturgy, and service format help you connect with God? (3) Community - Do you feel welcomed? Are there people at your life stage? (4) Teaching - Do the sermons challenge and inspire you? (5) Mission - What is the church doing in the community and world? (6) Practical Concerns - Location, service times, children's programs. Here's the reality: you probably won't agree 100% with any church. That's okay! The perfect church doesn't exist. You're looking for a community where you can worship God, grow spiritually, serve others, and belong. Theology matters, but so does whether you'll actually show up consistently. A church you attend is better than a theologically perfect church you avoid. Give yourself permission to take time, visit multiple churches, and pray for wisdom. Your spiritual home is waiting."
+        }
+      ],
       beginnerExplanation: "Despite their differences, all Christian denominations share core beliefs: God as Trinity (Father, Son, Holy Spirit), Jesus as divine and human, salvation through Christ, and the authority of Scripture. Differences arise in how they interpret Scripture, organize church leadership, practice sacraments, and express worship. Understanding these differences helps you appreciate Christianity's diversity.",
       reflectionQuestions: [
         "What denomination(s) resonated most with you, and why?",
@@ -643,7 +736,64 @@ const StudyGuide = () => {
         "What questions do you still have?"
       ],
       practicalApplication: "Review all the Worship Experiences in the app. Make a plan to visit 2-3 different types of churches over the next few months. Go with an open mind and respectful curiosity. Use the app's guides to know what to expect. Remember: finding a church home is about both theology and community - it's okay to prioritize different factors.",
-      appLinks: ["All Denominations", "Worship Experiences", "Bible Timeline"]
+      appLinks: ["All Denominations", "Worship Experiences", "Bible Timeline"],
+      quiz: [
+        {
+          question: "Which core belief is shared by ALL major Christian traditions?",
+          options: [
+            "The Pope is head of the church",
+            "Baptism should be by immersion only",
+            "The Trinity - one God in three persons",
+            "There are seven sacraments"
+          ],
+          correctAnswer: 2,
+          explanation: "All major Christian traditions (Catholic, Orthodox, Protestant) affirm the doctrine of the Trinity - that God exists as one being in three persons: Father, Son, and Holy Spirit. This belief unites all Christians despite their other differences."
+        },
+        {
+          question: "What is a key difference between Protestant and Catholic views on authority?",
+          options: [
+            "Protestants reject the Bible",
+            "Protestants emphasize Scripture alone, Catholics include tradition and church teaching",
+            "Catholics don't read the Bible",
+            "There is no difference in their views"
+          ],
+          correctAnswer: 1,
+          explanation: "A major dividing line is authority: Protestants emphasize 'sola scriptura' (Scripture alone), while Catholics and Orthodox also grant authority to church tradition and teaching alongside Scripture."
+        },
+        {
+          question: "When visiting a church for the first time, what should you do?",
+          options: [
+            "Critique the sermon loudly during the service",
+            "Arrive late to avoid awkwardness",
+            "Follow along respectfully, standing/sitting when others do",
+            "Leave immediately if it feels different"
+          ],
+          correctAnswer: 2,
+          explanation: "When visiting a church, be a respectful guest: arrive early, follow along as others stand and sit, don't critique during the service, and ask questions afterward. Remember you're learning about their tradition."
+        },
+        {
+          question: "According to the lesson, what should you consider when choosing a church home?",
+          options: [
+            "Only theology - nothing else matters",
+            "Only convenience - pick the closest one",
+            "Both theology and practical factors like community, worship style, and mission",
+            "Whatever your parents attended"
+          ],
+          correctAnswer: 2,
+          explanation: "Finding a church home requires considering multiple factors: theology (do you agree with core beliefs?), worship style, community feel, teaching quality, mission focus, and practical concerns. It's about both doctrine and where you'll actually engage and grow."
+        },
+        {
+          question: "What does the lesson say about finding the 'perfect' church?",
+          options: [
+            "The perfect church exists if you search hard enough",
+            "You should never compromise on anything",
+            "The perfect church doesn't exist; find where you can worship, grow, and belong",
+            "All churches are exactly the same"
+          ],
+          correctAnswer: 2,
+          explanation: "The lesson acknowledges that the perfect church doesn't exist - you won't agree 100% with any church. The goal is finding a community where you can worship God, grow spiritually, serve others, and belong. A church you attend is better than a theologically perfect church you avoid."
+        }
+      ]
     }
   ];
 
