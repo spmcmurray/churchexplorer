@@ -1,10 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 import DenominationVisualizer from "./DenominationVisualizer";
+import StudyGuide from "./StudyGuide";
+import { BookOpen, Home } from 'lucide-react';
 
 function App() {
+  const [currentView, setCurrentView] = useState('explorer'); // 'explorer' or 'study-guide'
+
   return (
-    <div>
-      <DenominationVisualizer />
+    <div className="min-h-screen">
+      {/* Navigation Bar */}
+      <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-8">
+              <h1 className="text-xl font-bold">Church Explorer</h1>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setCurrentView('explorer')}
+                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                    currentView === 'explorer'
+                      ? 'bg-white text-blue-600 shadow-md'
+                      : 'bg-blue-700 hover:bg-blue-800'
+                  }`}
+                >
+                  <Home className="w-4 h-4 mr-2" />
+                  Explorer
+                </button>
+                <button
+                  onClick={() => setCurrentView('study-guide')}
+                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                    currentView === 'study-guide'
+                      ? 'bg-white text-blue-600 shadow-md'
+                      : 'bg-blue-700 hover:bg-blue-800'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  8-Week Study Guide
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div>
+        {currentView === 'explorer' ? (
+          <DenominationVisualizer />
+        ) : (
+          <StudyGuide />
+        )}
+      </div>
     </div>
   );
 }
