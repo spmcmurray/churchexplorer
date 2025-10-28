@@ -4,16 +4,30 @@ import { BookOpen, CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Targ
 const StudyGuide = () => {
   const [expandedWeek, setExpandedWeek] = useState(null);
   const [completedWeeks, setCompletedWeeks] = useState([]);
+  const [quizScores, setQuizScores] = useState({});
+  const [currentQuizAnswers, setCurrentQuizAnswers] = useState({});
+  const [showQuizResults, setShowQuizResults] = useState({});
 
-  // Load completed weeks from localStorage on mount
+  // Load completed weeks and quiz scores from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem('churchExplorerProgress');
-    if (saved) {
+    const savedProgress = localStorage.getItem('churchExplorerProgress');
+    const savedQuizScores = localStorage.getItem('churchExplorerQuizScores');
+
+    if (savedProgress) {
       try {
-        const parsed = JSON.parse(saved);
+        const parsed = JSON.parse(savedProgress);
         setCompletedWeeks(parsed);
       } catch (e) {
         console.error('Error loading progress:', e);
+      }
+    }
+
+    if (savedQuizScores) {
+      try {
+        const parsed = JSON.parse(savedQuizScores);
+        setQuizScores(parsed);
+      } catch (e) {
+        console.error('Error loading quiz scores:', e);
       }
     }
   }, []);
@@ -22,6 +36,11 @@ const StudyGuide = () => {
   useEffect(() => {
     localStorage.setItem('churchExplorerProgress', JSON.stringify(completedWeeks));
   }, [completedWeeks]);
+
+  // Save to localStorage whenever quizScores changes
+  useEffect(() => {
+    localStorage.setItem('churchExplorerQuizScores', JSON.stringify(quizScores));
+  }, [quizScores]);
 
   // 8-Week Study Guide Curriculum
   const curriculum = [
@@ -36,6 +55,24 @@ const StudyGuide = () => {
         "The first major councils and why they mattered",
         "How Christianity spread across the Roman Empire"
       ],
+      detailedContent: [
+        {
+          heading: "The Apostolic Age (33-100 AD)",
+          text: "After Jesus's resurrection and ascension, his disciples (now called apostles) began spreading his teachings. The Day of Pentecost (Acts 2) marked the birth of the church, where the Holy Spirit empowered the apostles to preach boldly. Peter emerged as a key leader in Jerusalem, while Paul (formerly Saul, a persecutor of Christians) became the 'apostle to the Gentiles' after his dramatic conversion. Paul's missionary journeys throughout the Roman Empire established churches in major cities like Corinth, Ephesus, and Rome. The apostles wrote letters (epistles) to these churches, many of which became books of the New Testament."
+        },
+        {
+          heading: "Persecution and Growth (100-313 AD)",
+          text: "Christianity was illegal in the Roman Empire and faced periodic persecution. Romans viewed Christians with suspicion because they refused to worship the emperor or Roman gods. Despite this, Christianity grew rapidly among slaves, women, and the urban poor. Christians met secretly in homes and catacombs. Martyrs like Polycarp and Perpetua inspired others through their faithful deaths. By 300 AD, an estimated 10% of the Roman Empire was Christian."
+        },
+        {
+          heading: "The Ecumenical Councils",
+          text: "As Christianity grew, disagreements arose about core beliefs. The Council of Nicaea (325 AD) was convened by Emperor Constantine to address the Arian controversy - a debate about whether Jesus was fully God or a created being. The council produced the Nicene Creed, affirming Jesus as 'true God from true God, begotten not made.' Later councils clarified the nature of the Trinity, the person of Christ (fully God and fully human), and which books belonged in the Bible. These councils' decisions still shape Christian belief across nearly all denominations today."
+        },
+        {
+          heading: "From Persecution to Power",
+          text: "Everything changed in 313 AD when Emperor Constantine legalized Christianity with the Edict of Milan. By 380 AD, Christianity became the official religion of the Roman Empire under Emperor Theodosius. This shift brought both blessings and challenges. Churches could worship openly and own property, but the faith also became intertwined with political power. Some Christians fled to the desert to become monks, seeking a purer faith away from worldly influence."
+        }
+      ],
       beginnerExplanation: "Think of the early church like a startup that grew rapidly. Jesus' followers started small in Jerusalem, but within a few centuries, Christianity had spread across Europe, Africa, and Asia. Early Christians had to figure out basic questions: What do we believe? How should we organize? What books belong in the Bible?",
       reflectionQuestions: [
         "What surprises you most about how Christianity began?",
@@ -43,7 +80,64 @@ const StudyGuide = () => {
         "How do you think the early church differs from churches today?"
       ],
       practicalApplication: "This week, visit the Catholic and Orthodox sections in the app. These traditions trace their roots directly to the early church. Notice how they emphasize apostolic succession - the idea of an unbroken line of leadership from the apostles to today.",
-      appLinks: ["Catholic", "Orthodox", "Bible Timeline"]
+      appLinks: ["Catholic", "Orthodox", "Bible Timeline"],
+      quiz: [
+        {
+          question: "What event marked the birth of the Christian church?",
+          options: [
+            "The resurrection of Jesus",
+            "The Day of Pentecost",
+            "The Council of Nicaea",
+            "Paul's conversion"
+          ],
+          correctAnswer: 1,
+          explanation: "The Day of Pentecost (Acts 2) is considered the birthday of the church, when the Holy Spirit came upon the apostles and Peter preached his first sermon, resulting in 3,000 new believers."
+        },
+        {
+          question: "Who was known as the 'apostle to the Gentiles'?",
+          options: [
+            "Peter",
+            "John",
+            "Paul",
+            "James"
+          ],
+          correctAnswer: 2,
+          explanation: "Paul (formerly Saul) became known as the apostle to the Gentiles after his conversion. He went on extensive missionary journeys throughout the Roman Empire, establishing churches and writing many New Testament letters."
+        },
+        {
+          question: "What was the main issue addressed at the Council of Nicaea in 325 AD?",
+          options: [
+            "Which books belong in the Bible",
+            "Whether Christians should worship on Saturday or Sunday",
+            "Whether Jesus was fully God or a created being",
+            "How to organize church leadership"
+          ],
+          correctAnswer: 2,
+          explanation: "The Council of Nicaea addressed the Arian controversy, which questioned whether Jesus was fully God or a created being. The council affirmed that Jesus is 'true God from true God, begotten not made,' establishing the doctrine of Christ's full divinity."
+        },
+        {
+          question: "When did Christianity become legal in the Roman Empire?",
+          options: [
+            "33 AD",
+            "313 AD",
+            "380 AD",
+            "476 AD"
+          ],
+          correctAnswer: 1,
+          explanation: "In 313 AD, Emperor Constantine issued the Edict of Milan, which legalized Christianity and ended persecution. This was a major turning point that allowed Christians to worship openly."
+        },
+        {
+          question: "Why did some Christians become desert monks in the 4th century?",
+          options: [
+            "They were fleeing persecution",
+            "They wanted to find gold in the desert",
+            "They sought a purer faith away from the church's new political power",
+            "They were spreading Christianity to nomadic tribes"
+          ],
+          correctAnswer: 2,
+          explanation: "When Christianity became the official religion of Rome in 380 AD, some Christians felt the faith had become too worldly and politically entangled. They fled to the desert to live as monks, seeking a simpler, purer spiritual life focused on prayer and devotion."
+        }
+      ]
     },
     {
       week: 2,
@@ -204,6 +298,59 @@ const StudyGuide = () => {
 
   const isWeekCompleted = (weekNumber) => {
     return completedWeeks.includes(weekNumber);
+  };
+
+  const handleQuizAnswer = (weekNumber, questionIndex, answerIndex) => {
+    const key = `week${weekNumber}_q${questionIndex}`;
+    setCurrentQuizAnswers({
+      ...currentQuizAnswers,
+      [key]: answerIndex
+    });
+  };
+
+  const submitQuiz = (weekNumber) => {
+    const week = curriculum.find(w => w.week === weekNumber);
+    if (!week || !week.quiz) return;
+
+    let correct = 0;
+    week.quiz.forEach((question, index) => {
+      const key = `week${weekNumber}_q${index}`;
+      if (currentQuizAnswers[key] === question.correctAnswer) {
+        correct++;
+      }
+    });
+
+    const score = {
+      correct,
+      total: week.quiz.length,
+      percentage: Math.round((correct / week.quiz.length) * 100),
+      date: new Date().toISOString()
+    };
+
+    setQuizScores({
+      ...quizScores,
+      [weekNumber]: score
+    });
+
+    setShowQuizResults({
+      ...showQuizResults,
+      [weekNumber]: true
+    });
+  };
+
+  const retakeQuiz = (weekNumber) => {
+    // Clear quiz answers for this week
+    const newAnswers = { ...currentQuizAnswers };
+    curriculum.find(w => w.week === weekNumber)?.quiz.forEach((_, index) => {
+      delete newAnswers[`week${weekNumber}_q${index}`];
+    });
+    setCurrentQuizAnswers(newAnswers);
+
+    // Hide results
+    setShowQuizResults({
+      ...showQuizResults,
+      [weekNumber]: false
+    });
   };
 
   return (
@@ -380,6 +527,21 @@ const StudyGuide = () => {
                       <p className="text-gray-700 leading-relaxed">{week.beginnerExplanation}</p>
                     </div>
 
+                    {/* Detailed Content */}
+                    {week.detailedContent && (
+                      <div className="mb-6">
+                        <h4 className="font-semibold text-gray-800 mb-4 text-lg">In-Depth Study</h4>
+                        <div className="space-y-4">
+                          {week.detailedContent.map((section, idx) => (
+                            <div key={idx} className="bg-white rounded-lg p-4 border-2 border-gray-200">
+                              <h5 className="font-bold text-gray-900 mb-2">{section.heading}</h5>
+                              <p className="text-gray-700 leading-relaxed">{section.text}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Reflection Questions */}
                     <div className="mb-6">
                       <h4 className="font-semibold text-gray-800 mb-3 text-lg">Questions to Consider</h4>
@@ -413,6 +575,131 @@ const StudyGuide = () => {
                         ))}
                       </div>
                     </div>
+
+                    {/* Quiz Section */}
+                    {week.quiz && (
+                      <div className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-200">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-amber-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold mr-3">
+                            ?
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-900 text-lg">Week {week.week} Quiz</h4>
+                            <p className="text-sm text-gray-600">Test your understanding with 5 questions</p>
+                          </div>
+                        </div>
+
+                        {!showQuizResults[week.week] ? (
+                          <>
+                            {/* Quiz Questions */}
+                            <div className="space-y-6">
+                              {week.quiz.map((question, qIdx) => (
+                                <div key={qIdx} className="bg-white rounded-lg p-4 border border-gray-200">
+                                  <p className="font-semibold text-gray-900 mb-3">
+                                    {qIdx + 1}. {question.question}
+                                  </p>
+                                  <div className="space-y-2">
+                                    {question.options.map((option, oIdx) => {
+                                      const key = `week${week.week}_q${qIdx}`;
+                                      const isSelected = currentQuizAnswers[key] === oIdx;
+                                      return (
+                                        <button
+                                          key={oIdx}
+                                          onClick={() => handleQuizAnswer(week.week, qIdx, oIdx)}
+                                          className={`w-full text-left p-3 rounded-lg border-2 transition ${
+                                            isSelected
+                                              ? 'border-blue-500 bg-blue-50'
+                                              : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                                          }`}
+                                        >
+                                          <span className="font-medium text-gray-700">{String.fromCharCode(65 + oIdx)}.</span> {option}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Submit Quiz Button */}
+                            <button
+                              onClick={() => submitQuiz(week.week)}
+                              disabled={
+                                week.quiz.some((_, idx) =>
+                                  currentQuizAnswers[`week${week.week}_q${idx}`] === undefined
+                                )
+                              }
+                              className="w-full mt-6 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-semibold text-lg transition"
+                            >
+                              Submit Quiz
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            {/* Quiz Results */}
+                            <div className="bg-white rounded-lg p-6 mb-6">
+                              <div className="text-center mb-6">
+                                <div className={`text-6xl font-bold mb-2 ${
+                                  quizScores[week.week]?.percentage >= 80 ? 'text-green-600' :
+                                  quizScores[week.week]?.percentage >= 60 ? 'text-yellow-600' :
+                                  'text-red-600'
+                                }`}>
+                                  {quizScores[week.week]?.percentage}%
+                                </div>
+                                <p className="text-xl font-semibold text-gray-800">
+                                  {quizScores[week.week]?.correct} out of {quizScores[week.week]?.total} correct
+                                </p>
+                                <p className="text-sm text-gray-600 mt-2">
+                                  {quizScores[week.week]?.percentage >= 80 ? 'Excellent work!' :
+                                   quizScores[week.week]?.percentage >= 60 ? 'Good effort!' :
+                                   'Keep studying - you can retake the quiz!'}
+                                </p>
+                              </div>
+
+                              {/* Answer Review */}
+                              <div className="space-y-4">
+                                {week.quiz.map((question, qIdx) => {
+                                  const key = `week${week.week}_q${qIdx}`;
+                                  const userAnswer = currentQuizAnswers[key];
+                                  const isCorrect = userAnswer === question.correctAnswer;
+
+                                  return (
+                                    <div key={qIdx} className={`p-4 rounded-lg border-2 ${
+                                      isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+                                    }`}>
+                                      <p className="font-semibold text-gray-900 mb-2">
+                                        {qIdx + 1}. {question.question}
+                                      </p>
+                                      <p className="text-sm mb-2">
+                                        <span className={isCorrect ? 'text-green-700' : 'text-red-700'}>
+                                          Your answer: {question.options[userAnswer]} {isCorrect ? '✓' : '✗'}
+                                        </span>
+                                      </p>
+                                      {!isCorrect && (
+                                        <p className="text-sm text-green-700 mb-2">
+                                          Correct answer: {question.options[question.correctAnswer]}
+                                        </p>
+                                      )}
+                                      <p className="text-sm text-gray-700 italic">
+                                        {question.explanation}
+                                      </p>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Retake Quiz Button */}
+                            <button
+                              onClick={() => retakeQuiz(week.week)}
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition"
+                            >
+                              Retake Quiz
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
 
                     {/* Mark as Complete Button */}
                     <div className="border-t-2 border-gray-100 pt-6">
