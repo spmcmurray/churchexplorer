@@ -425,6 +425,24 @@ const StudyGuide = () => {
         "Anabaptist commitment to pacifism and community",
         "Baptist emphasis on soul competency and congregational autonomy"
       ],
+      detailedContent: [
+        {
+          heading: "The Radical Reformation: Anabaptists",
+          text: "While Luther and Calvin reformed the church, a more radical group emerged in Switzerland in the 1520s. Called 'Anabaptists' (re-baptizers) by their opponents, they rejected infant baptism, insisting only believers who consciously chose to follow Christ should be baptized. This wasn't just about baptism - it represented a completely different vision of church and society. Anabaptists believed the church should be a voluntary community of committed believers, separate from the state. They refused to swear oaths, serve in the military, or hold government office. Both Catholics and Protestants saw this as dangerous and subversive. Thousands of Anabaptists were martyred - drowned ironically, in mockery of their baptism practices. Despite persecution, they persisted, founding communities like the Mennonites (followers of Menno Simons) and later, the Amish."
+        },
+        {
+          heading: "Baptist Origins and Growth",
+          text: "Baptists emerged independently in England in the early 1600s, arriving at similar conclusions about baptism without direct connection to Anabaptists. John Smyth, an Anglican priest turned Separatist, baptized himself and then his congregation in Amsterdam in 1609, forming the first Baptist church. Baptists emphasized: (1) Believer's baptism by immersion; (2) Soul competency - each person can read and understand Scripture for themselves without a priest; (3) Priesthood of all believers; (4) Congregational autonomy - each local church governs itself; (5) Religious liberty for all. Roger Williams founded Rhode Island in 1636 as a haven for religious freedom after being expelled from Massachusetts. Baptists flourished in America, becoming the largest Protestant denomination by the 1800s."
+        },
+        {
+          heading: "Church-State Separation",
+          text: "Both Anabaptists and Baptists pioneered the radical idea that church and state should be completely separate. In their era, this was revolutionary. Most people believed society needed one official religion to maintain order - the idea of religious pluralism seemed dangerous. But Baptists argued that faith coerced isn't genuine faith. Thomas Helwys, an early Baptist, wrote to King James I: 'The king is a mortal man, and not God, therefore hath no power over immortal souls.' This bold statement landed Helwys in prison, where he died. Yet Baptist ideas influenced the American founders. Many historians credit Baptists' persistent advocacy for the First Amendment's guarantee of religious freedom. The 'wall of separation' between church and state, articulated by Thomas Jefferson, reflected Baptist theology."
+        },
+        {
+          heading: "Baptist Diversity and Anabaptist Community",
+          text: "Today's Baptists are remarkably diverse. Southern Baptists emphasize evangelism and biblical inerrancy. American Baptists are more moderate and ecumenical. Black Baptist churches have been centers of African American community and civil rights activism. All share commitment to baptism, local church autonomy, and religious liberty, but differ on theology and social issues. Anabaptists took a different path, forming intentional communities like the Amish, Mennonites, and Hutterites. They maintain distinctive dress, resist modern technology (especially Amish), practice pacifism, and emphasize community discipline (shunning). Both traditions contributed crucial ideas: voluntary church membership, separation of church and state, and religious freedom - concepts we now take for granted."
+        }
+      ],
       beginnerExplanation: "Both Anabaptists and Baptists believe baptism should be a personal choice made as an adult believer, not something done to infants. 'Anabaptist' literally means 're-baptizer' because they baptized adults who had been baptized as infants. Baptists later developed similar beliefs but became one of the largest Protestant groups, especially in America. Both strongly believed in separating church and government.",
       reflectionQuestions: [
         "Why do you think baptism became such a divisive issue?",
@@ -432,7 +450,64 @@ const StudyGuide = () => {
         "How did Anabaptist and Baptist ideas influence American religious freedom?"
       ],
       practicalApplication: "Compare the Anabaptist and Baptist sections in the app. Notice how Anabaptists (like Mennonites and Amish) emphasize pacifism and community discipline, while Baptists are more diverse but united on baptism and local church autonomy. The Worship Experiences will show you what to expect in Baptist services.",
-      appLinks: ["Baptist", "Anabaptist", "Worship Experiences"]
+      appLinks: ["Baptist", "Anabaptist", "Worship Experiences"],
+      quiz: [
+        {
+          question: "What does 'Anabaptist' literally mean?",
+          options: [
+            "Against baptism",
+            "Re-baptizer",
+            "Water believers",
+            "True baptism"
+          ],
+          correctAnswer: 1,
+          explanation: "'Anabaptist' means 're-baptizer.' This name was given by their opponents because Anabaptists baptized adults who had already been baptized as infants, which others saw as rebaptism."
+        },
+        {
+          question: "Who founded Rhode Island as a haven for religious freedom?",
+          options: [
+            "John Smyth",
+            "Menno Simons",
+            "Roger Williams",
+            "Thomas Helwys"
+          ],
+          correctAnswer: 2,
+          explanation: "Roger Williams, a Baptist minister, founded Rhode Island in 1636 as a colony based on religious freedom after being expelled from Massachusetts for his radical views on liberty of conscience."
+        },
+        {
+          question: "What is 'soul competency' in Baptist theology?",
+          options: [
+            "Only educated people can be saved",
+            "Each person can read and understand Scripture for themselves",
+            "Souls must compete for salvation",
+            "Priests must interpret the Bible for laypeople"
+          ],
+          correctAnswer: 1,
+          explanation: "Soul competency is the Baptist belief that each individual can read, understand, and apply Scripture for themselves without needing a priest or church hierarchy to interpret it for them."
+        },
+        {
+          question: "How did many Anabaptists die during persecution?",
+          options: [
+            "Burning at the stake",
+            "Drowning (in mockery of their baptism practices)",
+            "Beheading",
+            "Exile to distant lands"
+          ],
+          correctAnswer: 1,
+          explanation: "Many Anabaptists were drowned by both Catholic and Protestant authorities, ironically mocking their emphasis on baptism by immersion. Thousands were martyred in the 1500s."
+        },
+        {
+          question: "Which modern groups descended from the Anabaptist movement?",
+          options: [
+            "Presbyterians and Methodists",
+            "Amish, Mennonites, and Hutterites",
+            "Lutherans and Anglicans",
+            "Pentecostals and Charismatics"
+          ],
+          correctAnswer: 1,
+          explanation: "The Amish, Mennonites, and Hutterites all descended from the Anabaptist movement. They maintain distinctive communities emphasizing pacifism, simple living, and separation from mainstream society."
+        }
+      ]
     },
     {
       week: 6,
@@ -445,6 +520,24 @@ const StudyGuide = () => {
         "Speaking in tongues and spiritual gifts",
         "How Pentecostalism became the fastest-growing Christian movement globally"
       ],
+      detailedContent: [
+        {
+          heading: "The Holiness Movement",
+          text: "The Holiness movement emerged in the mid-1800s, mainly within Methodism, emphasizing Wesley's teaching about 'entire sanctification' or 'Christian perfection.' Holiness preachers taught that after conversion, believers could experience a 'second work of grace' - a moment when God completely cleansed them from the inclination to sin. Camp meetings featured fervent preaching, emotional testimonies, and altar calls where seekers pursued this experience. Women found opportunities for leadership often denied in other traditions. Phoebe Palmer became a leading Holiness evangelist in the 1850s. As Methodist churches became more formal and respectable, Holiness believers felt they'd lost Wesley's fire. Many formed new denominations: Church of the Nazarene, Church of God (Anderson), Wesleyan Church. Holiness churches emphasized personal holiness, simple living, and abstaining from 'worldly' pleasures like dancing, theater, and alcohol."
+        },
+        {
+          heading: "Azusa Street: Pentecostalism is Born",
+          text: "On April 9, 1906, at a humble mission on Azusa Street in Los Angeles, something unprecedented happened. Under the leadership of William J. Seymour, an African American Holiness preacher and son of freed slaves, believers began speaking in tongues - utterances in languages they'd never learned. Seymour taught this was evidence of 'baptism in the Holy Spirit,' a third experience after conversion and sanctification. The Azusa Street Revival ran for three years, with services sometimes lasting all day. People from around the world visited, received the experience, and spread Pentecostalism globally. Remarkably for segregated America, the revival was racially integrated. Seymour's vision: 'The color line was washed away by the blood.' Pentecostals believed they were experiencing what happened on the Day of Pentecost (Acts 2) - a restoration of apostolic power and gifts."
+        },
+        {
+          heading: "Pentecostal Beliefs and Practices",
+          text: "Pentecostals affirm standard Christian doctrine but add distinctive emphases: (1) Baptism in the Holy Spirit as a separate experience from conversion, evidenced by speaking in tongues; (2) All spiritual gifts listed in 1 Corinthians 12 are available today - prophecy, healing, miracles, tongues, interpretation; (3) Divine healing is part of the atonement - Christians can pray for healing instead of relying only on medicine; (4) Expectation of Jesus's imminent return. Worship is spontaneous, emotional, and participatory - with raised hands, dancing, shouting 'Amen!' and 'Hallelujah!', and prophecies shared during services. Critics called early Pentecostals 'holy rollers' and accused them of emotionalism. But Pentecostals countered that mainline churches had become dead and formal, having 'a form of godliness but denying its power.'"
+        },
+        {
+          heading: "Global Pentecostal Explosion",
+          text: "Pentecostalism became Christianity's most explosive growth story. Starting from nothing in 1900, Pentecostals and Charismatics (Pentecostals in mainline churches) now number over 600 million worldwide - about a quarter of all Christians. Growth has been spectacular in Latin America (where Pentecostalism challenges Catholic dominance), sub-Saharan Africa, and Asia. In Brazil, Pentecostals grow by 15,000 per day. South Korea's Yoido Full Gospel Church has over 800,000 members. Why such growth? Pentecostalism offers: direct personal experience of God's power, healing for the sick, deliverance from evil spirits, hope for the poor, opportunities for lay leadership, and indigenous expression (worship can incorporate local music and culture). In the Global South, Pentecostalism is often Christianity."
+        }
+      ],
       beginnerExplanation: "The Holiness movement taught that Christians could experience 'entire sanctification' - a complete cleansing from sin after conversion. Pentecostals added emphasis on 'baptism in the Holy Spirit' evidenced by speaking in tongues (unknown languages). Both movements featured emotional, energetic worship and expectation of miracles. Today, Pentecostalism is exploding worldwide, especially in the Global South.",
       reflectionQuestions: [
         "Why do you think Pentecostalism appeals to so many people worldwide?",
@@ -452,7 +545,64 @@ const StudyGuide = () => {
         "What role should spiritual gifts play in modern Christianity?"
       ],
       practicalApplication: "Read the Pentecostal and Holiness sections carefully. Notice the Pentecostal geographic distribution - rapid growth in Africa, Asia, and Latin America. If you're comfortable, consider visiting a Pentecostal service to experience the worship style firsthand (the Worship Experiences section prepares you for what to expect).",
-      appLinks: ["Pentecostal", "Holiness", "Worship Experiences"]
+      appLinks: ["Pentecostal", "Holiness", "Worship Experiences"],
+      quiz: [
+        {
+          question: "What is 'entire sanctification' in Holiness theology?",
+          options: [
+            "Being baptized as an infant",
+            "A second work of grace that completely cleanses from the inclination to sin",
+            "Becoming a church member",
+            "Reading the entire Bible"
+          ],
+          correctAnswer: 1,
+          explanation: "Entire sanctification is the Holiness teaching that after conversion, believers can experience a 'second work of grace' where God completely cleanses them from the inclination to sin, enabling them to live in holiness."
+        },
+        {
+          question: "Where and when did the famous Azusa Street Revival take place?",
+          options: [
+            "New York City, 1890",
+            "Los Angeles, 1906",
+            "Chicago, 1920",
+            "Atlanta, 1915"
+          ],
+          correctAnswer: 1,
+          explanation: "The Azusa Street Revival began on April 9, 1906, in Los Angeles at a humble mission led by William J. Seymour. It ran for three years and launched global Pentecostalism."
+        },
+        {
+          question: "Who led the Azusa Street Revival?",
+          options: [
+            "Billy Graham",
+            "Charles Finney",
+            "William J. Seymour",
+            "John Wesley"
+          ],
+          correctAnswer: 2,
+          explanation: "William J. Seymour, an African American Holiness preacher and son of freed slaves, led the Azusa Street Revival. His leadership was remarkable in segregated America, and he advocated for racial integration."
+        },
+        {
+          question: "What do Pentecostals believe is the initial evidence of baptism in the Holy Spirit?",
+          options: [
+            "Prophesying",
+            "Healing the sick",
+            "Speaking in tongues",
+            "Feeling peaceful"
+          ],
+          correctAnswer: 2,
+          explanation: "Pentecostals believe that speaking in tongues (glossolalia) - utterances in languages unknown to the speaker - is the initial physical evidence of being baptized in the Holy Spirit."
+        },
+        {
+          question: "Approximately how many Pentecostals and Charismatics are there worldwide today?",
+          options: [
+            "10 million",
+            "100 million",
+            "Over 600 million",
+            "1 billion"
+          ],
+          correctAnswer: 2,
+          explanation: "Pentecostals and Charismatics now number over 600 million worldwide - about a quarter of all Christians - making Pentecostalism one of the fastest-growing religious movements in history."
+        }
+      ]
     },
     {
       week: 7,
