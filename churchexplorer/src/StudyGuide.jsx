@@ -143,12 +143,30 @@ const StudyGuide = () => {
       week: 2,
       title: "The Great Divide: East vs. West",
       subtitle: "Understanding the 1054 split",
-      introduction: "This week explores one of Christianity's most significant moments: when the church split into Eastern (Orthodox) and Western (Catholic) branches. This wasn't a sudden break but rather centuries of growing differences in culture, language, and theology.",
+      introduction: "This lesson explores one of Christianity's most significant moments: when the church split into Eastern (Orthodox) and Western (Catholic) branches. This wasn't a sudden break but rather centuries of growing differences in culture, language, and theology.",
       keyTopics: [
         "Cultural differences between Greek East and Latin West",
         "The Filioque controversy (a debate about the Holy Spirit)",
         "Different approaches to church leadership",
         "How Orthodox and Catholic churches differ today"
+      ],
+      detailedContent: [
+        {
+          heading: "Two Worlds Drifting Apart",
+          text: "When the Roman Empire split into East and West in 395 AD, it created two distinct Christian cultures. The Western church, centered in Rome, used Latin and was influenced by Roman legal thinking. The Eastern church, centered in Constantinople, used Greek and was influenced by Greek philosophy. As Germanic tribes overran the West and new Islamic empires rose in the East, the two halves of Christianity had increasingly different experiences and developed distinct practices. Western bishops wore simple robes, while Eastern bishops wore elaborate Byzantine vestments. Western churches used unleavened bread for communion, Eastern churches used leavened bread. These differences might seem small, but they symbolized deeper theological and cultural divides."
+        },
+        {
+          heading: "The Filioque Controversy",
+          text: "The breaking point came over a single Latin word: 'filioque,' meaning 'and the Son.' The Nicene Creed originally said the Holy Spirit proceeds 'from the Father.' Western churches added 'and the Son' (filioque) without consulting the East. To Eastern Christians, this wasn't just about grammar - it changed the doctrine of the Trinity and violated the principle that only ecumenical councils could modify creeds. The West argued the addition clarified orthodox belief and had been used for centuries. This seemingly technical debate represented a fundamental disagreement: could the Western church make such decisions unilaterally, or did it need Eastern consent?"
+        },
+        {
+          heading: "The 1054 Split",
+          text: "In 1054, tensions exploded. Pope Leo IX sent Cardinal Humbert to Constantinople to assert papal authority. Patriarch Michael Cerularius of Constantinople refused to acknowledge the Pope's supremacy. On July 16, 1054, Humbert stormed into the Hagia Sophia during worship and slammed a bull of excommunication on the altar, condemning Cerularius. The Patriarch responded by excommunicating the papal legates. Technically, they only excommunicated each other personally, not entire churches - but the symbolic damage was done. The Great Schism had begun. Crusaders sacking Constantinople in 1204 deepened the wound, making reconciliation even more difficult."
+        },
+        {
+          heading: "Different Paths Forward",
+          text: "After 1054, Eastern Orthodoxy and Roman Catholicism developed separately. The Orthodox maintained a conciliar structure with multiple patriarchs and no single earthly head of the church. Catholics centralized power in the papacy. Orthodox theology emphasized mysticism, theosis (becoming one with God), and continuity with the early church. Catholic theology developed systematic scholasticism, particularly through Thomas Aquinas. The Orthodox preserved ancient liturgies largely unchanged. Catholics' liturgy evolved and was standardized in Latin. These differences, born from geography and culture, created two distinct but related expressions of Christianity."
+        }
       ],
       beginnerExplanation: "Imagine a large family where half speaks English and half speaks Spanish, living on different continents. Over time, they develop different traditions and ways of doing things. Eventually, they have a big argument and stop talking. That's similar to what happened between Eastern and Western Christianity in 1054.",
       reflectionQuestions: [
@@ -157,18 +175,83 @@ const StudyGuide = () => {
         "Is it possible for these traditions to reunite someday?"
       ],
       practicalApplication: "Compare the Orthodox and Catholic sections in the app. Notice similarities in their beliefs about sacraments and apostolic succession, but differences in church governance and some theological details. If possible, visit both a Catholic Mass and Orthodox Divine Liturgy to experience the differences firsthand.",
-      appLinks: ["Catholic", "Orthodox", "Worship Experiences"]
+      appLinks: ["Catholic", "Orthodox", "Worship Experiences"],
+      quiz: [
+        {
+          question: "When did the Roman Empire split into East and West, creating two distinct Christian cultures?",
+          options: ["313 AD", "395 AD", "1054 AD", "1517 AD"],
+          correctAnswer: 1,
+          explanation: "The Roman Empire officially split into Eastern and Western halves in 395 AD. This political division eventually led to cultural and theological differences between Eastern and Western Christianity."
+        },
+        {
+          question: "What does the Latin word 'filioque' mean?",
+          options: ["From the Father", "And the Son", "Holy Spirit", "One God"],
+          correctAnswer: 1,
+          explanation: "'Filioque' means 'and the Son.' This was added to the Nicene Creed by Western churches to say the Holy Spirit proceeds from the Father 'and the Son,' which became a major point of contention with the East."
+        },
+        {
+          question: "What happened on July 16, 1054, that symbolized the Great Schism?",
+          options: [
+            "The Pope died",
+            "Cardinal Humbert excommunicated Patriarch Cerularius",
+            "Constantinople was conquered",
+            "A new creed was written"
+          ],
+          correctAnswer: 1,
+          explanation: "On July 16, 1054, Cardinal Humbert entered the Hagia Sophia and placed a bull of excommunication against Patriarch Michael Cerularius on the altar. The Patriarch responded with his own excommunication, marking the formal beginning of the Great Schism."
+        },
+        {
+          question: "How is church leadership structured differently in Orthodoxy versus Catholicism?",
+          options: [
+            "Orthodox have a Pope, Catholics have patriarchs",
+            "Both have identical structures",
+            "Orthodox have multiple patriarchs with no single earthly head, Catholics have papal centralization",
+            "Orthodox churches have no leaders"
+          ],
+          correctAnswer: 2,
+          explanation: "Eastern Orthodoxy maintains a conciliar structure with multiple patriarchs (Constantinople, Moscow, Alexandria, etc.) and no single earthly head of the church. Roman Catholicism centralizes authority in the Pope as the head of the worldwide church."
+        },
+        {
+          question: "Which event in 1204 deepened the rift between East and West?",
+          options: [
+            "The signing of a peace treaty",
+            "Crusaders sacking Constantinople",
+            "A joint ecumenical council",
+            "The translation of the Bible"
+          ],
+          correctAnswer: 1,
+          explanation: "In 1204, Catholic Crusaders on the Fourth Crusade sacked Constantinople, pillaging the Orthodox capital and desecrating churches. This betrayal deepened hostility between East and West and made reconciliation much more difficult."
+        }
+      ]
     },
     {
       week: 3,
       title: "The Reformation: A Revolution in Faith",
       subtitle: "Martin Luther and the Protestant movement",
-      introduction: "Get ready for one of history's most dramatic religious movements! In 1517, a German monk named Martin Luther challenged the Catholic Church's practices and sparked a revolution that would reshape Christianity forever. This week, we'll explore why it happened and what changed.",
+      introduction: "Get ready for one of history's most dramatic religious movements! In 1517, a German monk named Martin Luther challenged the Catholic Church's practices and sparked a revolution that would reshape Christianity forever. This lesson explores why it happened and what changed.",
       keyTopics: [
         "Martin Luther's 95 Theses and the indulgence controversy",
         "Key Reformation principles: Scripture Alone, Faith Alone, Grace Alone",
         "How Luther's ideas spread and evolved",
         "The birth of Lutheran and Reformed traditions"
+      ],
+      detailedContent: [
+        {
+          heading: "The Spark: Indulgences and the 95 Theses",
+          text: "In 1517, Pope Leo X needed money to rebuild St. Peter's Basilica in Rome. He authorized the sale of indulgences - certificates that supposedly reduced time in purgatory for you or deceased loved ones. Johann Tetzel, a monk selling indulgences in Germany, allegedly used the slogan: 'As soon as a coin in the coffer rings, a soul from purgatory springs!' Martin Luther, a professor and monk in Wittenberg, was outraged. On October 31, 1517, he posted 95 Theses (academic arguments) on the church door, challenging the theology and practice of indulgences. He argued that salvation couldn't be bought - it was a free gift from God received through faith. This academic protest, thanks to the printing press, spread across Europe in weeks, igniting a firestorm."
+        },
+        {
+          heading: "The Five Solas",
+          text: "Luther's theology coalesced into five Latin slogans called the 'Five Solas': (1) Sola Scriptura (Scripture Alone) - the Bible, not church tradition, is the final authority; (2) Sola Fide (Faith Alone) - we're saved by trusting Christ, not by good works; (3) Sola Gratia (Grace Alone) - salvation is entirely God's unmerited gift; (4) Solus Christus (Christ Alone) - Jesus is the only mediator between God and humans, no need for saints or priests; (5) Soli Deo Gloria (Glory to God Alone) - all praise goes to God, not the church. These principles directly challenged Catholic teaching on tradition, sacraments, and papal authority. They became the foundation for all Protestant theology."
+        },
+        {
+          heading: "The Diet of Worms and Luther's Stand",
+          text: "In 1521, Luther was summoned to the Diet of Worms (an imperial assembly, not a diet of worms!) to recant his teachings. When asked to renounce his writings, Luther famously replied: 'Unless I am convinced by Scripture and plain reason, I cannot and will not recant. Here I stand, I can do no other. God help me. Amen.' He was declared an outlaw and heretic, but German princes protected him. While hiding in Wartburg Castle, Luther translated the New Testament into German, making the Bible accessible to ordinary people for the first time. This democratization of Scripture was revolutionary."
+        },
+        {
+          heading: "The Spread of Reform",
+          text: "Luther wasn't alone. Ulrich Zwingli led reform in Zurich, Switzerland. John Calvin in Geneva developed a more systematic Protestant theology, emphasizing God's sovereignty and predestination (the doctrine that God has already chosen who will be saved). Calvin's ideas spread to Scotland (Presbyterianism through John Knox), the Netherlands (Dutch Reformed), France (Huguenots), and eventually America. The Reformation fractured Western Christianity permanently. Attempts at compromise failed. By 1555, the Peace of Augsburg established 'cuius regio, eius religio' (whose realm, his religion) - meaning each prince decided whether his territory would be Catholic or Lutheran."
+        }
       ],
       beginnerExplanation: "Luther was upset that the church was selling 'indulgences' - essentially, paying money to reduce punishment for sins. He believed salvation was a free gift from God through faith, not something you could buy. When he posted his complaints (the famous 95 Theses), it went viral (16th-century style), leading to a massive split from the Catholic Church.",
       reflectionQuestions: [
@@ -177,7 +260,64 @@ const StudyGuide = () => {
         "Can you see both sides of the debate between Luther and the Catholic Church?"
       ],
       practicalApplication: "Read through the Lutheran and Reformed/Presbyterian sections in the app. Notice their emphasis on 'sola scriptura' (Scripture alone) and 'sola fide' (faith alone). These became foundational principles for all Protestant denominations that followed.",
-      appLinks: ["Lutheran", "Reformed", "Catholic"]
+      appLinks: ["Lutheran", "Reformed", "Catholic"],
+      quiz: [
+        {
+          question: "What were indulgences that Martin Luther opposed?",
+          options: [
+            "Certificates to skip church services",
+            "Payments to reduce time in purgatory",
+            "Tickets to visit holy sites",
+            "Donations for new church buildings only"
+          ],
+          correctAnswer: 1,
+          explanation: "Indulgences were certificates sold by the Catholic Church that supposedly reduced time in purgatory for the buyer or deceased loved ones. Luther opposed them as a corruption that made salvation something that could be purchased."
+        },
+        {
+          question: "What does 'Sola Scriptura' mean?",
+          options: [
+            "Faith Alone",
+            "Grace Alone",
+            "Scripture Alone",
+            "Christ Alone"
+          ],
+          correctAnswer: 2,
+          explanation: "'Sola Scriptura' means 'Scripture Alone,' teaching that the Bible - not church tradition or papal decrees - is the final authority for Christian faith and practice."
+        },
+        {
+          question: "Where did Luther famously say 'Here I stand, I can do no other'?",
+          options: [
+            "At the church door in Wittenberg",
+            "At the Diet of Worms",
+            "In Wartburg Castle",
+            "At the Vatican"
+          ],
+          correctAnswer: 1,
+          explanation: "Luther made this famous statement at the Diet of Worms in 1521 when he was ordered to recant his teachings. He refused to renounce his beliefs unless convinced by Scripture and reason."
+        },
+        {
+          question: "What did Luther translate while hiding in Wartburg Castle?",
+          options: [
+            "The Catholic Mass into German",
+            "Ancient Greek philosophy",
+            "The New Testament into German",
+            "The Pope's letters"
+          ],
+          correctAnswer: 2,
+          explanation: "While in hiding at Wartburg Castle, Luther translated the New Testament from Greek into German, making the Bible accessible to ordinary German-speaking people for the first time."
+        },
+        {
+          question: "Who developed the systematic Protestant theology emphasizing predestination?",
+          options: [
+            "Martin Luther",
+            "Ulrich Zwingli",
+            "John Calvin",
+            "Henry VIII"
+          ],
+          correctAnswer: 2,
+          explanation: "John Calvin, working in Geneva, developed a more systematic Protestant theology that emphasized God's sovereignty and predestination. His ideas became the foundation for Reformed and Presbyterian churches."
+        }
+      ]
     },
     {
       week: 4,
