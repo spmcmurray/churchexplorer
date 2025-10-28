@@ -859,7 +859,7 @@ const DenominationVisualizer = () => {
             <BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-amber-700 mx-auto mb-3 sm:mb-4" />
           </div>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif text-slate-900 mb-3 sm:mb-4">
-            The Christian Story
+            Church Explorer
           </h1>
           <p className="text-sm sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
             From one root, many branches. Christianity transformed from a unified apostolic movement to 2.6 billion adherents across Catholic, Orthodox, and Protestant traditions spanning every continent. Three pivotal ruptures—the East-West Schism of 1054, the Protestant Reformation beginning in 1517, and the Pentecostal explosion starting in 1906—reshaped Christianity's landscape.
