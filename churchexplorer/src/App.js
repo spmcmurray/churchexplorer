@@ -17,25 +17,25 @@ function App() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => setCurrentView('explorer')}
-                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg transition ${
                     currentView === 'explorer'
                       ? 'bg-white text-blue-600 shadow-md'
                       : 'bg-blue-700 hover:bg-blue-800'
                   }`}
                 >
-                  <Home className="w-4 h-4 mr-2" />
-                  Explorer
+                  <Home className="w-4 h-4 mr-0 md:mr-2" />
+                  <span className="hidden md:inline">Explorer</span>
                 </button>
                 <button
                   onClick={() => setCurrentView('study-guide')}
-                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg transition ${
                     currentView === 'study-guide'
                       ? 'bg-white text-blue-600 shadow-md'
                       : 'bg-blue-700 hover:bg-blue-800'
                   }`}
                 >
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  8-Week Study Guide
+                  <BookOpen className="w-4 h-4 mr-0 md:mr-2" />
+                  <span className="hidden md:inline">8-Week Study Guide</span>
                 </button>
               </div>
             </div>
