@@ -1,3 +1,4 @@
+git pull origin claude/session-011CUZEhp9s87w5wCcZez7eU
 import React, { useState } from 'react';
 import { BookOpen, Globe, AlertCircle, Calendar, ExternalLink, MapPin } from 'lucide-react';
 
