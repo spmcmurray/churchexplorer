@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
-import { BookOpen, Mail, CheckCircle, Calendar, ChevronDown, ChevronRight, AlertCircle } from 'lucide-react';
-import { subscribeToStudyGuide } from './emailService';
+import React, { useState, useEffect } from 'react';
+import { BookOpen, CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target } from 'lucide-react';
 
 const StudyGuide = () => {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [expandedWeek, setExpandedWeek] = useState(null);
+  const [completedWeeks, setCompletedWeeks] = useState([]);
+
+  // Load completed weeks from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('churchExplorerProgress');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setCompletedWeeks(parsed);
+      } catch (e) {
+        console.error('Error loading progress:', e);
+      }
+    }
+  }, []);
+
+  // Save to localStorage whenever completedWeeks changes
+  useEffect(() => {
+    localStorage.setItem('churchExplorerProgress', JSON.stringify(completedWeeks));
+  }, [completedWeeks]);
 
   // 8-Week Study Guide Curriculum
   const curriculum = [
@@ -175,24 +188,22 @@ const StudyGuide = () => {
     }
   ];
 
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  const toggleWeek = (weekNumber) => {
+    setExpandedWeek(expandedWeek === weekNumber ? null : weekNumber);
+  };
 
-    try {
-      await subscribeToStudyGuide(name, email);
-      setSubscribed(true);
-    } catch (err) {
-      setError(err.message || 'Failed to subscribe. Please try again.');
-      console.error('Subscription error:', err);
-    } finally {
-      setLoading(false);
+  const markWeekComplete = (weekNumber) => {
+    if (!completedWeeks.includes(weekNumber)) {
+      setCompletedWeeks([...completedWeeks, weekNumber]);
     }
   };
 
-  const toggleWeek = (weekNumber) => {
-    setExpandedWeek(expandedWeek === weekNumber ? null : weekNumber);
+  const markWeekIncomplete = (weekNumber) => {
+    setCompletedWeeks(completedWeeks.filter(w => w !== weekNumber));
+  };
+
+  const isWeekCompleted = (weekNumber) => {
+    return completedWeeks.includes(weekNumber);
   };
 
   return (
@@ -208,119 +219,83 @@ const StudyGuide = () => {
             An 8-Week Journey Through Christianity's Story
           </p>
           <p className="text-lg text-blue-50 max-w-2xl mx-auto">
-            Perfect for beginners! Explore 2,000 years of church history through weekly lessons
-            delivered right to your inbox. No prior knowledge required.
+            Perfect for beginners! Explore 2,000 years of church history at your own pace.
+            Track your progress as you learn. No prior knowledge required.
           </p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
-        {/* Subscription Form */}
-        {!subscribed ? (
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 border-2 border-blue-100">
-            <div className="flex items-center justify-center mb-6">
-              <Mail className="w-10 h-10 text-blue-600 mr-3" />
-              <h2 className="text-3xl font-bold text-gray-800">Start Your Journey</h2>
-            </div>
-
-            <p className="text-center text-gray-600 mb-8 text-lg">
-              Sign up to receive one lesson per week for 8 weeks. Each email includes:
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
-              <div className="flex items-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <strong>Beginner-friendly explanations</strong>
-                  <p className="text-sm text-gray-600">No academic jargon - just clear, simple teaching</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <strong>Reflection questions</strong>
-                  <p className="text-sm text-gray-600">Think deeply about what you're learning</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <strong>Practical application</strong>
-                  <p className="text-sm text-gray-600">Connect history to your life today</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                <div>
-                  <strong>Interactive app content</strong>
-                  <p className="text-sm text-gray-600">Explore denominations in detail</p>
-                </div>
+        {/* Progress Tracker */}
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-12 border-2 border-blue-100">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div className="flex items-center">
+              <Target className="w-10 h-10 text-blue-600 mr-3" />
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Your Progress</h2>
+                <p className="text-gray-600 text-sm md:text-base">Track your journey through church history</p>
               </div>
             </div>
+            {completedWeeks.length === 8 && (
+              <Award className="w-12 h-12 text-yellow-500" />
+            )}
+          </div>
 
-            <form onSubmit={handleSubscribe} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                  placeholder="Enter your name"
-                />
-              </div>
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-gray-700">
+                {completedWeeks.length} of 8 weeks completed
+              </span>
+              <span className="text-sm font-bold text-blue-600">
+                {Math.round((completedWeeks.length / 8) * 100)}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-purple-500 h-4 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${(completedWeeks.length / 8) * 100}%` }}
+              ></div>
+            </div>
+          </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-
-              {error && (
-                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 flex items-start">
-                  <AlertCircle className="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <p className="text-red-800">{error}</p>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Subscribing...' : 'Start My Free 8-Week Journey'}
-              </button>
-
-              <p className="text-sm text-gray-500 text-center">
-                Free forever. Unsubscribe anytime. We respect your privacy.
+          {/* Completion Message */}
+          {completedWeeks.length === 8 && (
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-xl p-6 text-center">
+              <Award className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Congratulations! 🎉</h3>
+              <p className="text-gray-700 text-lg">
+                You've completed all 8 weeks of the Church History Study Guide!
               </p>
-            </form>
+            </div>
+          )}
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">{completedWeeks.length}</div>
+              <div className="text-xs md:text-sm text-gray-600 mt-1">Completed</div>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4 text-center">
+              <div className="text-2xl md:text-3xl font-bold text-purple-600">{8 - completedWeeks.length}</div>
+              <div className="text-xs md:text-sm text-gray-600 mt-1">Remaining</div>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <div className="text-2xl md:text-3xl font-bold text-green-600">
+                {completedWeeks.length > 0 ? completedWeeks[completedWeeks.length - 1] : '-'}
+              </div>
+              <div className="text-xs md:text-sm text-gray-600 mt-1">Last Week</div>
+            </div>
+            <div className="bg-orange-50 rounded-lg p-4 text-center">
+              <div className="text-2xl md:text-3xl font-bold text-orange-600">
+                {completedWeeks.length < 8
+                  ? curriculum.find(w => !completedWeeks.includes(w.week))?.week || '-'
+                  : '✓'}
+              </div>
+              <div className="text-xs md:text-sm text-gray-600 mt-1">Up Next</div>
+            </div>
           </div>
-        ) : (
-          <div className="bg-green-50 border-2 border-green-500 rounded-2xl p-8 mb-12 text-center">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Welcome Aboard, {name}! 🎉</h2>
-            <p className="text-lg text-gray-700 mb-4">
-              Your first lesson will arrive in your inbox this week. Get ready to explore Christianity's fascinating story!
-            </p>
-            <p className="text-gray-600">
-              In the meantime, feel free to preview the curriculum below and explore the app.
-            </p>
-          </div>
-        )}
+        </div>
 
         {/* Course Overview */}
         <div className="mb-12">
@@ -344,14 +319,29 @@ const StudyGuide = () => {
                 {/* Week Header - Clickable */}
                 <button
                   onClick={() => toggleWeek(week.week)}
-                  className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition text-left"
+                  className={`w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition text-left ${
+                    isWeekCompleted(week.week) ? 'bg-green-50' : ''
+                  }`}
                 >
-                  <div className="flex items-center">
-                    <div className="bg-gradient-to-br from-blue-500 to-purple-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mr-4 flex-shrink-0">
-                      {week.week}
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                      isWeekCompleted(week.week)
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gradient-to-br from-blue-500 to-purple-500 text-white'
+                    }`}>
+                      {isWeekCompleted(week.week) ? (
+                        <CheckCircle className="w-7 h-7" />
+                      ) : (
+                        week.week
+                      )}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-800">{week.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-800">
+                        {week.title}
+                        {isWeekCompleted(week.week) && (
+                          <span className="ml-2 text-sm font-normal text-green-600">✓ Completed</span>
+                        )}
+                      </h3>
                       <p className="text-gray-600">{week.subtitle}</p>
                     </div>
                   </div>
@@ -410,7 +400,7 @@ const StudyGuide = () => {
                     </div>
 
                     {/* App Links */}
-                    <div>
+                    <div className="mb-6">
                       <h4 className="font-semibold text-gray-800 mb-3 text-lg">Explore in the App</h4>
                       <div className="flex flex-wrap gap-2">
                         {week.appLinks.map((link, idx) => (
@@ -423,6 +413,26 @@ const StudyGuide = () => {
                         ))}
                       </div>
                     </div>
+
+                    {/* Mark as Complete Button */}
+                    <div className="border-t-2 border-gray-100 pt-6">
+                      {isWeekCompleted(week.week) ? (
+                        <button
+                          onClick={() => markWeekIncomplete(week.week)}
+                          className="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold text-lg transition flex items-center justify-center gap-2"
+                        >
+                          <CheckCircle className="w-6 h-6" />
+                          Completed! Click to mark as incomplete
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => markWeekComplete(week.week)}
+                          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl"
+                        >
+                          Mark Week {week.week} as Complete
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -430,21 +440,6 @@ const StudyGuide = () => {
           </div>
         </div>
 
-        {/* Footer CTA */}
-        {!subscribed && (
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white shadow-xl">
-            <h3 className="text-2xl font-bold mb-4">Ready to Begin Your Journey?</h3>
-            <p className="text-blue-100 mb-6">
-              Join hundreds of learners exploring church history in an accessible, engaging way.
-            </p>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg"
-            >
-              Sign Up Above
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
