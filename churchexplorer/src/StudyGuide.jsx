@@ -418,7 +418,7 @@ const StudyGuide = () => {
       week: 5,
       title: "Believer's Baptism: Baptists & Anabaptists",
       subtitle: "Radical reformation and religious freedom",
-      introduction: "Some reformers thought Luther and others didn't go far enough. This week, we'll explore traditions that took more radical stances on baptism, church-state separation, and religious freedom. These groups were often persecuted but their ideas eventually shaped modern concepts of religious liberty.",
+      introduction: "Some reformers thought Luther and others didn't go far enough. This lesson explores traditions that took more radical stances on baptism, church-state separation, and religious freedom. These groups were often persecuted but their ideas eventually shaped modern concepts of religious liberty.",
       keyTopics: [
         "Believer's baptism vs. infant baptism",
         "Church and state separation",
@@ -438,7 +438,7 @@ const StudyGuide = () => {
       week: 6,
       title: "The Spirit Moves: Pentecostals & Holiness Churches",
       subtitle: "Revival, spiritual gifts, and personal transformation",
-      introduction: "In the late 1800s and early 1900s, powerful revival movements swept across America and beyond, emphasizing emotional worship, spiritual gifts, and complete transformation. This week explores two related but distinct movements that dramatically changed Christianity's landscape.",
+      introduction: "In the late 1800s and early 1900s, powerful revival movements swept across America and beyond, emphasizing emotional worship, spiritual gifts, and complete transformation. This lesson explores two related but distinct movements that dramatically changed Christianity's landscape.",
       keyTopics: [
         "The Holiness movement's emphasis on sanctification",
         "The Azusa Street Revival (1906) and birth of Pentecostalism",
@@ -458,7 +458,7 @@ const StudyGuide = () => {
       week: 7,
       title: "Back to Basics: Restorationists & Non-Denominational Churches",
       subtitle: "Simplifying Christianity in the modern era",
-      introduction: "Some Christians look at denominational divisions and say, 'Let's just get back to what the Bible says!' This week explores movements that seek to restore 'simple' New Testament Christianity and modern churches that reject denominational labels altogether.",
+      introduction: "Some Christians look at denominational divisions and say, 'Let's just get back to what the Bible says!' This lesson explores movements that seek to restore 'simple' New Testament Christianity and modern churches that reject denominational labels altogether.",
       keyTopics: [
         "The Restoration Movement's goal to restore New Testament church patterns",
         "Why they reject creeds and human traditions",
@@ -478,7 +478,7 @@ const StudyGuide = () => {
       week: 8,
       title: "Your Journey: Understanding & Choosing",
       subtitle: "Putting it all together",
-      introduction: "Congratulations on completing seven weeks of church history! This final week is about synthesis - understanding how all these traditions relate to each other and thinking about your own spiritual journey. There's no 'right' denomination, but understanding the options helps you make informed choices.",
+      introduction: "Congratulations on completing seven lessons of church history! This final lesson is about synthesis - understanding how all these traditions relate to each other and thinking about your own spiritual journey. There's no 'right' denomination, but understanding the options helps you make informed choices.",
       keyTopics: [
         "Common threads across all Christian traditions",
         "Key differences that distinguish denominations",
@@ -488,7 +488,7 @@ const StudyGuide = () => {
       beginnerExplanation: "Despite their differences, all Christian denominations share core beliefs: God as Trinity (Father, Son, Holy Spirit), Jesus as divine and human, salvation through Christ, and the authority of Scripture. Differences arise in how they interpret Scripture, organize church leadership, practice sacraments, and express worship. Understanding these differences helps you appreciate Christianity's diversity.",
       reflectionQuestions: [
         "What denomination(s) resonated most with you, and why?",
-        "What surprised you most in this 8-week journey?",
+        "What surprised you most in this 8-lesson journey?",
         "How has learning church history changed your understanding of Christianity?",
         "What questions do you still have?"
       ],
@@ -578,7 +578,7 @@ const StudyGuide = () => {
             <h1 className="text-4xl md:text-5xl font-bold">Church History Study Guide</h1>
           </div>
           <p className="text-xl md:text-2xl text-blue-100 mb-6">
-            An 8-Week Journey Through Christianity's Story
+            An 8-Lesson Journey Through Christianity's Story
           </p>
           <p className="text-lg text-blue-50 max-w-2xl mx-auto">
             Perfect for beginners! Explore 2,000 years of church history at your own pace.
@@ -607,7 +607,7 @@ const StudyGuide = () => {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">
-                {completedWeeks.length} of 8 weeks completed
+                {completedWeeks.length} of 8 lessons completed
               </span>
               <span className="text-sm font-bold text-blue-600">
                 {Math.round((completedWeeks.length / 8) * 100)}%
@@ -627,7 +627,7 @@ const StudyGuide = () => {
               <Award className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-gray-800 mb-2">Congratulations! 🎉</h3>
               <p className="text-gray-700 text-lg">
-                You've completed all 8 weeks of the Church History Study Guide!
+                You've completed all 8 lessons of the Church History Study Guide!
               </p>
             </div>
           )}
@@ -646,7 +646,7 @@ const StudyGuide = () => {
               <div className="text-2xl md:text-3xl font-bold text-green-600">
                 {completedWeeks.length > 0 ? completedWeeks[completedWeeks.length - 1] : '-'}
               </div>
-              <div className="text-xs md:text-sm text-gray-600 mt-1">Last Week</div>
+              <div className="text-xs md:text-sm text-gray-600 mt-1">Last Lesson</div>
             </div>
             <div className="bg-orange-50 rounded-lg p-4 text-center">
               <div className="text-2xl md:text-3xl font-bold text-orange-600">
@@ -663,15 +663,15 @@ const StudyGuide = () => {
         <div className="mb-12">
           <div className="flex items-center mb-6">
             <Calendar className="w-8 h-8 text-purple-600 mr-3" />
-            <h2 className="text-3xl font-bold text-gray-800">8-Week Curriculum</h2>
+            <h2 className="text-3xl font-bold text-gray-800">8-Lesson Curriculum</h2>
           </div>
 
           <p className="text-gray-700 mb-8 text-lg">
-            Click any week below to preview the content. Each lesson builds on the previous one,
+            Click any lesson below to explore the content. Each lesson builds on the previous one,
             taking you from Christianity's origins to modern denominational diversity.
           </p>
 
-          {/* Week Cards */}
+          {/* Lesson Cards */}
           <div className="space-y-4">
             {curriculum.map((week) => (
               <div
@@ -799,7 +799,7 @@ const StudyGuide = () => {
                             ?
                           </div>
                           <div>
-                            <h4 className="font-bold text-gray-900 text-lg">Week {week.week} Quiz</h4>
+                            <h4 className="font-bold text-gray-900 text-lg">Lesson {week.week} Quiz</h4>
                             <p className="text-sm text-gray-600">Test your understanding with 5 questions</p>
                           </div>
                         </div>
@@ -931,7 +931,7 @@ const StudyGuide = () => {
                           onClick={() => markWeekComplete(week.week)}
                           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl"
                         >
-                          Mark Week {week.week} as Complete
+                          Mark Lesson {week.week} as Complete
                         </button>
                       )}
                     </div>
