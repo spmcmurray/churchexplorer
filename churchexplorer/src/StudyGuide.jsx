@@ -323,12 +323,30 @@ const StudyGuide = () => {
       week: 4,
       title: "The Middle Way: Anglicans & Methodists",
       subtitle: "Finding balance between Catholic and Protestant",
-      introduction: "Not all reformers wanted to completely break from Catholic tradition. This week, we'll explore two traditions that tried to find a 'middle way' - keeping some Catholic practices while embracing Protestant theology. We'll also learn about John Wesley and the Methodist revival.",
+      introduction: "Not all reformers wanted to completely break from Catholic tradition. This lesson explores two traditions that tried to find a 'middle way' - keeping some Catholic practices while embracing Protestant theology. We'll also learn about John Wesley and the Methodist revival.",
       keyTopics: [
         "Henry VIII and the English Reformation (it's complicated!)",
         "The Anglican via media - 'middle way' approach",
         "John Wesley and the Methodist movement",
         "How personal holiness and social justice became central to Methodist identity"
+      ],
+      detailedContent: [
+        {
+          heading: "Henry VIII and the English Reformation",
+          text: "The English Reformation began for political, not theological reasons. King Henry VIII wanted to annul his marriage to Catherine of Aragon (who hadn't given him a male heir), but Pope Clement VII refused. So Henry broke from Rome in 1534, declaring himself Supreme Head of the Church of England. Initially, Henry remained theologically Catholic - he just rejected papal authority. Under his son Edward VI, the church became more Protestant. Then Mary I (1553-1558) violently tried to restore Catholicism, earning the nickname 'Bloody Mary.' Finally, Elizabeth I (1558-1603) established the Elizabethan Settlement, creating a church that was Protestant in theology but Catholic in structure and ritual. This 'via media' (middle way) became Anglicanism's defining characteristic."
+        },
+        {
+          heading: "The Anglican Approach",
+          text: "Anglicanism is sometimes called 'reformed Catholicism.' It retained bishops in apostolic succession, liturgical worship (the Book of Common Prayer), and beautiful church architecture. But it adopted Protestant theology: Scripture as supreme authority, justification by faith, and only two sacraments (Baptism and Eucharist). The Anglican 'three-legged stool' balances Scripture, Tradition, and Reason - no single source has absolute authority. This created a 'broad church' where diverse theological views could coexist. High Church Anglicans emphasized ritual and sacraments, looking very Catholic. Low Church Anglicans emphasized preaching and simplicity, looking more Protestant. This flexibility was both a strength (inclusivity) and weakness (theological ambiguity)."
+        },
+        {
+          heading: "John Wesley and Methodist Revival",
+          text: "John Wesley (1703-1791), an Anglican priest, experienced a spiritual awakening in 1738 when his heart was 'strangely warmed' at a meeting on Aldersgate Street, London. He began preaching about personal conversion, holiness, and social reform. When Anglican churches closed their doors to him, Wesley took his message outdoors, preaching to coal miners and the poor. He organized converts into 'societies' and 'classes' for accountability and spiritual growth. Wesley emphasized: (1) God's prevenient grace enables everyone to respond to the gospel; (2) Personal holiness (sanctification) should follow justification; (3) Faith without works is dead - Christians must serve the poor. Wesley never intended to leave the Church of England, but Methodism became its own denomination after his death."
+        },
+        {
+          heading: "Social Holiness",
+          text: "Wesley famously said, 'There is no holiness but social holiness.' Methodists pioneered social reform: opposing slavery, improving prison conditions, educating the poor, and caring for widows and orphans. They built schools, hospitals, and missions. This emphasis on both personal piety and social justice became Methodist DNA. In America, Methodism exploded during the Second Great Awakening (early 1800s), becoming the largest Protestant denomination. Circuit-riding preachers brought Methodist revivalism to the frontier. Today, Methodism's legacy includes not just churches but also universities (Duke, Emory, Northwestern) and countless social service organizations."
+        }
       ],
       beginnerExplanation: "Anglicans kept bishops, liturgy, and many Catholic-looking practices, but adopted Protestant theology. It's like keeping your family's traditional recipes while trying new cooking techniques. Methodists emerged later from Anglicanism, emphasizing personal spiritual growth and caring for the poor. Think of them as Anglicans who wanted more emotion and social action in their faith.",
       reflectionQuestions: [
@@ -337,7 +355,64 @@ const StudyGuide = () => {
         "How does the Anglican 'middle way' differ from being wishy-washy?"
       ],
       practicalApplication: "Explore the Anglican and Methodist sections in the app. Notice how Anglicans maintain a formal liturgy (Book of Common Prayer) while Methodists focus on personal transformation and social holiness. The Worship Experiences section will show you what attending each type of service is like.",
-      appLinks: ["Anglican", "Methodist", "Worship Experiences"]
+      appLinks: ["Anglican", "Methodist", "Worship Experiences"],
+      quiz: [
+        {
+          question: "Why did the English Reformation begin under Henry VIII?",
+          options: [
+            "He wanted to reform church theology",
+            "He wanted to annul his marriage but the Pope refused",
+            "He was converting to Protestantism",
+            "He wanted to spread the gospel to England"
+          ],
+          correctAnswer: 1,
+          explanation: "Henry VIII broke from Rome primarily because Pope Clement VII refused to annul his marriage to Catherine of Aragon. The English Reformation began for political/personal reasons, not theological ones."
+        },
+        {
+          question: "What does the Anglican 'via media' mean?",
+          options: [
+            "Mass in Latin",
+            "The middle way between Catholic and Protestant",
+            "The path to heaven",
+            "Weekly communion"
+          ],
+          correctAnswer: 1,
+          explanation: "'Via media' means 'middle way' - Anglicanism's attempt to balance Catholic structure and ritual with Protestant theology, creating a church that was reformed but retained many traditional elements."
+        },
+        {
+          question: "What are the three sources of authority in Anglican theology?",
+          options: [
+            "Pope, Bishops, Priests",
+            "Faith, Hope, Love",
+            "Scripture, Tradition, Reason",
+            "Prayer, Fasting, Almsgiving"
+          ],
+          correctAnswer: 2,
+          explanation: "Anglicanism balances three sources of authority in its 'three-legged stool': Scripture (the Bible), Tradition (church history and practice), and Reason (rational thought and experience)."
+        },
+        {
+          question: "Where did John Wesley have his spiritual awakening in 1738?",
+          options: [
+            "Oxford University",
+            "Aldersgate Street, London",
+            "Georgia, America",
+            "Canterbury Cathedral"
+          ],
+          correctAnswer: 1,
+          explanation: "Wesley's heart was 'strangely warmed' at a meeting on Aldersgate Street in London in 1738. This experience led to his evangelical awakening and the Methodist movement."
+        },
+        {
+          question: "What did Wesley mean by 'social holiness'?",
+          options: [
+            "Christians should avoid society",
+            "Holiness includes serving the poor and reforming society",
+            "Church services should be social events",
+            "Only monks can be truly holy"
+          ],
+          correctAnswer: 1,
+          explanation: "Wesley taught 'there is no holiness but social holiness' - meaning genuine Christian faith must express itself in serving others and working for social reform, not just personal piety."
+        }
+      ]
     },
     {
       week: 5,
