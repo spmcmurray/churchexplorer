@@ -425,6 +425,24 @@ const StudyGuide = () => {
         "Anabaptist commitment to pacifism and community",
         "Baptist emphasis on soul competency and congregational autonomy"
       ],
+      detailedContent: [
+        {
+          heading: "The Radical Reformation: Anabaptists",
+          text: "While Luther and Calvin reformed the church, a more radical group emerged in Switzerland in the 1520s. Called 'Anabaptists' (re-baptizers) by their opponents, they rejected infant baptism, insisting only believers who consciously chose to follow Christ should be baptized. This wasn't just about baptism - it represented a completely different vision of church and society. Anabaptists believed the church should be a voluntary community of committed believers, separate from the state. They refused to swear oaths, serve in the military, or hold government office. Both Catholics and Protestants saw this as dangerous and subversive. Thousands of Anabaptists were martyred - drowned ironically, in mockery of their baptism practices. Despite persecution, they persisted, founding communities like the Mennonites (followers of Menno Simons) and later, the Amish."
+        },
+        {
+          heading: "Baptist Origins and Growth",
+          text: "Baptists emerged independently in England in the early 1600s, arriving at similar conclusions about baptism without direct connection to Anabaptists. John Smyth, an Anglican priest turned Separatist, baptized himself and then his congregation in Amsterdam in 1609, forming the first Baptist church. Baptists emphasized: (1) Believer's baptism by immersion; (2) Soul competency - each person can read and understand Scripture for themselves without a priest; (3) Priesthood of all believers; (4) Congregational autonomy - each local church governs itself; (5) Religious liberty for all. Roger Williams founded Rhode Island in 1636 as a haven for religious freedom after being expelled from Massachusetts. Baptists flourished in America, becoming the largest Protestant denomination by the 1800s."
+        },
+        {
+          heading: "Church-State Separation",
+          text: "Both Anabaptists and Baptists pioneered the radical idea that church and state should be completely separate. In their era, this was revolutionary. Most people believed society needed one official religion to maintain order - the idea of religious pluralism seemed dangerous. But Baptists argued that faith coerced isn't genuine faith. Thomas Helwys, an early Baptist, wrote to King James I: 'The king is a mortal man, and not God, therefore hath no power over immortal souls.' This bold statement landed Helwys in prison, where he died. Yet Baptist ideas influenced the American founders. Many historians credit Baptists' persistent advocacy for the First Amendment's guarantee of religious freedom. The 'wall of separation' between church and state, articulated by Thomas Jefferson, reflected Baptist theology."
+        },
+        {
+          heading: "Baptist Diversity and Anabaptist Community",
+          text: "Today's Baptists are remarkably diverse. Southern Baptists emphasize evangelism and biblical inerrancy. American Baptists are more moderate and ecumenical. Black Baptist churches have been centers of African American community and civil rights activism. All share commitment to baptism, local church autonomy, and religious liberty, but differ on theology and social issues. Anabaptists took a different path, forming intentional communities like the Amish, Mennonites, and Hutterites. They maintain distinctive dress, resist modern technology (especially Amish), practice pacifism, and emphasize community discipline (shunning). Both traditions contributed crucial ideas: voluntary church membership, separation of church and state, and religious freedom - concepts we now take for granted."
+        }
+      ],
       beginnerExplanation: "Both Anabaptists and Baptists believe baptism should be a personal choice made as an adult believer, not something done to infants. 'Anabaptist' literally means 're-baptizer' because they baptized adults who had been baptized as infants. Baptists later developed similar beliefs but became one of the largest Protestant groups, especially in America. Both strongly believed in separating church and government.",
       reflectionQuestions: [
         "Why do you think baptism became such a divisive issue?",
@@ -432,7 +450,64 @@ const StudyGuide = () => {
         "How did Anabaptist and Baptist ideas influence American religious freedom?"
       ],
       practicalApplication: "Compare the Anabaptist and Baptist sections in the app. Notice how Anabaptists (like Mennonites and Amish) emphasize pacifism and community discipline, while Baptists are more diverse but united on baptism and local church autonomy. The Worship Experiences will show you what to expect in Baptist services.",
-      appLinks: ["Baptist", "Anabaptist", "Worship Experiences"]
+      appLinks: ["Baptist", "Anabaptist", "Worship Experiences"],
+      quiz: [
+        {
+          question: "What does 'Anabaptist' literally mean?",
+          options: [
+            "Against baptism",
+            "Re-baptizer",
+            "Water believers",
+            "True baptism"
+          ],
+          correctAnswer: 1,
+          explanation: "'Anabaptist' means 're-baptizer.' This name was given by their opponents because Anabaptists baptized adults who had already been baptized as infants, which others saw as rebaptism."
+        },
+        {
+          question: "Who founded Rhode Island as a haven for religious freedom?",
+          options: [
+            "John Smyth",
+            "Menno Simons",
+            "Roger Williams",
+            "Thomas Helwys"
+          ],
+          correctAnswer: 2,
+          explanation: "Roger Williams, a Baptist minister, founded Rhode Island in 1636 as a colony based on religious freedom after being expelled from Massachusetts for his radical views on liberty of conscience."
+        },
+        {
+          question: "What is 'soul competency' in Baptist theology?",
+          options: [
+            "Only educated people can be saved",
+            "Each person can read and understand Scripture for themselves",
+            "Souls must compete for salvation",
+            "Priests must interpret the Bible for laypeople"
+          ],
+          correctAnswer: 1,
+          explanation: "Soul competency is the Baptist belief that each individual can read, understand, and apply Scripture for themselves without needing a priest or church hierarchy to interpret it for them."
+        },
+        {
+          question: "How did many Anabaptists die during persecution?",
+          options: [
+            "Burning at the stake",
+            "Drowning (in mockery of their baptism practices)",
+            "Beheading",
+            "Exile to distant lands"
+          ],
+          correctAnswer: 1,
+          explanation: "Many Anabaptists were drowned by both Catholic and Protestant authorities, ironically mocking their emphasis on baptism by immersion. Thousands were martyred in the 1500s."
+        },
+        {
+          question: "Which modern groups descended from the Anabaptist movement?",
+          options: [
+            "Presbyterians and Methodists",
+            "Amish, Mennonites, and Hutterites",
+            "Lutherans and Anglicans",
+            "Pentecostals and Charismatics"
+          ],
+          correctAnswer: 1,
+          explanation: "The Amish, Mennonites, and Hutterites all descended from the Anabaptist movement. They maintain distinctive communities emphasizing pacifism, simple living, and separation from mainstream society."
+        }
+      ]
     },
     {
       week: 6,
@@ -445,6 +520,24 @@ const StudyGuide = () => {
         "Speaking in tongues and spiritual gifts",
         "How Pentecostalism became the fastest-growing Christian movement globally"
       ],
+      detailedContent: [
+        {
+          heading: "The Holiness Movement",
+          text: "The Holiness movement emerged in the mid-1800s, mainly within Methodism, emphasizing Wesley's teaching about 'entire sanctification' or 'Christian perfection.' Holiness preachers taught that after conversion, believers could experience a 'second work of grace' - a moment when God completely cleansed them from the inclination to sin. Camp meetings featured fervent preaching, emotional testimonies, and altar calls where seekers pursued this experience. Women found opportunities for leadership often denied in other traditions. Phoebe Palmer became a leading Holiness evangelist in the 1850s. As Methodist churches became more formal and respectable, Holiness believers felt they'd lost Wesley's fire. Many formed new denominations: Church of the Nazarene, Church of God (Anderson), Wesleyan Church. Holiness churches emphasized personal holiness, simple living, and abstaining from 'worldly' pleasures like dancing, theater, and alcohol."
+        },
+        {
+          heading: "Azusa Street: Pentecostalism is Born",
+          text: "On April 9, 1906, at a humble mission on Azusa Street in Los Angeles, something unprecedented happened. Under the leadership of William J. Seymour, an African American Holiness preacher and son of freed slaves, believers began speaking in tongues - utterances in languages they'd never learned. Seymour taught this was evidence of 'baptism in the Holy Spirit,' a third experience after conversion and sanctification. The Azusa Street Revival ran for three years, with services sometimes lasting all day. People from around the world visited, received the experience, and spread Pentecostalism globally. Remarkably for segregated America, the revival was racially integrated. Seymour's vision: 'The color line was washed away by the blood.' Pentecostals believed they were experiencing what happened on the Day of Pentecost (Acts 2) - a restoration of apostolic power and gifts."
+        },
+        {
+          heading: "Pentecostal Beliefs and Practices",
+          text: "Pentecostals affirm standard Christian doctrine but add distinctive emphases: (1) Baptism in the Holy Spirit as a separate experience from conversion, evidenced by speaking in tongues; (2) All spiritual gifts listed in 1 Corinthians 12 are available today - prophecy, healing, miracles, tongues, interpretation; (3) Divine healing is part of the atonement - Christians can pray for healing instead of relying only on medicine; (4) Expectation of Jesus's imminent return. Worship is spontaneous, emotional, and participatory - with raised hands, dancing, shouting 'Amen!' and 'Hallelujah!', and prophecies shared during services. Critics called early Pentecostals 'holy rollers' and accused them of emotionalism. But Pentecostals countered that mainline churches had become dead and formal, having 'a form of godliness but denying its power.'"
+        },
+        {
+          heading: "Global Pentecostal Explosion",
+          text: "Pentecostalism became Christianity's most explosive growth story. Starting from nothing in 1900, Pentecostals and Charismatics (Pentecostals in mainline churches) now number over 600 million worldwide - about a quarter of all Christians. Growth has been spectacular in Latin America (where Pentecostalism challenges Catholic dominance), sub-Saharan Africa, and Asia. In Brazil, Pentecostals grow by 15,000 per day. South Korea's Yoido Full Gospel Church has over 800,000 members. Why such growth? Pentecostalism offers: direct personal experience of God's power, healing for the sick, deliverance from evil spirits, hope for the poor, opportunities for lay leadership, and indigenous expression (worship can incorporate local music and culture). In the Global South, Pentecostalism is often Christianity."
+        }
+      ],
       beginnerExplanation: "The Holiness movement taught that Christians could experience 'entire sanctification' - a complete cleansing from sin after conversion. Pentecostals added emphasis on 'baptism in the Holy Spirit' evidenced by speaking in tongues (unknown languages). Both movements featured emotional, energetic worship and expectation of miracles. Today, Pentecostalism is exploding worldwide, especially in the Global South.",
       reflectionQuestions: [
         "Why do you think Pentecostalism appeals to so many people worldwide?",
@@ -452,7 +545,64 @@ const StudyGuide = () => {
         "What role should spiritual gifts play in modern Christianity?"
       ],
       practicalApplication: "Read the Pentecostal and Holiness sections carefully. Notice the Pentecostal geographic distribution - rapid growth in Africa, Asia, and Latin America. If you're comfortable, consider visiting a Pentecostal service to experience the worship style firsthand (the Worship Experiences section prepares you for what to expect).",
-      appLinks: ["Pentecostal", "Holiness", "Worship Experiences"]
+      appLinks: ["Pentecostal", "Holiness", "Worship Experiences"],
+      quiz: [
+        {
+          question: "What is 'entire sanctification' in Holiness theology?",
+          options: [
+            "Being baptized as an infant",
+            "A second work of grace that completely cleanses from the inclination to sin",
+            "Becoming a church member",
+            "Reading the entire Bible"
+          ],
+          correctAnswer: 1,
+          explanation: "Entire sanctification is the Holiness teaching that after conversion, believers can experience a 'second work of grace' where God completely cleanses them from the inclination to sin, enabling them to live in holiness."
+        },
+        {
+          question: "Where and when did the famous Azusa Street Revival take place?",
+          options: [
+            "New York City, 1890",
+            "Los Angeles, 1906",
+            "Chicago, 1920",
+            "Atlanta, 1915"
+          ],
+          correctAnswer: 1,
+          explanation: "The Azusa Street Revival began on April 9, 1906, in Los Angeles at a humble mission led by William J. Seymour. It ran for three years and launched global Pentecostalism."
+        },
+        {
+          question: "Who led the Azusa Street Revival?",
+          options: [
+            "Billy Graham",
+            "Charles Finney",
+            "William J. Seymour",
+            "John Wesley"
+          ],
+          correctAnswer: 2,
+          explanation: "William J. Seymour, an African American Holiness preacher and son of freed slaves, led the Azusa Street Revival. His leadership was remarkable in segregated America, and he advocated for racial integration."
+        },
+        {
+          question: "What do Pentecostals believe is the initial evidence of baptism in the Holy Spirit?",
+          options: [
+            "Prophesying",
+            "Healing the sick",
+            "Speaking in tongues",
+            "Feeling peaceful"
+          ],
+          correctAnswer: 2,
+          explanation: "Pentecostals believe that speaking in tongues (glossolalia) - utterances in languages unknown to the speaker - is the initial physical evidence of being baptized in the Holy Spirit."
+        },
+        {
+          question: "Approximately how many Pentecostals and Charismatics are there worldwide today?",
+          options: [
+            "10 million",
+            "100 million",
+            "Over 600 million",
+            "1 billion"
+          ],
+          correctAnswer: 2,
+          explanation: "Pentecostals and Charismatics now number over 600 million worldwide - about a quarter of all Christians - making Pentecostalism one of the fastest-growing religious movements in history."
+        }
+      ]
     },
     {
       week: 7,
@@ -465,6 +615,24 @@ const StudyGuide = () => {
         "The rise of non-denominational megachurches",
         "Contemporary worship and practical teaching styles"
       ],
+      detailedContent: [
+        {
+          heading: "The Stone-Campbell Restoration Movement",
+          text: "In the early 1800s on the American frontier, several independent leaders had the same idea: denominational divisions were unbiblical. Christians should unite by abandoning all creeds and traditions, returning to the simple New Testament pattern. Barton W. Stone in Kentucky and Thomas and Alexander Campbell in Pennsylvania led separate movements that eventually merged. Their slogan: 'No creed but Christ, no book but the Bible, no name but Christian.' They rejected denominational names, calling themselves simply 'Christians' or 'Disciples of Christ.' They practiced weekly communion, believer's baptism by immersion, and congregational autonomy. But ironically, they became denominations themselves: Churches of Christ (the most conservative, rejecting instrumental music as unauthorized by the New Testament), Christian Churches/Churches of Christ (moderate, allowing instruments), and Disciples of Christ (most progressive, joining ecumenical movements)."
+        },
+        {
+          heading: "Restorationist Logic and Challenges",
+          text: "Restorationists use a 'command, example, and necessary inference' hermeneutic (method of interpretation). If the New Testament commands it, shows an example of it, or logically requires it, churches should do it. If not, they shouldn't. This sounds simple but creates challenges. The New Testament shows churches meeting in homes - should modern churches avoid church buildings? Early Christians shared possessions (Acts 2) - should we? Churches of Christ famously reject instrumental music because the New Testament only mentions singing. Critics argue this approach is selective and impossible - we can't fully recreate first-century context. Restorationists counter that while cultural details change, essential patterns of worship, organization, and doctrine can be restored. The movement's appeal: cutting through centuries of tradition to pure, biblical Christianity."
+        },
+        {
+          heading: "The Non-Denominational Revolution",
+          text: "In the late 20th century, a different 'back to basics' movement emerged: non-denominational churches. Unlike Restorationists who wanted to restore first-century forms, non-denominational churches wanted to strip away anything that hindered reaching unchurched people. They asked: 'What if we removed denominational labels, traditional liturgy, hymns, and religious jargon? What if church felt accessible, relevant, and practical?' The result: mega-churches like Willow Creek, Saddleback, and countless others. Features include: contemporary worship (rock band, not organ), casual dress, practical sermons on marriage, parenting, finances, state-of-the-art production, multiple service times, and extensive programs. While avoiding 'denominational' labels, most are evangelical in theology, just repackaged for modern culture. Critics say they're shallow entertainment. Advocates argue they're effectively reaching people traditional churches can't."
+        },
+        {
+          heading: "Irony and Questions",
+          text: "Both movements contain irony. Restorationists wanted to end denominations but created new ones. Non-denominational churches claim no denomination but often function like independent Baptist or evangelical churches. Both face questions: Is unity possible through uniformity (Restorationists) or informality (non-denominational)? Can you really have 'no creed' without smuggling in unstated assumptions? Can contemporary relevance maintain doctrinal depth? These movements represent enduring Christian impulses: (1) the desire to return to origins, stripping away accumulated tradition; (2) the desire to reach outsiders effectively. Every era faces the tension between staying rooted in the past and speaking meaningfully to the present. These movements lean hard toward 'back to basics' but define 'basics' very differently."
+        }
+      ],
       beginnerExplanation: "Restorationists (Churches of Christ, Christian Churches) believe Christians should only do what's explicitly found in the New Testament - no creeds, no instrumental music (for some), just Bible. Non-denominational churches take a different approach: they focus on practical teaching, contemporary worship, and avoid denominational labels. Both represent attempts to simplify Christianity, but in different ways.",
       reflectionQuestions: [
         "Is it really possible to practice Christianity exactly as the first century church did?",
@@ -472,7 +640,64 @@ const StudyGuide = () => {
         "How do non-denominational churches differ from traditional Protestant denominations?"
       ],
       practicalApplication: "Compare the Restorationist and Non-Denominational sections. Notice how Restorationists are more specific about restoring first-century practices, while non-denominational churches are more pragmatic and contemporary. Many non-denominational churches are actually quite evangelical in theology despite avoiding the label.",
-      appLinks: ["Restorationist", "Non-Denominational", "Worship Experiences"]
+      appLinks: ["Restorationist", "Non-Denominational", "Worship Experiences"],
+      quiz: [
+        {
+          question: "What was the main slogan of the Stone-Campbell Restoration Movement?",
+          options: [
+            "Faith alone, Scripture alone",
+            "No creed but Christ, no book but the Bible",
+            "Back to the Bible",
+            "Sola Scriptura"
+          ],
+          correctAnswer: 1,
+          explanation: "The Restoration Movement's slogan was 'No creed but Christ, no book but the Bible, no name but Christian.' They sought to unite Christians by abandoning all creeds and traditions."
+        },
+        {
+          question: "Why do Churches of Christ (a Restorationist group) reject instrumental music?",
+          options: [
+            "Instruments are too expensive",
+            "The New Testament only mentions singing, not instruments",
+            "They prefer silence",
+            "Organs are too loud"
+          ],
+          correctAnswer: 1,
+          explanation: "Churches of Christ reject instrumental music because the New Testament only explicitly mentions singing in worship. Following their 'command, example, and necessary inference' approach, they view instruments as unauthorized additions."
+        },
+        {
+          question: "What is a key feature of non-denominational megachurches?",
+          options: [
+            "Latin liturgy and Gregorian chants",
+            "Formal robes and traditional hymns",
+            "Contemporary worship and practical teaching",
+            "Silent meditation"
+          ],
+          correctAnswer: 2,
+          explanation: "Non-denominational megachurches typically feature contemporary worship (with rock bands), casual atmosphere, and practical sermons on everyday topics like marriage, parenting, and finances."
+        },
+        {
+          question: "Which Restoration Movement denomination is the most conservative?",
+          options: [
+            "Disciples of Christ",
+            "Christian Churches/Churches of Christ",
+            "Churches of Christ",
+            "United Church of Christ"
+          ],
+          correctAnswer: 2,
+          explanation: "Churches of Christ is the most conservative branch of the Restoration Movement, maintaining strict adherence to New Testament patterns including rejecting instrumental music and remaining separate from ecumenical movements."
+        },
+        {
+          question: "What is the irony about both Restorationist and non-denominational movements?",
+          options: [
+            "They use the same worship style",
+            "They wanted to end denominations but effectively created new ones",
+            "They all meet on Saturday",
+            "They reject baptism"
+          ],
+          correctAnswer: 1,
+          explanation: "The irony is that both movements sought to overcome denominationalism, but Restorationists created new denominations (Churches of Christ, etc.) and non-denominational churches effectively function as a distinct category - they became what they sought to avoid."
+        }
+      ]
     },
     {
       week: 8,
@@ -485,6 +710,24 @@ const StudyGuide = () => {
         "How to visit different churches respectfully",
         "Finding a church home that fits your beliefs and needs"
       ],
+      detailedContent: [
+        {
+          heading: "What All Christians Share",
+          text: "Despite 2,000 years of division, all major Christian traditions affirm core beliefs found in the ancient creeds: (1) The Trinity - one God in three persons: Father, Son, and Holy Spirit; (2) The Incarnation - Jesus is fully God and fully human; (3) Jesus's death and resurrection provide salvation; (4) The Bible is authoritative Scripture; (5) The church is Christ's body on earth; (6) Baptism and communion (Eucharist) are important practices; (7) Jesus will return. These agreements, established in the first few centuries, unite Orthodox, Catholic, and Protestant Christians. When you visit any of these churches, you'll encounter variations on these shared truths. The fact that Catholics, Orthodox, Lutherans, Baptists, and Pentecostals all confess the Apostles' Creed shows their fundamental unity, despite very real differences in practice and emphasis."
+        },
+        {
+          heading: "Major Dividing Lines",
+          text: "Denominations primarily differ on five questions: (1) Authority: Is Scripture alone sufficient (Protestant), or do tradition and church teaching also carry weight (Catholic, Orthodox)? (2) Salvation: Are we saved by faith alone (Protestant) or faith plus sacraments and good works (Catholic, Orthodox)? (3) Sacraments: Two (Baptist, most Protestant) or seven (Catholic, Orthodox)? Symbol or means of grace? Infant or believer's baptism? (4) Church Leadership: Episcopal (bishops), Presbyterian (elders), or Congregational (local autonomy)? Is there a Pope? (5) Worship: Formal liturgy (Catholic, Orthodox, Anglican, Lutheran) or informal flexibility (Baptist, non-denominational, Pentecostal)? Your answer to these five questions will largely determine which traditions you find comfortable. No position is inherently 'better' - each reflects different ways of understanding Scripture and tradition."
+        },
+        {
+          heading: "Visiting Churches Respectfully",
+          text: "Exploring different churches helps you experience what you've learned. Guidelines for respectful visits: (1) Check the church website for dress code expectations - some prefer formal, others are casual; (2) Arrive 10 minutes early to observe and get oriented; (3) Follow along as best you can - it's okay to not participate in communion if you're unfamiliar; (4) Stand when others stand, sit when they sit; (5) Ask questions afterward, not during the service; (6) Don't critique or argue - you're a guest learning their tradition; (7) Notice what resonates: the music, the sermon, the community feel, the liturgy; (8) Visit at least twice - first visits can be awkward anywhere; (9) Remember that no single service captures a tradition fully. Use this app's Worship Experiences section as a guide to know what to expect and what to observe."
+        },
+        {
+          heading: "Finding Your Church Home",
+          text: "Choosing a church is deeply personal. Consider: (1) Theology - Do you agree with their core beliefs? Check their website's 'What We Believe' section. (2) Worship Style - Does the music, liturgy, and service format help you connect with God? (3) Community - Do you feel welcomed? Are there people at your life stage? (4) Teaching - Do the sermons challenge and inspire you? (5) Mission - What is the church doing in the community and world? (6) Practical Concerns - Location, service times, children's programs. Here's the reality: you probably won't agree 100% with any church. That's okay! The perfect church doesn't exist. You're looking for a community where you can worship God, grow spiritually, serve others, and belong. Theology matters, but so does whether you'll actually show up consistently. A church you attend is better than a theologically perfect church you avoid. Give yourself permission to take time, visit multiple churches, and pray for wisdom. Your spiritual home is waiting."
+        }
+      ],
       beginnerExplanation: "Despite their differences, all Christian denominations share core beliefs: God as Trinity (Father, Son, Holy Spirit), Jesus as divine and human, salvation through Christ, and the authority of Scripture. Differences arise in how they interpret Scripture, organize church leadership, practice sacraments, and express worship. Understanding these differences helps you appreciate Christianity's diversity.",
       reflectionQuestions: [
         "What denomination(s) resonated most with you, and why?",
@@ -493,7 +736,64 @@ const StudyGuide = () => {
         "What questions do you still have?"
       ],
       practicalApplication: "Review all the Worship Experiences in the app. Make a plan to visit 2-3 different types of churches over the next few months. Go with an open mind and respectful curiosity. Use the app's guides to know what to expect. Remember: finding a church home is about both theology and community - it's okay to prioritize different factors.",
-      appLinks: ["All Denominations", "Worship Experiences", "Bible Timeline"]
+      appLinks: ["All Denominations", "Worship Experiences", "Bible Timeline"],
+      quiz: [
+        {
+          question: "Which core belief is shared by ALL major Christian traditions?",
+          options: [
+            "The Pope is head of the church",
+            "Baptism should be by immersion only",
+            "The Trinity - one God in three persons",
+            "There are seven sacraments"
+          ],
+          correctAnswer: 2,
+          explanation: "All major Christian traditions (Catholic, Orthodox, Protestant) affirm the doctrine of the Trinity - that God exists as one being in three persons: Father, Son, and Holy Spirit. This belief unites all Christians despite their other differences."
+        },
+        {
+          question: "What is a key difference between Protestant and Catholic views on authority?",
+          options: [
+            "Protestants reject the Bible",
+            "Protestants emphasize Scripture alone, Catholics include tradition and church teaching",
+            "Catholics don't read the Bible",
+            "There is no difference in their views"
+          ],
+          correctAnswer: 1,
+          explanation: "A major dividing line is authority: Protestants emphasize 'sola scriptura' (Scripture alone), while Catholics and Orthodox also grant authority to church tradition and teaching alongside Scripture."
+        },
+        {
+          question: "When visiting a church for the first time, what should you do?",
+          options: [
+            "Critique the sermon loudly during the service",
+            "Arrive late to avoid awkwardness",
+            "Follow along respectfully, standing/sitting when others do",
+            "Leave immediately if it feels different"
+          ],
+          correctAnswer: 2,
+          explanation: "When visiting a church, be a respectful guest: arrive early, follow along as others stand and sit, don't critique during the service, and ask questions afterward. Remember you're learning about their tradition."
+        },
+        {
+          question: "According to the lesson, what should you consider when choosing a church home?",
+          options: [
+            "Only theology - nothing else matters",
+            "Only convenience - pick the closest one",
+            "Both theology and practical factors like community, worship style, and mission",
+            "Whatever your parents attended"
+          ],
+          correctAnswer: 2,
+          explanation: "Finding a church home requires considering multiple factors: theology (do you agree with core beliefs?), worship style, community feel, teaching quality, mission focus, and practical concerns. It's about both doctrine and where you'll actually engage and grow."
+        },
+        {
+          question: "What does the lesson say about finding the 'perfect' church?",
+          options: [
+            "The perfect church exists if you search hard enough",
+            "You should never compromise on anything",
+            "The perfect church doesn't exist; find where you can worship, grow, and belong",
+            "All churches are exactly the same"
+          ],
+          correctAnswer: 2,
+          explanation: "The lesson acknowledges that the perfect church doesn't exist - you won't agree 100% with any church. The goal is finding a community where you can worship God, grow spiritually, serve others, and belong. A church you attend is better than a theologically perfect church you avoid."
+        }
+      ]
     }
   ];
 
