@@ -1,0 +1,126 @@
+SUBJECT: Week {{week_number}}: {{title}}
+
+Hi {{to_name}},
+
+Welcome to Week {{week_number}} of your Church History journey!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 THIS WEEK: {{title}}
+{{subtitle}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{{introduction}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 KEY TOPICS THIS WEEK:
+
+{{key_topics}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 SIMPLE EXPLANATION
+
+{{beginner_explanation}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🤔 QUESTIONS TO CONSIDER
+
+{{reflection_questions}}
+
+Take a few minutes to think about these. You might even want to journal your thoughts or discuss them with friends!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ THIS WEEK'S PRACTICE
+
+{{practical_application}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 EXPLORE IN THE APP
+
+Click here to dive deeper into this week's topics:
+👉 https://www.churchexplorer.org
+
+Recommended sections: {{app_links}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+See you next week for Week {{next_week_number}}!
+
+Best regards,
+The Church Explorer Team
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Not finding this helpful? Unsubscribe here: {{unsubscribe_link}}
+
+---
+
+EXAMPLE FOR WEEK 1:
+
+SUBJECT: Week 1: The Beginning - Early Christianity
+
+Hi Sarah,
+
+Welcome to Week 1 of your Church History journey!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 THIS WEEK: The Beginning - Early Christianity
+How it all started
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Welcome to your journey through church history! This week, we'll explore how Christianity began and grew in its first few centuries. Don't worry if you're new to this - we'll start with the basics and build from there.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 KEY TOPICS THIS WEEK:
+
+• The Apostolic Age (33 AD onward) - The first followers of Jesus
+• How the early church organized itself
+• The first major councils and why they mattered
+• How Christianity spread across the Roman Empire
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 SIMPLE EXPLANATION
+
+Think of the early church like a startup that grew rapidly. Jesus' followers started small in Jerusalem, but within a few centuries, Christianity had spread across Europe, Africa, and Asia. Early Christians had to figure out basic questions: What do we believe? How should we organize? What books belong in the Bible?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🤔 QUESTIONS TO CONSIDER
+
+1. What surprises you most about how Christianity began?
+2. Why do you think Christianity spread so quickly in the ancient world?
+3. How do you think the early church differs from churches today?
+
+Take a few minutes to think about these. You might even want to journal your thoughts or discuss them with friends!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ THIS WEEK'S PRACTICE
+
+This week, visit the Catholic and Orthodox sections in the app. These traditions trace their roots directly to the early church. Notice how they emphasize apostolic succession - the idea of an unbroken line of leadership from the apostles to today.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 EXPLORE IN THE APP
+
+Click here to dive deeper into this week's topics:
+👉 https://www.churchexplorer.org
+
+Recommended sections: Catholic, Orthodox, Bible Timeline
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+See you next week for Week 2: The Great Divide - East vs. West!
+
+Best regards,
+The Church Explorer Team
