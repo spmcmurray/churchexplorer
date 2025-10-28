@@ -1714,17 +1714,17 @@ const DenominationVisualizer = () => {
         {/* Comparison Tool Modal */}
         {comparisonOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-70 z-50 overflow-y-auto" onClick={() => setComparisonOpen(false)}>
-            <div className="min-h-screen flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl max-w-7xl w-full shadow-2xl my-8" onClick={e => e.stopPropagation()}>
-                <div className="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-6 flex justify-between items-center z-10 rounded-t-2xl">
+            <div className="min-h-screen md:flex md:items-center md:justify-center md:p-4">
+              <div className="bg-white md:rounded-2xl max-w-7xl w-full shadow-2xl md:my-8 min-h-screen md:min-h-0" onClick={e => e.stopPropagation()}>
+                <div className="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white p-4 md:p-6 flex justify-between items-center z-10 md:rounded-t-2xl">
                   <div>
-                    <h3 className="text-2xl font-serif mb-1">Compare Denominations</h3>
-                    <p className="text-sm text-indigo-100">Select 2-3 denominations to compare side-by-side</p>
+                    <h3 className="text-xl md:text-2xl font-serif mb-1">Compare Denominations</h3>
+                    <p className="text-xs md:text-sm text-indigo-100">Select 2-3 denominations to compare side-by-side</p>
                   </div>
                   <button onClick={() => { setComparisonOpen(false); setComparisonDenoms([]); }} className="text-white hover:text-indigo-200 transition-colors text-3xl font-bold">×</button>
                 </div>
-                
-                <div className="p-6 max-h-[75vh] overflow-y-auto">
+
+                <div className="p-4 md:p-6 md:max-h-[75vh] overflow-y-auto">
                   {/* Selection Grid */}
                   {comparisonDenoms.length < 3 && (
                     <div className="mb-6">
@@ -1779,7 +1779,7 @@ const DenominationVisualizer = () => {
                       {/* Basic Info Comparison */}
                       <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
                         <h4 className="font-bold text-slate-900 mb-4 text-lg">Basic Information</h4>
-                        <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                        <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                           {comparisonDenoms.map(key => (
                             <div key={key} className="bg-white rounded-lg p-4 border-2" style={{ borderColor: denominations[key].color }}>
                               <h5 className="font-bold text-lg mb-2" style={{ color: denominations[key].color }}>{denominations[key].fullName}</h5>
@@ -1872,7 +1872,7 @@ const DenominationVisualizer = () => {
                           {/* Scripture & Authority */}
                           <div className="bg-white rounded-lg p-4">
                             <h5 className="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wide border-b-2 border-blue-200 pb-2">📖 Scripture & Authority</h5>
-                            <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                            <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                               {comparisonDenoms.map(key => {
                                 let authority = '';
                                 if (key === 'catholic') authority = 'Scripture and Sacred Tradition through Church Magisterium';
@@ -1901,7 +1901,7 @@ const DenominationVisualizer = () => {
                           {/* Salvation & Grace */}
                           <div className="bg-white rounded-lg p-4">
                             <h5 className="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wide border-b-2 border-blue-200 pb-2">✨ Salvation & Grace</h5>
-                            <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                            <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                               {comparisonDenoms.map(key => {
                                 let salvation = '';
                                 if (key === 'catholic') salvation = 'Grace through faith and works cooperating; sacraments as channels of grace';
@@ -1932,7 +1932,7 @@ const DenominationVisualizer = () => {
                           {/* Sacraments/Ordinances */}
                           <div className="bg-white rounded-lg p-4">
                             <h5 className="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wide border-b-2 border-blue-200 pb-2">🍞 Sacraments/Ordinances</h5>
-                            <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                            <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                               {comparisonDenoms.map(key => {
                                 let sacraments = '';
                                 if (key === 'catholic') sacraments = 'Seven sacraments; Real Presence (Transubstantiation) in Eucharist';
@@ -1963,7 +1963,7 @@ const DenominationVisualizer = () => {
                           {/* Church Governance */}
                           <div className="bg-white rounded-lg p-4">
                             <h5 className="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wide border-b-2 border-blue-200 pb-2">⛪ Church Governance</h5>
-                            <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                            <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                               {comparisonDenoms.map(key => {
                                 let governance = '';
                                 if (key === 'catholic') governance = 'Papal monarchy: Pope as successor of Peter, bishops in apostolic succession';
@@ -2013,7 +2013,7 @@ const DenominationVisualizer = () => {
                       {/* Geographic Distribution */}
                       <div className="bg-white rounded-xl p-4 border border-slate-200">
                         <h4 className="font-bold text-slate-900 mb-4 text-lg">Geographic Distribution (2025)</h4>
-                        <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                        <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                           {comparisonDenoms.map(key => (
                             <div key={key}>
                               <h5 className="font-bold mb-3" style={{ color: denominations[key].color }}>{denominations[key].name}</h5>
@@ -2044,7 +2044,7 @@ const DenominationVisualizer = () => {
                       {/* Key Debates */}
                       <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
                         <h4 className="font-bold text-slate-900 mb-4 text-lg">Points of Debate & Distinctives</h4>
-                        <div className={`grid gap-4 ${comparisonDenoms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                        <div className={`grid gap-4 grid-cols-1 ${comparisonDenoms.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                           {comparisonDenoms.map(key => (
                             <div key={key}>
                               <h5 className="font-bold mb-2" style={{ color: denominations[key].color }}>{denominations[key].name}</h5>
