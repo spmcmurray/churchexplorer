@@ -1,14 +1,31 @@
-// eslint-disable-next-line no-unused-vars
 import emailjs from '@emailjs/browser';
 
 // EmailJS Configuration
-// IMPORTANT: Replace these with your actual EmailJS credentials
-// Sign up at https://www.emailjs.com/ to get your keys
-// eslint-disable-next-line no-unused-vars
+// Option 1: Use environment variables (recommended)
+// Create a .env file based on .env.example and add your credentials
+// Option 2: Replace the values below directly (not recommended for security)
+
 const EMAIL_CONFIG = {
-  serviceId: 'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-  templateId: 'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
-  publicKey: 'YOUR_PUBLIC_KEY', // Replace with your EmailJS public key
+  serviceId: process.env.REACT_APP_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID',
+  templateId: process.env.REACT_APP_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID',
+  publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY',
+};
+
+// Email mode: 'demo' or 'production'
+// In demo mode, emails are simulated (logged to console)
+// In production mode, emails are actually sent via EmailJS
+const EMAIL_MODE = process.env.REACT_APP_EMAIL_MODE || 'demo';
+
+// Check if EmailJS is properly configured
+const isEmailConfigured = () => {
+  return (
+    EMAIL_CONFIG.serviceId !== 'YOUR_SERVICE_ID' &&
+    EMAIL_CONFIG.templateId !== 'YOUR_TEMPLATE_ID' &&
+    EMAIL_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY' &&
+    EMAIL_CONFIG.serviceId &&
+    EMAIL_CONFIG.templateId &&
+    EMAIL_CONFIG.publicKey
+  );
 };
 
 /**
@@ -19,64 +36,82 @@ const EMAIL_CONFIG = {
  */
 export const subscribeToStudyGuide = async (name, email) => {
   try {
-    // For development/demo purposes, we'll simulate the subscription
-    // In production, uncomment the EmailJS code below
+    // Check if we should send real emails
+    const shouldSendEmail = EMAIL_MODE === 'production' && isEmailConfigured();
 
-    // PRODUCTION CODE (uncomment when EmailJS is configured):
-    /*
-    const templateParams = {
-      to_name: name,
-      to_email: email,
-      from_name: 'Church Explorer Study Guide',
-      reply_to: 'noreply@churchexplorer.com',
-      message: `Welcome to the 8-Week Church History Study Guide!
+    if (shouldSendEmail) {
+      // PRODUCTION MODE - Send actual email via EmailJS
+      const templateParams = {
+        to_name: name,
+        to_email: email,
+        from_name: 'Church Explorer Study Guide',
+        reply_to: 'noreply@churchexplorer.org',
+        subject: 'Welcome to Your 8-Week Church History Journey!',
+        message: `Welcome to the Church Explorer 8-Week Study Guide!
 
-Your journey begins this week with Lesson 1: The Beginning - Early Christianity.
+You're about to embark on an exciting journey through 2,000 years of church history. Don't worry if you're new to this - we've designed this course specifically for beginners with no prior knowledge required.
 
-Each week for the next 8 weeks, you'll receive:
-- Beginner-friendly explanations of church history
-- Reflection questions to deepen your understanding
-- Practical applications to connect history with your life today
-- Links to explore denominations in detail
+Your Week 1 lesson "The Beginning: Early Christianity" will arrive next Monday at 9am.
 
-We're excited to have you on this journey!
+What to Expect Each Week:
+✓ Simple, jargon-free explanations of church history
+✓ Thought-provoking reflection questions
+✓ Practical ways to apply what you learn
+✓ Interactive content to explore in our web app
+
+In the meantime, you can preview all the lessons and explore the interactive denomination explorer here:
+👉 https://www.churchexplorer.org
+
+Questions? Just reply to this email - we're here to help!
 
 Best regards,
-The Church Explorer Team`,
-    };
+The Church Explorer Team
 
-    const response = await emailjs.send(
-      EMAIL_CONFIG.serviceId,
-      EMAIL_CONFIG.templateId,
-      templateParams,
-      EMAIL_CONFIG.publicKey
-    );
+P.S. You can unsubscribe at any time. We respect your privacy and will never share your email address.`,
+      };
 
-    console.log('Email sent successfully:', response);
-    return response;
-    */
+      const response = await emailjs.send(
+        EMAIL_CONFIG.serviceId,
+        EMAIL_CONFIG.templateId,
+        templateParams,
+        EMAIL_CONFIG.publicKey
+      );
 
-    // DEMO/DEVELOPMENT MODE
-    console.log('Study Guide Subscription (Demo Mode):');
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Status: Subscription successful (simulated)');
-    console.log('\nIn production, this will:');
-    console.log('1. Send a welcome email immediately');
-    console.log('2. Schedule 8 weekly emails with lessons');
-    console.log('3. Store the subscription in your database');
+      console.log('✅ Email sent successfully via EmailJS:', response);
+      return response;
+    } else {
+      // DEMO MODE - Simulate email sending
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('📧 Study Guide Subscription (Demo Mode)');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('Name:', name);
+      console.log('Email:', email);
+      console.log('Status: ✅ Subscription successful (simulated)');
+      console.log('');
+      console.log('ℹ️  Currently in DEMO mode.');
+      console.log('');
+      console.log('To enable real emails:');
+      console.log('1. Sign up at https://www.emailjs.com/');
+      console.log('2. Copy .env.example to .env');
+      console.log('3. Add your EmailJS credentials to .env');
+      console.log('4. Set REACT_APP_EMAIL_MODE=production');
+      console.log('5. Restart the app');
+      console.log('');
+      console.log('See EMAIL_SETUP_GUIDE.md for detailed instructions.');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          status: 200,
-          text: 'OK (Demo Mode)',
-          demo: true,
-        });
-      }, 1000);
-    });
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            status: 200,
+            text: 'OK (Demo Mode)',
+            demo: true,
+          });
+        }, 1000);
+      });
+    }
   } catch (error) {
-    console.error('Subscription error:', error);
+    console.error('❌ Subscription error:', error);
     throw new Error('Failed to subscribe. Please try again later.');
   }
 };
