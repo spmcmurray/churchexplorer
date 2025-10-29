@@ -60,9 +60,9 @@ function App() {
         {currentView === 'explorer' ? (
           <DenominationVisualizer />
         ) : currentView === 'study-guide' ? (
-          <StudyGuide />
+          <StudyGuide onNavigate={setCurrentView} />
         ) : (
-          <BibleHistoryGuide />
+          <BibleHistoryGuide onNavigate={setCurrentView} />
         )}
       </div>
     </div>

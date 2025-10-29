@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll } from 'lucide-react';
 
-const BibleHistoryGuide = () => {
+const BibleHistoryGuide = ({ onNavigate }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResults, setQuizResults] = useState({});
+
+  // Helper function to handle navigation from appLinks
+  const handleLinkClick = (link) => {
+    if (link.includes('Bible Timeline') || link.includes('Denomination')) {
+      onNavigate('explorer');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (link.includes('Church History Guide')) {
+      onNavigate('study-guide');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   // Helper function to format text with paragraph breaks between numbered points and bold markdown
   const formatTextWithBreaks = (text) => {
@@ -1075,12 +1086,13 @@ const BibleHistoryGuide = () => {
                       <h4 className="font-semibold text-gray-800 mb-3 text-lg">Explore in the App</h4>
                       <div className="flex flex-wrap gap-2">
                         {lesson.appLinks.map((link, idx) => (
-                          <span
+                          <button
                             key={idx}
-                            className="inline-block bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium border border-amber-200"
+                            onClick={() => handleLinkClick(link)}
+                            className="inline-block bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium border border-amber-200 hover:from-amber-200 hover:to-orange-200 hover:shadow-md transition cursor-pointer"
                           >
                             {link}
-                          </span>
+                          </button>
                         ))}
                       </div>
                     </div>

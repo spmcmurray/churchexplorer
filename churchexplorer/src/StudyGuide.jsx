@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target } from 'lucide-react';
 
-const StudyGuide = () => {
+const StudyGuide = ({ onNavigate }) => {
   const [expandedWeek, setExpandedWeek] = useState(null);
   const [completedWeeks, setCompletedWeeks] = useState([]);
   const [quizScores, setQuizScores] = useState({});
   const [currentQuizAnswers, setCurrentQuizAnswers] = useState({});
   const [showQuizResults, setShowQuizResults] = useState({});
+
+  // Helper function to handle navigation from appLinks
+  const handleLinkClick = (link) => {
+    if (link.includes('Bible Timeline') || link.includes('Catholic') || link.includes('Orthodox') || link.includes('Protestant') || link.includes('Lutheran') || link.includes('Reformed') || link.includes('Anglican') || link.includes('Baptist') || link.includes('Methodist') || link.includes('Pentecostal')) {
+      onNavigate('explorer');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (link.includes('Bible History')) {
+      onNavigate('bible-history');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   // Helper function to format text with paragraph breaks between numbered points and bold markdown
   const formatTextWithBreaks = (text) => {
@@ -1108,12 +1119,13 @@ const StudyGuide = () => {
                       <h4 className="font-semibold text-gray-800 mb-3 text-lg">Explore in the App</h4>
                       <div className="flex flex-wrap gap-2">
                         {week.appLinks.map((link, idx) => (
-                          <span
+                          <button
                             key={idx}
-                            className="inline-block bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium border border-blue-200"
+                            onClick={() => handleLinkClick(link)}
+                            className="inline-block bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium border border-blue-200 hover:from-blue-200 hover:to-purple-200 hover:shadow-md transition cursor-pointer"
                           >
                             {link}
-                          </span>
+                          </button>
                         ))}
                       </div>
                     </div>
