@@ -45,56 +45,46 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const card = lessonData.cards[currentCard];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 pb-20">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header with Progress */}
-      <div className="bg-white border-b-2 border-amber-200 sticky top-0 z-10 shadow-sm">
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
             <button
               onClick={onExit}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition"
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition font-medium"
             >
               <X className="w-5 h-5" />
               <span className="hidden sm:inline">Exit</span>
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-amber-100 px-3 py-1 rounded-full">
-                <Star className="w-4 h-4 text-amber-600 fill-amber-600" />
-                <span className="font-bold text-amber-800">{xp} XP</span>
+              <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 px-4 py-2 rounded-2xl shadow-md">
+                <Star className="w-5 h-5 text-white fill-white" />
+                <span className="font-bold text-white text-lg">{xp}</span>
               </div>
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="relative">
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-amber-500 to-orange-500 h-3 rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-4 rounded-full transition-all duration-500 shadow-lg"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            <div className="absolute top-0 left-0 w-full h-3 flex justify-between px-1">
-              {lessonData.cards.map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`w-1 h-full ${
-                    idx <= currentCard ? 'bg-amber-600' : 'bg-gray-300'
-                  }`}
-                ></div>
-              ))}
-            </div>
           </div>
 
-          <div className="text-center mt-2 text-sm text-gray-600">
-            Card {currentCard + 1} of {totalCards}
+          <div className="text-center mt-2 text-sm font-semibold text-gray-600">
+            {currentCard + 1} / {totalCards}
           </div>
         </div>
       </div>
 
       {/* Card Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-xl border-2 border-amber-200 overflow-hidden min-h-[500px]">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[500px]">
           {card.type === 'content' && (
             <ContentCard card={card} />
           )}
@@ -141,22 +131,22 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
           <button
             onClick={handlePrevious}
             disabled={currentCard === 0}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition ${
+            className={`flex items-center gap-2 px-6 py-4 rounded-2xl font-bold transition text-lg ${
               currentCard === 0
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-white text-amber-700 border-2 border-amber-300 hover:bg-amber-50'
+                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-md hover:shadow-lg'
             }`}
           >
             <ChevronLeft className="w-5 h-5" />
-            Previous
+            Back
           </button>
 
           {currentCard < totalCards - 1 ? (
             <button
               onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 transition shadow-lg"
+              className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl font-bold hover:from-blue-600 hover:to-purple-700 transition shadow-lg hover:shadow-xl text-lg"
             >
-              Next
+              Continue
               <ChevronRight className="w-5 h-5" />
             </button>
           ) : null}
@@ -168,21 +158,21 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
 
 // Content Card Component
 const ContentCard = ({ card }) => (
-  <div className="p-8">
-    <h2 className="text-3xl font-bold text-gray-800 mb-4">{card.title}</h2>
+  <div className="p-10">
+    <h2 className="text-4xl font-black text-gray-900 mb-3">{card.title}</h2>
     {card.subtitle && (
-      <p className="text-lg text-amber-600 mb-6">{card.subtitle}</p>
+      <p className="text-xl text-purple-600 font-semibold mb-8">{card.subtitle}</p>
     )}
     <div className="prose prose-lg max-w-none">
       {card.content.map((paragraph, idx) => (
-        <p key={idx} className="text-gray-700 leading-relaxed mb-4">
+        <p key={idx} className="text-gray-700 text-lg leading-relaxed mb-5">
           {paragraph}
         </p>
       ))}
     </div>
     {card.highlight && (
-      <div className="mt-6 bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
-        <p className="text-amber-900 font-medium">{card.highlight}</p>
+      <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-purple-500 p-5 rounded-xl">
+        <p className="text-purple-900 font-semibold text-lg">{card.highlight}</p>
       </div>
     )}
   </div>
@@ -199,31 +189,31 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
   };
 
   return (
-    <div className="p-8">
-      <h3 className="text-2xl font-bold text-gray-800 mb-2">Knowledge Check</h3>
-      <p className="text-gray-600 mb-6">Test your understanding of what you just learned!</p>
+    <div className="p-10">
+      <h3 className="text-3xl font-black text-gray-900 mb-2">Knowledge Check</h3>
+      <p className="text-gray-600 text-lg mb-8">Test your understanding of what you just learned!</p>
 
-      <div className="mb-6">
-        <p className="text-lg font-semibold text-gray-800 mb-4">{card.question}</p>
+      <div className="mb-8">
+        <p className="text-xl font-bold text-gray-800 mb-6">{card.question}</p>
 
         <div className="space-y-3">
           {card.options.map((option, idx) => {
             const isSelected = selected === idx;
             const isCorrect = idx === card.correctAnswer;
 
-            let buttonClass = 'w-full text-left p-4 rounded-lg border-2 transition ';
+            let buttonClass = 'w-full text-left p-5 rounded-xl border-2 transition font-medium text-gray-800 shadow-sm ';
             if (showFeedback) {
               if (isCorrect) {
-                buttonClass += 'border-green-500 bg-green-50';
+                buttonClass += 'border-green-500 bg-green-50 text-green-900';
               } else if (isSelected && !isCorrect) {
-                buttonClass += 'border-red-500 bg-red-50';
+                buttonClass += 'border-red-500 bg-red-50 text-red-900';
               } else {
                 buttonClass += 'border-gray-200 bg-gray-50';
               }
             } else {
               buttonClass += isSelected
-                ? 'border-amber-500 bg-amber-50'
-                : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50';
+                ? 'border-purple-500 bg-purple-50 shadow-md'
+                : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 hover:shadow-md';
             }
 
             return (
@@ -233,7 +223,7 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
                 disabled={showFeedback}
                 className={buttonClass}
               >
-                <span className="font-medium text-gray-700 mr-2">
+                <span className="font-bold mr-3 text-gray-600">
                   {String.fromCharCode(65 + idx)}.
                 </span>
                 {option}
@@ -244,15 +234,15 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
       </div>
 
       {showFeedback && (
-        <div className={`p-4 rounded-lg border-l-4 ${
+        <div className={`p-5 rounded-xl border-l-4 ${
           selected === card.correctAnswer
             ? 'bg-green-50 border-green-500'
             : 'bg-blue-50 border-blue-500'
         }`}>
-          <p className="font-semibold mb-2">
+          <p className="font-bold text-lg mb-2">
             {selected === card.correctAnswer ? '✓ Correct! +10 XP' : 'Explanation:'}
           </p>
-          <p className="text-gray-800">{card.explanation}</p>
+          <p className="text-gray-800 text-lg leading-relaxed">{card.explanation}</p>
         </div>
       )}
     </div>
@@ -288,51 +278,51 @@ const MatchingCard = ({ card, cardIndex, onComplete }) => {
   };
 
   return (
-    <div className="p-8">
-      <h3 className="text-2xl font-bold text-gray-800 mb-2">Match the Terms</h3>
-      <p className="text-gray-600 mb-6">Click a term, then click its matching definition!</p>
+    <div className="p-10">
+      <h3 className="text-3xl font-black text-gray-900 mb-2">Match the Terms</h3>
+      <p className="text-gray-600 text-lg mb-8">Click a term, then click its matching definition!</p>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-700 mb-3">Terms</h4>
+          <h4 className="font-bold text-gray-800 text-lg mb-4">Terms</h4>
           {card.pairs.map((pair, idx) => (
             <button
               key={idx}
               onClick={() => handleTermClick(pair.term)}
-              className={`w-full text-left p-4 rounded-lg border-2 transition ${
+              className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
                 selected === pair.term
-                  ? 'border-amber-500 bg-amber-50'
+                  ? 'border-purple-500 bg-purple-50 shadow-md'
                   : matches[pair.term]
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50'
+                  ? 'border-green-500 bg-green-50 text-green-900'
+                  : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 hover:shadow-md'
               }`}
             >
-              <span className="font-medium">{pair.term}</span>
+              <span className="font-semibold">{pair.term}</span>
             </button>
           ))}
         </div>
 
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-700 mb-3">Definitions</h4>
+          <h4 className="font-bold text-gray-800 text-lg mb-4">Definitions</h4>
           {card.pairs.map((pair, idx) => (
             <button
               key={idx}
               onClick={() => handleDefinitionClick(pair.definition)}
-              className={`w-full text-left p-4 rounded-lg border-2 transition ${
+              className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
                 Object.values(matches).includes(pair.definition)
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50'
+                  ? 'border-green-500 bg-green-50 text-green-900'
+                  : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md'
               }`}
             >
-              <span className="text-sm">{pair.definition}</span>
+              <span className="text-base">{pair.definition}</span>
             </button>
           ))}
         </div>
       </div>
 
       {completed && (
-        <div className="mt-6 p-4 bg-green-50 border-l-4 border-green-500 rounded">
-          <p className="text-green-800 font-semibold">🎉 Perfect! All matched correctly! +10 XP</p>
+        <div className="mt-8 p-5 bg-green-50 border-l-4 border-green-500 rounded-xl">
+          <p className="text-green-800 font-bold text-lg">🎉 Perfect! All matched correctly! +10 XP</p>
         </div>
       )}
     </div>
@@ -349,12 +339,12 @@ const FillBlankCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
   };
 
   return (
-    <div className="p-8">
-      <h3 className="text-2xl font-bold text-gray-800 mb-2">Fill in the Blank</h3>
-      <p className="text-gray-600 mb-6">Complete the sentence with the correct term.</p>
+    <div className="p-10">
+      <h3 className="text-3xl font-black text-gray-900 mb-2">Fill in the Blank</h3>
+      <p className="text-gray-600 text-lg mb-8">Complete the sentence with the correct term.</p>
 
-      <div className="mb-6">
-        <p className="text-lg text-gray-800 mb-4">{card.prompt}</p>
+      <div className="mb-8">
+        <p className="text-xl font-semibold text-gray-800 mb-6">{card.prompt}</p>
 
         <input
           type="text"
@@ -362,14 +352,14 @@ const FillBlankCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
           onChange={(e) => setUserAnswer(e.target.value)}
           disabled={showFeedback}
           placeholder="Type your answer..."
-          className="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none disabled:bg-gray-100"
+          className="w-full p-5 text-lg border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:outline-none disabled:bg-gray-100 shadow-sm transition"
         />
 
         {!showFeedback && (
           <button
             onClick={handleSubmit}
             disabled={!userAnswer.trim()}
-            className="mt-4 px-6 py-3 bg-amber-500 text-white rounded-lg font-semibold hover:bg-amber-600 transition disabled:bg-gray-300"
+            className="mt-6 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-purple-700 transition shadow-lg hover:shadow-xl disabled:from-gray-300 disabled:to-gray-300 disabled:shadow-none"
           >
             Check Answer
           </button>
@@ -377,17 +367,17 @@ const FillBlankCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
       </div>
 
       {showFeedback && (
-        <div className={`p-4 rounded-lg border-l-4 ${
+        <div className={`p-5 rounded-xl border-l-4 ${
           userAnswer.trim().toLowerCase() === card.correctAnswer.toLowerCase()
             ? 'bg-green-50 border-green-500'
-            : 'bg-orange-50 border-orange-500'
+            : 'bg-blue-50 border-blue-500'
         }`}>
-          <p className="font-semibold mb-2">
+          <p className="font-bold text-lg mb-2">
             {userAnswer.trim().toLowerCase() === card.correctAnswer.toLowerCase()
               ? '✓ Correct! +10 XP'
               : `The answer is: ${card.correctAnswer}`}
           </p>
-          <p className="text-gray-800">{card.explanation}</p>
+          <p className="text-gray-800 text-lg leading-relaxed">{card.explanation}</p>
         </div>
       )}
     </div>
@@ -404,40 +394,40 @@ const CompletionCard = ({ card, xp, onComplete }) => {
   };
 
   return (
-    <div className="p-8 text-center">
+    <div className="p-10 text-center">
       {!celebrating ? (
         <>
-          <div className="mb-6">
-            <Award className="w-24 h-24 text-amber-500 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">{card.title}</h2>
-            <p className="text-lg text-gray-600">{card.message}</p>
+          <div className="mb-8">
+            <Award className="w-28 h-28 text-yellow-500 mx-auto mb-6" />
+            <h2 className="text-4xl font-black text-gray-900 mb-4">{card.title}</h2>
+            <p className="text-xl text-gray-600 leading-relaxed">{card.message}</p>
           </div>
 
-          <div className="bg-amber-50 rounded-lg p-6 mb-6">
-            <p className="text-2xl font-bold text-amber-800 mb-2">Total XP Earned</p>
-            <p className="text-5xl font-bold text-amber-600">{xp}</p>
+          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-2xl p-8 mb-8 border-2 border-yellow-200 shadow-lg">
+            <p className="text-2xl font-bold text-gray-800 mb-3">Total XP Earned</p>
+            <p className="text-6xl font-black text-yellow-600">{xp}</p>
           </div>
 
           {card.badge && (
-            <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg p-6 mb-6 border-2 border-amber-300">
-              <p className="text-lg font-semibold text-gray-800 mb-2">Badge Unlocked!</p>
-              <p className="text-3xl mb-2">{card.badge.icon}</p>
-              <p className="text-xl font-bold text-amber-800">{card.badge.name}</p>
-              <p className="text-sm text-gray-600">{card.badge.description}</p>
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 mb-8 border-2 border-purple-200 shadow-lg">
+              <p className="text-xl font-bold text-gray-800 mb-3">Badge Unlocked!</p>
+              <p className="text-5xl mb-3">{card.badge.icon}</p>
+              <p className="text-2xl font-black text-purple-700">{card.badge.name}</p>
+              <p className="text-base text-gray-600 mt-2">{card.badge.description}</p>
             </div>
           )}
 
           <button
             onClick={handleComplete}
-            className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-lg rounded-lg font-bold hover:from-amber-600 hover:to-orange-600 transition shadow-lg"
+            className="px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl rounded-2xl font-black hover:from-blue-600 hover:to-purple-700 transition shadow-xl hover:shadow-2xl"
           >
             Complete Lesson! 🎉
           </button>
         </>
       ) : (
-        <div className="animate-bounce">
-          <CheckCircle className="w-32 h-32 text-green-500 mx-auto mb-4" />
-          <h2 className="text-4xl font-bold text-green-600">Lesson Complete!</h2>
+        <div className="animate-bounce py-10">
+          <CheckCircle className="w-36 h-36 text-green-500 mx-auto mb-6" />
+          <h2 className="text-5xl font-black text-green-600">Lesson Complete!</h2>
         </div>
       )}
     </div>
