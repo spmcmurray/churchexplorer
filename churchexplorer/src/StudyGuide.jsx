@@ -8,22 +8,30 @@ const StudyGuide = () => {
   const [currentQuizAnswers, setCurrentQuizAnswers] = useState({});
   const [showQuizResults, setShowQuizResults] = useState({});
 
-  // Helper function to format text with paragraph breaks between numbered points
+  // Helper function to format text with paragraph breaks between numbered points and bold markdown
   const formatTextWithBreaks = (text) => {
-    // Split on patterns like "(1)" or "1." or "**Number**:" followed by a space
-    const parts = text.split(/(\(\d+\)\s|\d+\.\s|\*\*\w+\*\*:\s)/);
+    // Split on patterns like "(1)" or "1." followed by a space
+    const parts = text.split(/(\(\d+\)\s|\d+\.\s)/);
 
     return parts.map((part, index) => {
+      // Convert **text** to bold
+      const formattedPart = part.split(/(\*\*[^*]+\*\*)/g).map((segment, segIdx) => {
+        if (segment.startsWith('**') && segment.endsWith('**')) {
+          return <strong key={segIdx}>{segment.slice(2, -2)}</strong>;
+        }
+        return segment;
+      });
+
       // If this part matches a numbered pattern, add a line break before it (except for the first item)
-      if (index > 0 && /(\(\d+\)\s|\d+\.\s|\*\*\w+\*\*:\s)/.test(part)) {
+      if (index > 0 && /(\(\d+\)\s|\d+\.\s)/.test(part)) {
         return (
           <React.Fragment key={index}>
             <br /><br />
-            {part}
+            {formattedPart}
           </React.Fragment>
         );
       }
-      return <React.Fragment key={index}>{part}</React.Fragment>;
+      return <React.Fragment key={index}>{formattedPart}</React.Fragment>;
     });
   };
 
