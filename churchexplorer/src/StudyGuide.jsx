@@ -8,6 +8,25 @@ const StudyGuide = () => {
   const [currentQuizAnswers, setCurrentQuizAnswers] = useState({});
   const [showQuizResults, setShowQuizResults] = useState({});
 
+  // Helper function to format text with paragraph breaks between numbered points
+  const formatTextWithBreaks = (text) => {
+    // Split on patterns like "(1)" or "1." or "**Number**:" followed by a space
+    const parts = text.split(/(\(\d+\)\s|\d+\.\s|\*\*\w+\*\*:\s)/);
+
+    return parts.map((part, index) => {
+      // If this part matches a numbered pattern, add a line break before it (except for the first item)
+      if (index > 0 && /(\(\d+\)\s|\d+\.\s|\*\*\w+\*\*:\s)/.test(part)) {
+        return (
+          <React.Fragment key={index}>
+            <br /><br />
+            {part}
+          </React.Fragment>
+        );
+      }
+      return <React.Fragment key={index}>{part}</React.Fragment>;
+    });
+  };
+
   // Load completed weeks and quiz scores from localStorage on mount
   useEffect(() => {
     const savedProgress = localStorage.getItem('churchExplorerProgress');
@@ -1050,7 +1069,7 @@ const StudyGuide = () => {
                           {week.detailedContent.map((section, idx) => (
                             <div key={idx} className="bg-white rounded-lg p-4 border-2 border-gray-200">
                               <h5 className="font-bold text-gray-900 mb-2">{section.heading}</h5>
-                              <p className="text-gray-700 leading-relaxed">{section.text}</p>
+                              <p className="text-gray-700 leading-relaxed">{formatTextWithBreaks(section.text)}</p>
                             </div>
                           ))}
                         </div>
