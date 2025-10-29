@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import DenominationVisualizer from "./DenominationVisualizer";
 import StudyGuide from "./StudyGuide";
-import { BookOpen, Home } from 'lucide-react';
+import BibleHistoryGuide from "./BibleHistoryGuide";
+import { BookOpen, Home, Scroll } from 'lucide-react';
 
 function App() {
-  const [currentView, setCurrentView] = useState('explorer'); // 'explorer' or 'study-guide'
+  const [currentView, setCurrentView] = useState('explorer'); // 'explorer', 'study-guide', or 'bible-history'
 
   return (
     <div className="min-h-screen">
@@ -35,7 +36,18 @@ function App() {
                   }`}
                 >
                   <BookOpen className="w-4 h-4 mr-0 md:mr-2" />
-                  <span className="hidden md:inline">8-Week Study Guide</span>
+                  <span className="hidden md:inline">Church History</span>
+                </button>
+                <button
+                  onClick={() => setCurrentView('bible-history')}
+                  className={`flex items-center px-3 md:px-4 py-2 rounded-lg transition ${
+                    currentView === 'bible-history'
+                      ? 'bg-white text-blue-600 shadow-md'
+                      : 'bg-blue-700 hover:bg-blue-800'
+                  }`}
+                >
+                  <Scroll className="w-4 h-4 mr-0 md:mr-2" />
+                  <span className="hidden md:inline">Bible History</span>
                 </button>
               </div>
             </div>
@@ -47,8 +59,10 @@ function App() {
       <div>
         {currentView === 'explorer' ? (
           <DenominationVisualizer />
-        ) : (
+        ) : currentView === 'study-guide' ? (
           <StudyGuide />
+        ) : (
+          <BibleHistoryGuide />
         )}
       </div>
     </div>
