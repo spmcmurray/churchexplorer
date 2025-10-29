@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll } from 'lucide-react';
+import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Zap } from 'lucide-react';
+import InteractiveLesson from './InteractiveLesson';
+import { lesson1Data } from './interactiveLessonData';
 
 const BibleHistoryGuide = ({ onNavigate }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResults, setQuizResults] = useState({});
+  const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
 
   // Helper function to handle navigation from appLinks
   const handleLinkClick = (link) => {
@@ -85,6 +88,17 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     if (correct >= quiz.length * 0.7) {
       markLessonComplete(lessonNum);
     }
+  };
+
+  const handleCompleteInteractive = (lessonNum, xpEarned) => {
+    markLessonComplete(lessonNum);
+    setInteractiveMode(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExitInteractive = () => {
+    setInteractiveMode(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const curriculum = [
@@ -900,6 +914,17 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     percentage: Math.round((completedLessons.length / curriculum.length) * 100)
   };
 
+  // If in interactive mode, show interactive lesson
+  if (interactiveMode === 1) {
+    return (
+      <InteractiveLesson
+        lessonData={lesson1Data}
+        onComplete={(xp) => handleCompleteInteractive(1, xp)}
+        onExit={handleExitInteractive}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
@@ -1018,6 +1043,25 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                   </div>
                   {isExpanded ? <ChevronDown className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
                 </button>
+
+                {/* Interactive Mode Button for Lesson 1 */}
+                {lesson.lesson === 1 && !isExpanded && (
+                  <div className="px-6 pb-4 border-t-2 border-amber-100">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setInteractiveMode(1);
+                      }}
+                      className="w-full mt-4 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold hover:from-purple-600 hover:to-pink-600 transition shadow-lg"
+                    >
+                      <Zap className="w-5 h-5" />
+                      Try Interactive Mode! 🎮
+                    </button>
+                    <p className="text-center text-sm text-gray-600 mt-2">
+                      Learn through games, quizzes, and interactive cards
+                    </p>
+                  </div>
+                )}
 
                 {/* Lesson Content - Expandable */}
                 {isExpanded && (
