@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
 
+// Helper function to parse markdown bold syntax
+const parseMarkdown = (text) => {
+  if (!text) return text;
+
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={idx}>{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+};
+
 const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const [currentCard, setCurrentCard] = useState(0);
   const [xp, setXp] = useState(0);
@@ -161,18 +174,18 @@ const ContentCard = ({ card }) => (
   <div className="p-10">
     <h2 className="text-4xl font-black text-gray-900 mb-3">{card.title}</h2>
     {card.subtitle && (
-      <p className="text-xl text-purple-600 font-semibold mb-8">{card.subtitle}</p>
+      <p className="text-xl text-purple-600 font-semibold mb-8">{parseMarkdown(card.subtitle)}</p>
     )}
     <div className="prose prose-lg max-w-none">
       {card.content.map((paragraph, idx) => (
         <p key={idx} className="text-gray-700 text-lg leading-relaxed mb-5">
-          {paragraph}
+          {parseMarkdown(paragraph)}
         </p>
       ))}
     </div>
     {card.highlight && (
       <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-purple-500 p-5 rounded-xl">
-        <p className="text-purple-900 font-semibold text-lg">{card.highlight}</p>
+        <p className="text-purple-900 font-semibold text-lg">{parseMarkdown(card.highlight)}</p>
       </div>
     )}
   </div>
@@ -194,7 +207,7 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
       <p className="text-gray-600 text-lg mb-8">Test your understanding of what you just learned!</p>
 
       <div className="mb-8">
-        <p className="text-xl font-bold text-gray-800 mb-6">{card.question}</p>
+        <p className="text-xl font-bold text-gray-800 mb-6">{parseMarkdown(card.question)}</p>
 
         <div className="space-y-3">
           {card.options.map((option, idx) => {
@@ -226,7 +239,7 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
                 <span className="font-bold mr-3 text-gray-600">
                   {String.fromCharCode(65 + idx)}.
                 </span>
-                {option}
+                {parseMarkdown(option)}
               </button>
             );
           })}
@@ -242,7 +255,7 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
           <p className="font-bold text-lg mb-2">
             {selected === card.correctAnswer ? '✓ Correct! +10 XP' : 'Explanation:'}
           </p>
-          <p className="text-gray-800 text-lg leading-relaxed">{card.explanation}</p>
+          <p className="text-gray-800 text-lg leading-relaxed">{parseMarkdown(card.explanation)}</p>
         </div>
       )}
     </div>
@@ -344,7 +357,7 @@ const FillBlankCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
       <p className="text-gray-600 text-lg mb-8">Complete the sentence with the correct term.</p>
 
       <div className="mb-8">
-        <p className="text-xl font-semibold text-gray-800 mb-6">{card.prompt}</p>
+        <p className="text-xl font-semibold text-gray-800 mb-6">{parseMarkdown(card.prompt)}</p>
 
         <input
           type="text"
@@ -377,7 +390,7 @@ const FillBlankCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
               ? '✓ Correct! +10 XP'
               : `The answer is: ${card.correctAnswer}`}
           </p>
-          <p className="text-gray-800 text-lg leading-relaxed">{card.explanation}</p>
+          <p className="text-gray-800 text-lg leading-relaxed">{parseMarkdown(card.explanation)}</p>
         </div>
       )}
     </div>
