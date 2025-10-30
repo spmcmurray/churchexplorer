@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DenominationVisualizer from "./DenominationVisualizer";
-import StudyGuide from "./StudyGuide";
+import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import { BookOpen, Home, Scroll } from 'lucide-react';
 
@@ -60,7 +60,7 @@ function App() {
         {currentView === 'explorer' ? (
           <DenominationVisualizer />
         ) : currentView === 'study-guide' ? (
-          <StudyGuide onNavigate={setCurrentView} />
+          <ChurchHistoryGuide onNavigate={setCurrentView} />
         ) : (
           <BibleHistoryGuide onNavigate={setCurrentView} />
         )}
