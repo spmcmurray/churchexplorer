@@ -69,12 +69,12 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   };
 
   const handleComplete = () => {
-    setXp(prev => prev + 50); // Bonus for completing lesson
     const finalQuizResults = quizResultsRef.current;
-    console.log('🎯 Lesson completed! Final quiz results:', finalQuizResults);
-    setTimeout(() => {
-      onComplete(xp + 50, finalQuizResults);
-    }, 1500);
+    const finalXp = xp + 50;
+    console.log('🎯 Lesson completed! Final quiz results:', finalQuizResults, 'XP:', finalXp);
+
+    // Call onComplete immediately - no setTimeout delays!
+    onComplete(finalXp, finalQuizResults);
   };
 
   const card = lessonData.cards[currentCard];
