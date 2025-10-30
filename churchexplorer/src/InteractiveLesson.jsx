@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
 
 // Helper function to parse markdown bold syntax
@@ -21,9 +21,6 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const [showFeedback, setShowFeedback] = useState({});
   const [completedCards, setCompletedCards] = useState(new Set());
 
-  // Use ref to avoid closure issues in setTimeout
-  const quizResultsRef = useRef({ correct: 0, total: 0 });
-
   const totalCards = lessonData.cards.length;
   const progress = ((currentCard + 1) / totalCards) * 100;
 
@@ -43,23 +40,6 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   };
 
   const handleAnswer = (cardIndex, answer, isCorrect) => {
-    // Track quiz results for accuracy calculation BEFORE updating answers
-    const card = lessonData.cards[cardIndex];
-    const isFirstAttempt = !answers[cardIndex];
-
-    if (card.type === 'quiz' && isFirstAttempt) {
-      console.log(`📝 Quiz answer: card ${cardIndex}, correct: ${isCorrect}, card type: ${card.type}`);
-
-      // Update ref (not state, to avoid closure issues)
-      const newResults = {
-        correct: quizResultsRef.current.correct + (isCorrect ? 1 : 0),
-        total: quizResultsRef.current.total + 1
-      };
-
-      quizResultsRef.current = newResults;
-      console.log('📊 Updated quiz results:', newResults);
-    }
-
     setAnswers(prev => ({ ...prev, [cardIndex]: answer }));
     setShowFeedback(prev => ({ ...prev, [cardIndex]: true }));
 
@@ -69,12 +49,10 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   };
 
   const handleComplete = () => {
-    const finalQuizResults = quizResultsRef.current;
-    const finalXp = xp + 50;
-    console.log('🎯 Lesson completed! Final quiz results:', finalQuizResults, 'XP:', finalXp);
-
-    // Call onComplete immediately - no setTimeout delays!
-    onComplete(finalXp, finalQuizResults);
+    setXp(prev => prev + 50); // Bonus for completing lesson
+    setTimeout(() => {
+      onComplete(xp + 50);
+    }, 1500);
   };
 
   const card = lessonData.cards[currentCard];
