@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
 
 // Helper function to parse markdown bold syntax
@@ -20,7 +20,9 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const [answers, setAnswers] = useState({});
   const [showFeedback, setShowFeedback] = useState({});
   const [completedCards, setCompletedCards] = useState(new Set());
-  const [quizResults, setQuizResults] = useState({ correct: 0, total: 0 });
+
+  // Use ref to avoid closure issues in setTimeout
+  const quizResultsRef = useRef({ correct: 0, total: 0 });
 
   const totalCards = lessonData.cards.length;
   const progress = ((currentCard + 1) / totalCards) * 100;
@@ -47,14 +49,15 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
 
     if (card.type === 'quiz' && isFirstAttempt) {
       console.log(`📝 Quiz answer: card ${cardIndex}, correct: ${isCorrect}, card type: ${card.type}`);
-      setQuizResults(prev => {
-        const newResults = {
-          correct: prev.correct + (isCorrect ? 1 : 0),
-          total: prev.total + 1
-        };
-        console.log('📊 Updated quiz results:', newResults);
-        return newResults;
-      });
+
+      // Update ref (not state, to avoid closure issues)
+      const newResults = {
+        correct: quizResultsRef.current.correct + (isCorrect ? 1 : 0),
+        total: quizResultsRef.current.total + 1
+      };
+
+      quizResultsRef.current = newResults;
+      console.log('📊 Updated quiz results:', newResults);
     }
 
     setAnswers(prev => ({ ...prev, [cardIndex]: answer }));
@@ -67,9 +70,10 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
 
   const handleComplete = () => {
     setXp(prev => prev + 50); // Bonus for completing lesson
-    console.log('🎯 Lesson completed! Final quiz results:', quizResults);
+    const finalQuizResults = quizResultsRef.current;
+    console.log('🎯 Lesson completed! Final quiz results:', finalQuizResults);
     setTimeout(() => {
-      onComplete(xp + 50, quizResults);
+      onComplete(xp + 50, finalQuizResults);
     }, 1500);
   };
 
