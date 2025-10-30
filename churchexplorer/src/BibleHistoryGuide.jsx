@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Zap } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
-import { lesson1Data, lesson2Data, lesson3Data } from './interactiveLessonData';
+import { lesson1Data, lesson2Data, lesson3Data, lesson4Data } from './interactiveLessonData';
 
 const BibleHistoryGuide = ({ onNavigate }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
@@ -945,6 +945,16 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     );
   }
 
+  if (interactiveMode === 4) {
+    return (
+      <InteractiveLesson
+        lessonData={lesson4Data}
+        onComplete={(xp) => handleCompleteInteractive(4, xp)}
+        onExit={handleExitInteractive}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
@@ -1064,8 +1074,8 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                   {isExpanded ? <ChevronDown className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
                 </button>
 
-                {/* Interactive Mode Button for Lessons 1-3 */}
-                {(lesson.lesson === 1 || lesson.lesson === 2 || lesson.lesson === 3) && !isExpanded && (
+                {/* Interactive Mode Button for Lessons 1-4 */}
+                {(lesson.lesson === 1 || lesson.lesson === 2 || lesson.lesson === 3 || lesson.lesson === 4) && !isExpanded && (
                   <div className="px-6 pb-4 border-t-2 border-amber-100">
                     <button
                       onClick={(e) => {

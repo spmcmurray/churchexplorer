@@ -496,3 +496,163 @@ export const lesson3Data = {
     }
   ]
 };
+
+// Interactive Lesson 4: The English Bible's Dramatic History
+
+export const lesson4Data = {
+  id: 4,
+  title: "The English Bible's Dramatic History",
+  subtitle: "Martyrs, kings, and the fight to read Scripture in English",
+  cards: [
+    // Card 1: Introduction
+    {
+      type: 'content',
+      title: 'A Dangerous Book',
+      subtitle: 'The English Bible\'s Dramatic History',
+      content: [
+        'It\'s hard to imagine today, but for centuries, owning an English Bible could get you **killed**.',
+        'The story of the English Bible is filled with smugglers, secret printings, political intrigue, and martyrs who believed ordinary people deserved to read God\'s Word in their own language.',
+        'From illegal translations whispered in secret to a king\'s authorized version that shaped the English language itself, this is a story of **courage, controversy, and cultural transformation**.'
+      ],
+      highlight: '🎯 Goal: Discover the dramatic story of how we got the English Bible'
+    },
+
+    // Card 2: Wycliffe
+    {
+      type: 'content',
+      title: 'John Wycliffe: The Morning Star',
+      content: [
+        'In the **1380s**, John Wycliffe and his followers (derisively called "Lollards") produced the first complete English Bible.',
+        '🚫 **This was revolutionary and illegal.** The Catholic Church insisted Scripture should remain in Latin, interpreted by clergy.',
+        'Wycliffe believed every Christian should read the Bible directly. His followers hand-copied manuscripts and secretly distributed them.',
+        '💀 When Wycliffe died (1384), his enemies **dug up his bones, burned them, and threw the ashes in a river**.',
+        '💡 But his ideas couldn\'t be killed—they flowed through Europe like those ashes, influencing Jan Hus, Martin Luther, and ultimately the Reformation!'
+      ],
+      highlight: '⚡ "The Morning Star of the Reformation" - Wycliffe\'s ideas sparked change across Europe'
+    },
+
+    // Card 3: Quiz on Wycliffe
+    {
+      type: 'quiz',
+      question: 'What was illegal about Wycliffe\'s Bible?',
+      options: [
+        'It was translated from Greek instead of Latin',
+        'It translated the Bible into English without Church authorization',
+        'It removed books from the Bible',
+        'It added Wycliffe\'s own writings'
+      ],
+      correctAnswer: 1,
+      explanation: 'In the 1380s, translating the Bible into English (or any vernacular language) without Church permission was illegal. The Church insisted Scripture remain in Latin, controlled and interpreted by clergy.'
+    },
+
+    // Card 4: Tyndale
+    {
+      type: 'content',
+      title: 'William Tyndale: "If God Spare My Life..."',
+      content: [
+        'William Tyndale made a famous vow to a clergyman: **"If God spare my life, ere many years I will cause a boy that driveth the plough shall know more of the Scripture than thou dost!"**',
+        'Unable to get permission in England, Tyndale fled to Europe. Using Erasmus\'s Greek New Testament (1516), he produced an English translation **directly from Greek**—a first!',
+        '📦 He smuggled printed copies into England (1526) hidden in **bales of cloth and wine barrels**.',
+        '🔥 Church authorities burned the Bibles publicly.',
+        '💀 In **1536**, Tyndale was betrayed, strangled, and burned at the stake. His last words: **"Lord, open the King of England\'s eyes!"**',
+        '✨ Within a year, King Henry VIII authorized an English Bible. **83% of the KJV New Testament comes directly from Tyndale\'s work**!'
+      ]
+    },
+
+    // Card 5: Matching Game - English Bible Translators
+    {
+      type: 'matching',
+      title: 'Match the Translator',
+      pairs: [
+        {
+          term: 'John Wycliffe',
+          definition: 'First complete English Bible (1380s), illegal translation'
+        },
+        {
+          term: 'William Tyndale',
+          definition: 'Translated from Greek, martyred in 1536'
+        },
+        {
+          term: 'King James I',
+          definition: 'Authorized the 1611 Bible translation'
+        },
+        {
+          term: 'Erasmus',
+          definition: 'Created Greek New Testament (1516) used by Tyndale'
+        }
+      ]
+    },
+
+    // Card 6: King James Version
+    {
+      type: 'content',
+      title: 'The King James Version: Politics and Poetry',
+      content: [
+        'In **1604**, King James I authorized a new Bible translation. Why?',
+        'The **Geneva Bible** (1560)—England\'s popular version—had marginal notes that **questioned royal authority**. James wanted a translation without anti-monarchy notes!',
+        '📚 He assembled **47 scholars**, divided into six committees, working from Hebrew, Greek, and Aramaic.',
+        '✨ Their instructions: **majestic, dignified language** suitable for public reading; no controversial notes.',
+        'The **1611 King James Version** succeeded brilliantly—its phrases entered the English language:',
+        '• "Thee/thy"',
+        '• "Go the extra mile"',
+        '• "The powers that be"',
+        'It dominated for **350 years**!'
+      ],
+      highlight: '💡 The KJV shaped English literature and culture more than any other book except Shakespeare'
+    },
+
+    // Card 7: Fill in the Blank
+    {
+      type: 'fillblank',
+      prompt: 'William Tyndale was martyred in 1536, but his last words were: "Lord, open the ________ of England\'s eyes!"',
+      correctAnswer: 'King',
+      explanation: 'Tyndale\'s dying prayer was "Lord, open the King of England\'s eyes!" Remarkably, within a year, King Henry VIII authorized an English Bible, fulfilling Tyndale\'s prayer.'
+    },
+
+    // Card 8: Modern Translations
+    {
+      type: 'content',
+      title: 'The Modern Translation Explosion',
+      content: [
+        'Why so many modern translations? Several factors:',
+        '1️⃣ **Earlier manuscripts discovered** (Dead Sea Scrolls, Alexandrian texts)',
+        '2️⃣ **English language evolution** (KJV English sounds archaic)',
+        '3️⃣ **Translation philosophy debates** (formal vs. dynamic)',
+        '4️⃣ **Denominational preferences**',
+        '5️⃣ **Target audiences** (study, devotional, children, etc.)',
+        '📖 **Major modern translations**:',
+        '• **NIV (1978)**: Dynamic, evangelical, best-selling',
+        '• **NASB (1971)**: Very literal',
+        '• **ESV (2001)**: Formal, evangelical',
+        '• **NLT (1996)**: Thought-for-thought, highly readable',
+        '• **NRSV (1989)**: Scholarly, ecumenical'
+      ]
+    },
+
+    // Card 9: Final Quiz
+    {
+      type: 'quiz',
+      question: 'What percentage of the KJV New Testament comes from Tyndale\'s translation?',
+      options: [
+        'About 25%',
+        'About 50%',
+        'About 83%',
+        'None - they were completely different'
+      ],
+      correctAnswer: 2,
+      explanation: 'Approximately 83% of the KJV New Testament comes directly from Tyndale\'s translation. His work was so excellent that later translators largely preserved his wording.'
+    },
+
+    // Card 10: Completion
+    {
+      type: 'completion',
+      title: 'History Hero! 🎉',
+      message: 'You\'ve completed "The English Bible\'s Dramatic History"! You now understand the courage and sacrifice behind the Bible you can freely read today.',
+      badge: {
+        icon: '📖',
+        name: 'Bible History Scholar',
+        description: 'Completed Lesson 4: The English Bible\'s Dramatic History'
+      }
+    }
+  ]
+};
