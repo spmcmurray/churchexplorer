@@ -1121,7 +1121,7 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${
+                      <div className={`w-12 h-12 min-w-[3rem] rounded-full flex items-center justify-center text-xl font-bold flex-shrink-0 ${
                         isCompleted ? 'bg-green-100 text-green-700' : isLocked ? 'bg-gray-200 text-gray-400' : 'bg-amber-100 text-amber-700'
                       }`}>
                         {isCompleted ? <CheckCircle className="w-6 h-6" /> : lesson.lesson}
@@ -1136,7 +1136,9 @@ const BibleHistoryGuide = ({ onNavigate }) => {
 
                     {/* Show status: Complete, Start, or Lock */}
                     {isLocked ? (
-                      <Lock className="w-6 h-6 text-gray-400" />
+                      <div className="flex items-center justify-center">
+                        <Lock className="w-6 h-6 text-gray-400 flex-shrink-0" />
+                      </div>
                     ) : isCompleted ? (
                       <span className="text-sm font-bold text-green-600 bg-green-100 px-4 py-2 rounded-full">
                         Complete
