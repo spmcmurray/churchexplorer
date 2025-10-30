@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Zap, Lock } from 'lucide-react';
+import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Lock } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data } from './interactiveLessonData';
 
@@ -1094,14 +1094,17 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                       </div>
                     </div>
 
-                    {/* Show interactive icon for lessons 1-4, chevron for 5-8, or lock icon */}
+                    {/* Show status: Complete, Start, or Lock */}
                     {isLocked ? (
                       <Lock className="w-6 h-6 text-gray-400" />
+                    ) : isCompleted ? (
+                      <span className="text-sm font-bold text-green-600 bg-green-100 px-4 py-2 rounded-full">
+                        Complete
+                      </span>
                     ) : hasInteractiveMode ? (
-                      <div className="flex items-center gap-2">
-                        <Zap className="w-5 h-5 text-purple-600" />
-                        <span className="text-sm font-semibold text-purple-600">Interactive</span>
-                      </div>
+                      <span className="text-sm font-bold text-purple-600 bg-purple-100 px-4 py-2 rounded-full">
+                        Start
+                      </span>
                     ) : (
                       isExpanded ? <ChevronDown className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />
                     )}
