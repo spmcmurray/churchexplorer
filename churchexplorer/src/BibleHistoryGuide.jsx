@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Zap } from 'lucide-react';
+import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Zap, Lock } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data } from './interactiveLessonData';
 
@@ -1051,16 +1051,23 @@ const BibleHistoryGuide = ({ onNavigate }) => {
             // Check if this lesson has interactive mode (lessons 1-4)
             const hasInteractiveMode = lesson.lesson >= 1 && lesson.lesson <= 4;
 
+            // Check if lesson is locked (previous lesson not completed)
+            const isLocked = lesson.lesson > 1 && !completedLessons.includes(lesson.lesson - 1);
+
             return (
               <div
                 key={lesson.lesson}
                 className={`bg-white rounded-xl shadow-lg overflow-hidden border-2 transition-all ${
-                  isCompleted ? 'border-green-400' : 'border-gray-200'
+                  isCompleted ? 'border-green-400' : isLocked ? 'border-gray-300 opacity-60' : 'border-gray-200'
                 }`}
               >
                 {/* Lesson Header */}
                 <button
                   onClick={() => {
+                    if (isLocked) {
+                      // Don't allow clicking locked lessons
+                      return;
+                    }
                     if (hasInteractiveMode) {
                       // Launch interactive mode directly for lessons 1-4
                       setInteractiveMode(lesson.lesson);
@@ -1069,23 +1076,28 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                       setExpandedLesson(isExpanded ? null : lesson.lesson);
                     }
                   }}
-                  className="w-full p-6 hover:bg-gray-50 transition"
+                  disabled={isLocked}
+                  className={`w-full p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${
-                        isCompleted ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                        isCompleted ? 'bg-green-100 text-green-700' : isLocked ? 'bg-gray-200 text-gray-400' : 'bg-amber-100 text-amber-700'
                       }`}>
-                        {isCompleted ? <CheckCircle className="w-6 h-6" /> : lesson.lesson}
+                        {isCompleted ? <CheckCircle className="w-6 h-6" /> : isLocked ? <Lock className="w-6 h-6" /> : lesson.lesson}
                       </div>
                       <div className="text-left">
-                        <h3 className="text-xl font-bold text-gray-800">{lesson.title}</h3>
-                        <p className="text-gray-600">{lesson.subtitle}</p>
+                        <h3 className={`text-xl font-bold ${isLocked ? 'text-gray-400' : 'text-gray-800'}`}>{lesson.title}</h3>
+                        <p className={`${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                          {isLocked ? 'Complete previous lesson to unlock' : lesson.subtitle}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Show interactive icon for lessons 1-4, chevron for 5-8 */}
-                    {hasInteractiveMode ? (
+                    {/* Show interactive icon for lessons 1-4, chevron for 5-8, or lock icon */}
+                    {isLocked ? (
+                      <Lock className="w-6 h-6 text-gray-400" />
+                    ) : hasInteractiveMode ? (
                       <div className="flex items-center gap-2">
                         <Zap className="w-5 h-5 text-purple-600" />
                         <span className="text-sm font-semibold text-purple-600">Interactive</span>
