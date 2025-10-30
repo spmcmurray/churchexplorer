@@ -46,10 +46,15 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
     const isFirstAttempt = !answers[cardIndex];
 
     if (card.type === 'quiz' && isFirstAttempt) {
-      setQuizResults(prev => ({
-        correct: prev.correct + (isCorrect ? 1 : 0),
-        total: prev.total + 1
-      }));
+      console.log(`📝 Quiz answer: card ${cardIndex}, correct: ${isCorrect}, card type: ${card.type}`);
+      setQuizResults(prev => {
+        const newResults = {
+          correct: prev.correct + (isCorrect ? 1 : 0),
+          total: prev.total + 1
+        };
+        console.log('📊 Updated quiz results:', newResults);
+        return newResults;
+      });
     }
 
     setAnswers(prev => ({ ...prev, [cardIndex]: answer }));
@@ -62,6 +67,7 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
 
   const handleComplete = () => {
     setXp(prev => prev + 50); // Bonus for completing lesson
+    console.log('🎯 Lesson completed! Final quiz results:', quizResults);
     setTimeout(() => {
       onComplete(xp + 50, quizResults);
     }, 1500);

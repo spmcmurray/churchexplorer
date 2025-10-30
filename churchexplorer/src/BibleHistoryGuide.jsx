@@ -59,18 +59,28 @@ const BibleHistoryGuide = ({ onNavigate }) => {
   // Calculate quiz accuracy across completed lessons
   const calculateQuizAccuracy = () => {
     const savedResults = localStorage.getItem('bibleHistoryQuizResults');
-    if (!savedResults) return 0;
+    console.log('📖 Reading quiz results from localStorage:', savedResults);
+    if (!savedResults) {
+      console.log('⚠️ No quiz results found in localStorage');
+      return 0;
+    }
 
     const results = JSON.parse(savedResults);
     const lessonResults = Object.values(results);
+    console.log('📊 Parsed quiz results:', lessonResults);
 
-    if (lessonResults.length === 0) return 0;
+    if (lessonResults.length === 0) {
+      console.log('⚠️ No lesson results found');
+      return 0;
+    }
 
     const totalScore = lessonResults.reduce((sum, result) => {
       return sum + (result.score / result.total) * 100;
     }, 0);
 
-    return Math.round(totalScore / lessonResults.length);
+    const accuracy = Math.round(totalScore / lessonResults.length);
+    console.log(`✅ Calculated quiz accuracy: ${accuracy}%`);
+    return accuracy;
   };
 
   // Get mastery level based on completion
@@ -126,6 +136,7 @@ const BibleHistoryGuide = ({ onNavigate }) => {
   };
 
   const handleCompleteInteractive = (lessonNum, xpEarned, quizResults) => {
+    console.log('🏆 Completing lesson', lessonNum, 'with quiz results:', quizResults);
     markLessonComplete(lessonNum);
 
     // Save quiz results to localStorage for accuracy calculation
@@ -134,6 +145,9 @@ const BibleHistoryGuide = ({ onNavigate }) => {
       const results = savedResults ? JSON.parse(savedResults) : {};
       results[lessonNum] = { score: quizResults.correct, total: quizResults.total };
       localStorage.setItem('bibleHistoryQuizResults', JSON.stringify(results));
+      console.log('💾 Saved quiz results to localStorage:', results);
+    } else {
+      console.warn('⚠️ No quiz results to save!', quizResults);
     }
 
     setInteractiveMode(null);
