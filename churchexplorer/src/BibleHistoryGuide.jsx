@@ -125,8 +125,17 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     }
   };
 
-  const handleCompleteInteractive = (lessonNum, xpEarned) => {
+  const handleCompleteInteractive = (lessonNum, xpEarned, quizResults) => {
     markLessonComplete(lessonNum);
+
+    // Save quiz results to localStorage for accuracy calculation
+    if (quizResults && quizResults.total > 0) {
+      const savedResults = localStorage.getItem('bibleHistoryQuizResults');
+      const results = savedResults ? JSON.parse(savedResults) : {};
+      results[lessonNum] = { score: quizResults.correct, total: quizResults.total };
+      localStorage.setItem('bibleHistoryQuizResults', JSON.stringify(results));
+    }
+
     setInteractiveMode(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

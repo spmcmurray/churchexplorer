@@ -20,6 +20,7 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const [answers, setAnswers] = useState({});
   const [showFeedback, setShowFeedback] = useState({});
   const [completedCards, setCompletedCards] = useState(new Set());
+  const [quizResults, setQuizResults] = useState({ correct: 0, total: 0 });
 
   const totalCards = lessonData.cards.length;
   const progress = ((currentCard + 1) / totalCards) * 100;
@@ -43,6 +44,15 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
     setAnswers(prev => ({ ...prev, [cardIndex]: answer }));
     setShowFeedback(prev => ({ ...prev, [cardIndex]: true }));
 
+    // Track quiz results for accuracy calculation
+    const card = lessonData.cards[cardIndex];
+    if (card.type === 'quiz' && !answers[cardIndex]) {
+      setQuizResults(prev => ({
+        correct: prev.correct + (isCorrect ? 1 : 0),
+        total: prev.total + 1
+      }));
+    }
+
     if (isCorrect && !completedCards.has(cardIndex)) {
       setXp(prev => prev + 10);
     }
@@ -51,7 +61,7 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const handleComplete = () => {
     setXp(prev => prev + 50); // Bonus for completing lesson
     setTimeout(() => {
-      onComplete(xp + 50);
+      onComplete(xp + 50, quizResults);
     }, 1500);
   };
 
