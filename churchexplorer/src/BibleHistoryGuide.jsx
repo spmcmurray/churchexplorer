@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Lock } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
-import { lesson1Data, lesson2Data, lesson3Data, lesson4Data } from './interactiveLessonData';
+import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
 
 const BibleHistoryGuide = ({ onNavigate }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
@@ -955,6 +955,46 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     );
   }
 
+  if (interactiveMode === 5) {
+    return (
+      <InteractiveLesson
+        lessonData={lesson5Data}
+        onComplete={(xp) => handleCompleteInteractive(5, xp)}
+        onExit={handleExitInteractive}
+      />
+    );
+  }
+
+  if (interactiveMode === 6) {
+    return (
+      <InteractiveLesson
+        lessonData={lesson6Data}
+        onComplete={(xp) => handleCompleteInteractive(6, xp)}
+        onExit={handleExitInteractive}
+      />
+    );
+  }
+
+  if (interactiveMode === 7) {
+    return (
+      <InteractiveLesson
+        lessonData={lesson7Data}
+        onComplete={(xp) => handleCompleteInteractive(7, xp)}
+        onExit={handleExitInteractive}
+      />
+    );
+  }
+
+  if (interactiveMode === 8) {
+    return (
+      <InteractiveLesson
+        lessonData={lesson8Data}
+        onComplete={(xp) => handleCompleteInteractive(8, xp)}
+        onExit={handleExitInteractive}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
@@ -1048,8 +1088,8 @@ const BibleHistoryGuide = ({ onNavigate }) => {
             const isCompleted = completedLessons.includes(lesson.lesson);
             const quizResult = quizResults[lesson.lesson];
 
-            // Check if this lesson has interactive mode (lessons 1-4)
-            const hasInteractiveMode = lesson.lesson >= 1 && lesson.lesson <= 4;
+            // Check if this lesson has interactive mode (lessons 1-8)
+            const hasInteractiveMode = lesson.lesson >= 1 && lesson.lesson <= 8;
 
             // Check if lesson is locked (previous lesson not completed)
             const isLocked = lesson.lesson > 1 && !completedLessons.includes(lesson.lesson - 1);

@@ -656,3 +656,907 @@ export const lesson4Data = {
     }
   ]
 };
+
+// Interactive Lesson 5: The Books That Almost Made It
+
+export const lesson5Data = {
+  id: 5,
+  title: "The Books That Almost Made It",
+  subtitle: "Understanding the Apocrypha and 'lost gospels'",
+  cards: [
+    // Card 1: Introduction
+    {
+      type: 'content',
+      title: 'The Missing Books Mystery',
+      subtitle: 'The Books That Almost Made It',
+      content: [
+        'Walk into a Catholic bookstore and count the books in their Bible: **73**. Walk into a Protestant bookstore: **66 books**.',
+        'What happened to those 7 books? And what about the "Gospel of Thomas" or "Gospel of Judas" that make headlines every few years?',
+        'Welcome to the fascinating world of texts that were popular, influential, or nearly canonical—but ultimately didn\'t make the cut for most Christian Bibles.',
+        'Get ready to uncover why some books made it in... and others didn\'t!'
+      ],
+      highlight: '🎯 Goal: Understand the Apocrypha, "lost gospels," and how the biblical canon was formed'
+    },
+
+    // Card 2: What is the Apocrypha?
+    {
+      type: 'content',
+      title: 'The Apocrypha: What Are These Books?',
+      content: [
+        'The **Apocrypha** (Greek: "hidden things") or **Deuterocanonical** (second canon) books include:',
+        '📚 **Tobit** - Story of faith and an angel',
+        '⚔️ **Judith** - Brave woman saves her people',
+        '🦉 **Wisdom of Solomon** - Philosophical wisdom literature',
+        '📖 **Sirach (Ecclesiasticus)** - Practical life wisdom',
+        '📜 **Baruch** - Prophecy attributed to Jeremiah\'s scribe',
+        '🛡️ **1-2 Maccabees** - Jewish resistance to Greek oppression',
+        '➕ **Additions to Esther and Daniel**',
+        'These books were in the Greek Septuagint but not in the Hebrew Bible. That\'s where the debate begins!'
+      ]
+    },
+
+    // Card 3: Quiz on Apocrypha
+    {
+      type: 'quiz',
+      question: 'What are the Deuterocanonical books?',
+      options: [
+        'Books written after the New Testament',
+        'Books in the Septuagint but not the Hebrew Bible, accepted by Catholics but not Protestants',
+        'Books that were lost and recently discovered',
+        'The Gnostic gospels'
+      ],
+      correctAnswer: 1,
+      explanation: 'Deuterocanonical books (Tobit, Judith, Wisdom, etc.) were in the Greek Septuagint but not the Hebrew canon. Catholics and Orthodox accept them as Scripture; Protestants do not, though they may include them for historical reading.'
+    },
+
+    // Card 4: The Great Divide
+    {
+      type: 'content',
+      title: 'Catholic vs. Protestant: The Great Divide',
+      content: [
+        'Why do Catholics and Protestants disagree on these books?',
+        '✝️ **Catholic/Orthodox view**: These books ARE Scripture.',
+        '• Used by the early church',
+        '• Quoted by church fathers',
+        '• Affirmed at councils (Hippo 393 AD, Carthage 397 AD, Trent 1546 AD)',
+        '⛪ **Protestant view**: Useful for history and devotion but NOT Scripture.',
+        '• Not in the Hebrew canon',
+        '• Not quoted as Scripture in the New Testament',
+        '• Contain theological ideas Protestants reject (prayers for the dead, purgatory implications)',
+        'The Reformers said: **"Good to read, but not equal to Scripture."**'
+      ],
+      highlight: '💡 This isn\'t about one side being "right" and the other "wrong"—it\'s about different criteria for what counts as Scripture'
+    },
+
+    // Card 5: Matching Game - Apocrypha Books
+    {
+      type: 'matching',
+      title: 'Match the Apocrypha Book',
+      pairs: [
+        {
+          term: 'Tobit',
+          definition: 'Story of faith featuring an angel'
+        },
+        {
+          term: 'Wisdom of Solomon',
+          definition: 'Philosophical wisdom literature'
+        },
+        {
+          term: '1-2 Maccabees',
+          definition: 'Jewish resistance to Greek oppression'
+        },
+        {
+          term: 'Sirach',
+          definition: 'Practical life wisdom (Ecclesiasticus)'
+        }
+      ]
+    },
+
+    // Card 6: Books That Were Close
+    {
+      type: 'content',
+      title: 'So Close, Yet So Far',
+      content: [
+        'Several early Christian texts were beloved and **nearly** canonical:',
+        '🐑 **Shepherd of Hermas** (2nd century): Apocalyptic visions and moral teachings. Included in some early Bibles! Why rejected? Too late to be apostolic.',
+        '✉️ **1 Clement** (c. 96 AD): Letter from Rome to Corinth. Wise counsel, but lacked apostolic authority.',
+        '📘 **Didache** (1st-2nd century): Early church manual on baptism, Eucharist, church order. Practical but not inspired.',
+        '📝 **Epistle of Barnabas** (2nd century): Allegorical interpretation of the Old Testament. Interesting but speculative.',
+        'These books show us early Christianity\'s diversity and piety but lacked the apostolic authority or universal acceptance to become Scripture.'
+      ],
+      highlight: '💫 These books are valuable for understanding early Christian thought, even if not canonical!'
+    },
+
+    // Card 7: Fill in the Blank
+    {
+      type: 'fillblank',
+      prompt: 'Protestant Reformers rejected the Apocrypha as Scripture because these books weren\'t in the ________ canon.',
+      correctAnswer: 'Hebrew',
+      explanation: 'Protestants noted that the Apocryphal books weren\'t in the Hebrew Bible (the Old Testament used by Jesus and the apostles), which was a key reason for not including them as Scripture.'
+    },
+
+    // Card 8: The Gnostic Gospels
+    {
+      type: 'content',
+      title: 'The Gnostic Gospels: A Different Religion',
+      content: [
+        'In **1945**, Egyptian farmers found a jar near Nag Hammadi containing 52 texts, including "gospels" attributed to Thomas, Philip, and Mary.',
+        '❌ These weren\'t "lost gospels suppressed by the church"—they were **Gnostic texts** (2nd-3rd centuries), representing a different religion!',
+        '🔮 **Gnosticism taught**:',
+        '• Secret knowledge (gnosis) brings salvation',
+        '• The material world is evil, created by a lesser god',
+        '• Jesus didn\'t have a real body (Docetism)',
+        '• Salvation is escaping the body, not bodily resurrection',
+        '🚫 **Why they were rejected**:',
+        '1. Written 100-200 years after Jesus by Gnostics, not apostles',
+        '2. Contradicted apostolic teaching',
+        '3. Focused on secret sayings, not Jesus\'s life, death, and resurrection',
+        '4. No manuscript evidence from the 1st century'
+      ]
+    },
+
+    // Card 9: Quiz on Gnostic Gospels
+    {
+      type: 'quiz',
+      question: 'Why were the Nag Hammadi gospels (like Gospel of Thomas) rejected?',
+      options: [
+        'They were written too recently to be authentic',
+        'They were written 100-200 years after Jesus, taught Gnostic theology, and contradicted apostolic teaching',
+        'The church was afraid of their message',
+        'They were poorly written'
+      ],
+      correctAnswer: 1,
+      explanation: 'The Nag Hammadi texts were written in the 2nd-3rd centuries (long after the apostles), reflect Gnostic theology (which contradicts Christianity), and lack apostolic authority. They weren\'t "suppressed"—they were simply not apostolic.'
+    },
+
+    // Card 10: Debunking Sensationalism
+    {
+      type: 'content',
+      title: 'Debunking "Lost Gospel" Sensationalism',
+      content: [
+        'Every few years, media headlines scream: **"Lost Gospel Discovered!"** or **"Ancient Text Challenges Christianity!"**',
+        'Let\'s be clear: **No serious scholar claims these texts should be in the Bible.**',
+        '📰 **Gospel of Judas** (National Geographic 2006): Gnostic text (3rd century) portraying Judas as hero. Centuries late, Gnostic perspective.',
+        '📰 **"Secret Gospel of Mark"**: Claimed 1958, likely a modern forgery.',
+        '📰 **"Jesus\'s Wife" papyrus** (2012): Tiny fragment, now widely considered a modern fake.',
+        'The sensationalism sells books and gets clicks, but the scholarship is clear: **We have the right books in the New Testament.**',
+        'These later texts help us understand competing versions of Christianity that died out, but they don\'t represent apostolic Christianity.'
+      ],
+      highlight: '🔍 Media hype ≠ Scholarly consensus. Always check what actual scholars say!'
+    },
+
+    // Card 11: Canon Criteria
+    {
+      type: 'content',
+      title: 'Why Canon Boundaries Matter',
+      content: [
+        'Having a defined canon isn\'t about being narrow-minded—it\'s about having a stable foundation.',
+        'Imagine if every generation could add new "gospels" based on new "revelations." Christianity would fracture endlessly!',
+        '📋 **The canon criteria**:',
+        '1️⃣ **Apostolicity**: Written by or connected to apostles',
+        '2️⃣ **Orthodoxy**: Consistent with apostolic teaching',
+        '3️⃣ **Antiquity**: From the first century',
+        '4️⃣ **Usage**: Widely used in churches',
+        '5️⃣ **Inspiration**: Recognized as bearing divine authority',
+        'Books like Thomas, Shepherd of Hermas, or the Apocrypha might be edifying, but they don\'t meet all these criteria.',
+        '🏛️ The canon gives us a foundation to stand on—a measuring stick for faith and practice.'
+      ]
+    },
+
+    // Card 12: Matching Game - Canon Criteria
+    {
+      type: 'matching',
+      title: 'Match the Canon Criterion',
+      pairs: [
+        {
+          term: 'Apostolicity',
+          definition: 'Written by or connected to apostles'
+        },
+        {
+          term: 'Orthodoxy',
+          definition: 'Consistent with apostolic teaching'
+        },
+        {
+          term: 'Antiquity',
+          definition: 'From the first century'
+        },
+        {
+          term: 'Usage',
+          definition: 'Widely used in early churches'
+        }
+      ]
+    },
+
+    // Card 13: Final Quiz
+    {
+      type: 'quiz',
+      question: 'What criteria did the early church use to determine which books were canonical?',
+      options: [
+        'Popularity among modern readers',
+        'Which books the Emperor preferred',
+        'Apostolicity, orthodoxy, antiquity, widespread usage, and recognized inspiration',
+        'Only books that were easy to understand'
+      ],
+      correctAnswer: 2,
+      explanation: 'The canon wasn\'t arbitrary. Books needed to be: written by/connected to apostles, consistent with apostolic teaching, from the first century, widely used in churches, and recognized as divinely inspired.'
+    },
+
+    // Card 14: Completion
+    {
+      type: 'completion',
+      title: 'Canon Expert! 🎉',
+      message: 'You\'ve completed "The Books That Almost Made It"! You now understand the Apocrypha, the Gnostic gospels, and how the biblical canon was formed.',
+      badge: {
+        icon: '📚',
+        name: 'Canon Scholar',
+        description: 'Completed Lesson 5: The Books That Almost Made It'
+      }
+    }
+  ]
+};
+
+// Interactive Lesson 6: How Christians Read the Bible Over Time
+
+export const lesson6Data = {
+  id: 6,
+  title: "How Christians Read the Bible Over Time",
+  subtitle: "From allegory to literal: changing interpretation methods",
+  cards: [
+    // Card 1: Introduction
+    {
+      type: 'content',
+      title: 'One Bible, Many Readings',
+      subtitle: 'How Christians Read the Bible Over Time',
+      content: [
+        'Open your Bible to Genesis 3, where Eve eats the forbidden fruit.',
+        'Is this a literal historical event? An allegory about human free will? A mythological story teaching theological truth?',
+        '🤔 How you answer depends partly on **when and where you lived**.',
+        'Christians across history have read the same Bible but interpreted it very differently.',
+        'Understanding these interpretation methods helps explain why denominations today disagree on the "plain meaning" of Scripture—and why your great-grandparents might have read passages differently than you do.'
+      ],
+      highlight: '🎯 Goal: Understand how biblical interpretation has changed through history'
+    },
+
+    // Card 2: Origen's Allegorical Method
+    {
+      type: 'content',
+      title: 'Origen: Allegory Everywhere!',
+      content: [
+        'In the 3rd century, **Origen of Alexandria** pioneered allegorical interpretation.',
+        'Influenced by Greek philosophy, he believed Scripture had **three senses** (like humans have body, soul, and spirit):',
+        '📖 **Literal** - The plain events',
+        '💭 **Moral** - Ethical lessons',
+        '✨ **Spiritual** - Deeper mystical meanings',
+        '🌊 **Example**: The crossing of the Red Sea wasn\'t just historical—it symbolized baptism, deliverance from sin, and the soul\'s journey to God!',
+        '💕 Origen interpreted Song of Solomon entirely as allegory about Christ and the church—not a romantic love poem at all.',
+        '⚠️ Critics said he was more interested in Plato than in what the biblical authors actually meant.'
+      ],
+      highlight: '💡 This approach solved problems (embarrassing Old Testament stories) but risked reading meanings into the text that weren\'t there'
+    },
+
+    // Card 3: Quiz on Origen
+    {
+      type: 'quiz',
+      question: 'What was Origen\'s main interpretive approach?',
+      options: [
+        'Strict literal interpretation only',
+        'Historical-critical method',
+        'Allegorical interpretation finding spiritual meanings beyond the literal',
+        'Ignoring the Old Testament'
+      ],
+      correctAnswer: 2,
+      explanation: 'Origen pioneered allegorical interpretation, believing Scripture had literal, moral, and spiritual senses. He found deeper symbolic meanings throughout the Bible, especially in problematic or poetic texts.'
+    },
+
+    // Card 4: Medieval Four-Fold Sense
+    {
+      type: 'content',
+      title: 'Medieval Four-Fold Sense: Layers of Meaning',
+      content: [
+        'Medieval theologians developed a **four-fold interpretive method**, summarized in a Latin couplet:',
+        '"The letter teaches events, allegory what you believe, moral what you do, anagogy where you\'re going"',
+        '🏛️ **Example using "Jerusalem"**:',
+        '1️⃣ **Literal**: Historical city in Israel',
+        '2️⃣ **Allegorical**: The Church',
+        '3️⃣ **Moral**: The human soul',
+        '4️⃣ **Anagogical**: Heaven',
+        'This method found multiple valid meanings in every text. It made Scripture endlessly rich but also dangerously subjective.',
+        '❓ How do you know which allegorical reading is correct?',
+        'The system worked because Church tradition and authority guided interpretation. But it set the stage for Reformation debates.'
+      ]
+    },
+
+    // Card 5: Matching Game - Medieval Senses
+    {
+      type: 'matching',
+      title: 'Match the Medieval Sense',
+      pairs: [
+        {
+          term: 'Literal',
+          definition: 'What happened (historical events)'
+        },
+        {
+          term: 'Allegorical',
+          definition: 'What to believe (theological meaning)'
+        },
+        {
+          term: 'Moral',
+          definition: 'What to do (ethical application)'
+        },
+        {
+          term: 'Anagogical',
+          definition: 'Where you\'re going (heavenly destiny)'
+        }
+      ]
+    },
+
+    // Card 6: The Reformation Revolution
+    {
+      type: 'content',
+      title: 'The Reformation: The "Plain Sense" Revolution',
+      content: [
+        '⚡ Martin Luther and other Reformers rejected allegorical excess.',
+        'Luther said: **"The Holy Spirit is the plainest writer and speaker in heaven and earth, and therefore His words cannot have more than one, and that the very simplest, sense, which we call the literal, ordinary, natural sense."**',
+        '📋 **The Reformers insisted**:',
+        '1️⃣ **Grammatical-historical method**: Understand words in their historical context and original languages',
+        '2️⃣ **Scripture interprets Scripture**: Compare clear passages with unclear ones',
+        '3️⃣ **Priesthood of all believers**: You don\'t need Church authority to interpret—the Holy Spirit guides individual readers',
+        '✅ This democratized Bible reading...',
+        '❌ But also fragmented Christianity. Without Church authority, who decides what\'s "plain"?',
+        'It\'s why Protestantism has so many denominations—disagreements over what Scripture "plainly" teaches!'
+      ]
+    },
+
+    // Card 7: Fill in the Blank
+    {
+      type: 'fillblank',
+      prompt: 'The Reformers emphasized the ________ sense of Scripture, rejecting excessive allegorical interpretation.',
+      correctAnswer: 'plain',
+      explanation: 'The Reformers championed the "plain sense" or literal-grammatical-historical interpretation of Scripture, insisting that God\'s Word is clear and accessible to ordinary believers, not requiring layers of allegorical interpretation.'
+    },
+
+    // Card 8: Historical-Critical Scholarship
+    {
+      type: 'content',
+      title: 'Modern Historical-Critical Scholarship',
+      content: [
+        'Starting in the 18th-19th centuries, scholars applied historical methods to the Bible like any ancient text:',
+        '📝 **Source criticism**: Who wrote this? When? What sources did they use? (e.g., the Documentary Hypothesis for the Torah)',
+        '📖 **Form criticism**: What genre is this? (History, poetry, parable, apocalyptic)',
+        '✂️ **Redaction criticism**: How did editors shape the final text?',
+        '🔍 **Textual criticism**: What did the original manuscripts say?',
+        '✅ These methods yielded insights (understanding ancient Near Eastern context, recognizing literary genres)',
+        '⚠️ But also controversies (questioning Mosaic authorship of the Pentateuch, debating Gospel historicity)',
+        'Conservative scholars use these tools while maintaining high views of biblical authority; liberal scholars sometimes conclude the Bible is purely human literature.',
+        'The tools themselves are neutral; the conclusions depend on presuppositions about Scripture\'s nature.'
+      ]
+    },
+
+    // Card 9: Quiz on Historical-Critical Method
+    {
+      type: 'quiz',
+      question: 'What is historical-critical scholarship?',
+      options: [
+        'Criticizing the Bible\'s historical claims',
+        'Applying historical methods to understand authorship, context, sources, and genre',
+        'Proving the Bible is historically false',
+        'Only reading the historical books of the Bible'
+      ],
+      correctAnswer: 1,
+      explanation: 'Historical-critical method applies historical and literary analysis to Scripture: examining authorship, dating, sources, genres, and historical context. It\'s a tool that can be used with various views of biblical authority.'
+    },
+
+    // Card 10: Why Denominations Disagree
+    {
+      type: 'content',
+      title: 'Why Denominations Read the Same Bible Differently',
+      content: [
+        'Here\'s why Christians disagree on "what the Bible clearly says":',
+        '1️⃣ **Interpretive tradition**: Catholics read through Church tradition; Protestants through "Scripture alone" (though they have traditions too)',
+        '2️⃣ **Theological framework**: Calvinists and Arminians both cite Scripture but reach different conclusions on predestination',
+        '3️⃣ **Genre recognition**: Is Genesis 1 scientific? Poetic? Theological? Your answer affects interpretation',
+        '4️⃣ **Cultural context**: Does 1 Timothy 2:12 ("I do not permit a woman to teach") apply universally or to a specific situation?',
+        '5️⃣ **Role of reason/experience**: How much weight do you give to science, personal experience, or Church tradition alongside Scripture?',
+        'These aren\'t "some Christians ignore the Bible" vs. "we follow it." **All are trying to faithfully interpret Scripture**—they just bring different tools and assumptions.'
+      ],
+      highlight: '💡 Understanding WHY Christians disagree helps us have more charitable conversations!'
+    },
+
+    // Card 11: Matching Game - Interpretive Approaches
+    {
+      type: 'matching',
+      title: 'Match the Interpretive Approach',
+      pairs: [
+        {
+          term: 'Allegorical',
+          definition: 'Finding hidden spiritual meanings (Origen)'
+        },
+        {
+          term: 'Four-Fold Sense',
+          definition: 'Medieval: literal, allegorical, moral, anagogical'
+        },
+        {
+          term: 'Plain Sense',
+          definition: 'Reformation: grammatical-historical reading'
+        },
+        {
+          term: 'Historical-Critical',
+          definition: 'Modern: analyzing sources, genre, context'
+        }
+      ]
+    },
+
+    // Card 12: Final Quiz
+    {
+      type: 'quiz',
+      question: 'Why do denominations interpret the same Bible verse differently?',
+      options: [
+        'Some denominations ignore parts of the Bible',
+        'Different interpretive traditions, theological frameworks, genre recognition, and cultural contexts',
+        'Only Catholics interpret correctly',
+        'The Bible is too unclear to interpret'
+      ],
+      correctAnswer: 1,
+      explanation: 'Christians disagree not because some ignore Scripture but because they bring different interpretive traditions, theological frameworks, understandings of genre and context, and views on the role of reason and experience. All are trying to interpret faithfully.'
+    },
+
+    // Card 13: Completion
+    {
+      type: 'completion',
+      title: 'Interpretation Master! 🎉',
+      message: 'You\'ve completed "How Christians Read the Bible Over Time"! You now understand how biblical interpretation has evolved and why Christians disagree on what Scripture means.',
+      badge: {
+        icon: '📖',
+        name: 'Hermeneutics Scholar',
+        description: 'Completed Lesson 6: How Christians Read the Bible Over Time'
+      }
+    }
+  ]
+};
+
+// Interactive Lesson 7: Archaeology & the Bible
+
+export const lesson7Data = {
+  id: 7,
+  title: "Archaeology & the Bible",
+  subtitle: "How discoveries confirm, challenge, and illuminate Scripture",
+  cards: [
+    // Card 1: Introduction
+    {
+      type: 'content',
+      title: 'Digging Into the Past',
+      subtitle: 'Archaeology & the Bible',
+      content: [
+        'In **1947**, a shepherd threw a rock into a cave and **changed biblical scholarship forever**.',
+        'In **1868**, a missionary found a stone that mentioned King David\'s dynasty—confirming a biblical king skeptics doubted existed.',
+        'Archaeology doesn\'t "prove" the Bible in a simplistic way, but it provides an astonishing amount of confirmation for biblical people, places, and events.',
+        'It also raises questions and challenges traditional interpretations.',
+        'Let\'s explore how **digging in the dirt illuminates the book we hold in our hands**!'
+      ],
+      highlight: '🎯 Goal: Understand how archaeology confirms, challenges, and illuminates Scripture'
+    },
+
+    // Card 2: Dead Sea Scrolls Discovery
+    {
+      type: 'content',
+      title: 'Dead Sea Scrolls: A Game-Changing Discovery',
+      content: [
+        'Before **1947**, critics claimed the Old Testament had been corrupted over centuries of copying.',
+        'Our oldest complete Hebrew Bible was the Leningrad Codex (**1008 AD**)—over 1,000 years after the last OT book was written.',
+        '🐑 Then came Qumran. Bedouin shepherds discovered caves containing hundreds of scrolls, including complete or partial copies of **every OT book except Esther**.',
+        '📅 **Dates**: 200 BC - 100 AD',
+        '📜 The Isaiah scroll from Cave 1 (125 BC) is **1,000 years older** than any previously known manuscript.',
+        '✅ **Result?** Word-for-word match with medieval manuscripts, with only minor spelling variations!',
+        'This discovery silenced claims of textual corruption and confirmed the careful preservation of Scripture.',
+        'We also learned about Second Temple Judaism—the religious world Jesus grew up in.'
+      ],
+      highlight: '🏆 The Dead Sea Scrolls pushed manuscript evidence back 1,000 years and proved incredible textual accuracy!'
+    },
+
+    // Card 3: Quiz on Dead Sea Scrolls
+    {
+      type: 'quiz',
+      question: 'What was the major significance of the Dead Sea Scrolls?',
+      options: [
+        'They contained new books of the Bible',
+        'They proved the Old Testament had been corrupted',
+        'They pushed manuscript evidence back 1,000 years and confirmed textual accuracy',
+        'They revealed Jesus was married'
+      ],
+      correctAnswer: 2,
+      explanation: 'The Dead Sea Scrolls (200 BC - 100 AD) are about 1,000 years older than previously known Hebrew manuscripts. They match later texts almost perfectly, confirming careful textual preservation over centuries.'
+    },
+
+    // Card 4: Nag Hammadi Library
+    {
+      type: 'content',
+      title: 'Nag Hammadi: Understanding Early Heresies',
+      content: [
+        'In **1945**, Egyptian farmers near Nag Hammadi found a jar containing **52 texts** (4th century copies of 2nd-3rd century originals).',
+        'These included Gnostic gospels (Thomas, Philip, Mary, Truth).',
+        '📰 Sensational media claimed these were "suppressed gospels."',
+        '✅ **Reality**: These texts confirm what church fathers said about Gnostic beliefs:',
+        '• Secret knowledge for salvation',
+        '• Material world as evil',
+        '• Denial of Jesus\'s physical resurrection',
+        'They\'re valuable for understanding **why early Christians rejected Gnosticism**, but they don\'t challenge the New Testament canon.',
+        'No serious scholar argues they\'re apostolic.',
+        'They show Christianity wasn\'t monolithic—there were competing visions, and orthodox Christianity won not by suppression but by better reflecting apostolic teaching and Jesus\'s actual life and mission.'
+      ]
+    },
+
+    // Card 5: Matching Game - Major Discoveries
+    {
+      type: 'matching',
+      title: 'Match the Archaeological Discovery',
+      pairs: [
+        {
+          term: 'Dead Sea Scrolls',
+          definition: '1947 discovery, confirmed OT textual accuracy'
+        },
+        {
+          term: 'Nag Hammadi',
+          definition: '1945 discovery, Gnostic texts from 2nd-3rd centuries'
+        },
+        {
+          term: 'Tel Dan Stele',
+          definition: '1993 discovery, mentions "House of David"'
+        },
+        {
+          term: 'Pool of Siloam',
+          definition: '2004 discovery, where Jesus healed blind man'
+        }
+      ]
+    },
+
+    // Card 6: Archaeological Confirmations
+    {
+      type: 'content',
+      title: 'Archaeological Confirmations: The Hits',
+      content: [
+        'Archaeology has confirmed numerous biblical details critics once doubted:',
+        '🏛️ **Hittites**: Once thought legendary, now extensively documented',
+        '💧 **Pool of Siloam**: Where Jesus healed the blind man (John 9)—discovered in 2004',
+        '👨 **Pontius Pilate**: Inscription found in 1961 confirms his existence and title',
+        '👑 **House of David**: Tel Dan Stele (1993) mentions "House of David," confirming David as historical figure',
+        '🏰 **Assyrian and Babylonian kings**: Sennacherib, Nebuchadnezzar, etc.—all confirmed',
+        '✝️ **Crucifixion evidence**: Heel bone with nail from 1st century proves crucifixion methods matching Gospel descriptions',
+        '🏘️ **Capernaum**: Peter\'s house excavated, matches Gospel descriptions',
+        'These don\'t "prove" theological claims, but they confirm the Bible\'s historical reliability in details skeptics once mocked.'
+      ]
+    },
+
+    // Card 7: Fill in the Blank
+    {
+      type: 'fillblank',
+      prompt: 'The Tel Dan Stele, discovered in 1993, mentions the "House of ________," confirming his historical existence.',
+      correctAnswer: 'David',
+      explanation: 'The Tel Dan Stele is a stone inscription that mentions the "House of David," providing archaeological evidence that King David was a real historical figure, not just a legend.'
+    },
+
+    // Card 8: Archaeological Challenges
+    {
+      type: 'content',
+      title: 'Archaeological Challenges: The Complications',
+      content: [
+        'Archaeology also raises questions:',
+        '🏜️ **The Exodus**: No direct evidence for 2+ million Israelites wandering 40 years in Sinai. Some scholars suggest smaller numbers; others see theological history rather than documentary history.',
+        '🧱 **Jericho\'s walls**: Joshua\'s conquest (c. 1400 BC) doesn\'t match archaeological evidence for Jericho\'s destruction. Possible explanations: dating debates, theological narrative vs. strict history.',
+        '🏘️ **Nazareth**: Limited 1st century evidence (though recent finds confirm small village).',
+        '⚔️ **Conquest vs. settlement**: Archaeological evidence suggests gradual settlement rather than sudden military conquest.',
+        'These don\'t "disprove" the Bible but challenge simplistic readings.',
+        'They remind us: **The Bible is ancient literature with complex relationships to history, not a modern documentary.**'
+      ],
+      highlight: '💡 Archaeological questions don\'t destroy faith—they invite us to read the Bible more carefully and thoughtfully'
+    },
+
+    // Card 9: Quiz on Archaeology
+    {
+      type: 'quiz',
+      question: 'What is the relationship between archaeology and biblical faith?',
+      options: [
+        'Archaeology proves every biblical claim',
+        'Archaeology disproves the Bible',
+        'Archaeology confirms historical contexts and details but doesn\'t prove theological claims',
+        'Archaeology is irrelevant to faith'
+      ],
+      correctAnswer: 2,
+      explanation: 'Archaeology confirms the Bible\'s historical grounding—real people, places, and events—but doesn\'t "prove" theological claims like resurrection or miracles. It shows the Bible emerged from real history, not mythology, which strengthens (but doesn\'t replace) faith.'
+    },
+
+    // Card 10: Recent Discoveries
+    {
+      type: 'content',
+      title: 'Recent Discoveries and Ongoing Work',
+      content: [
+        'Biblical archaeology continues with exciting finds:',
+        '📜 **P52 (John Rylands Papyrus)**: Earliest NT fragment (John 18, c. 125 AD)',
+        '📖 **P46 (Chester Beatty Papyrus)**: Paul\'s letters, c. 200 AD',
+        '📕 **Codex Sinaiticus** (1844): 4th century complete NT, discovered in monastery',
+        '⚠️ **Museum of the Bible controversies**: Fake Dead Sea Scroll fragments exposed (2018)—reminder to verify provenance',
+        '🏛️ **Tel Gezer inscription**: Confirms biblical place names',
+        '🏰 **Khirbet Qeiyafa**: Possible site of biblical Shaaraim',
+        '💻 **Digital technology**: Multispectral imaging reveals text on burnt scrolls',
+        'Archaeology won\'t answer every question—much ancient evidence is lost to time.',
+        'But it consistently shows **the Bible emerged from real historical contexts, featuring real people and places**.'
+      ]
+    },
+
+    // Card 11: Matching Game - Evidence Types
+    {
+      type: 'matching',
+      title: 'Match the Evidence Type',
+      pairs: [
+        {
+          term: 'Confirmations',
+          definition: 'Pool of Siloam, Pontius Pilate inscription'
+        },
+        {
+          term: 'Challenges',
+          definition: 'Exodus evidence, Jericho conquest timing'
+        },
+        {
+          term: 'Manuscripts',
+          definition: 'Dead Sea Scrolls, P52 papyrus'
+        },
+        {
+          term: 'Gnostic Texts',
+          definition: 'Nag Hammadi library (2nd-3rd century)'
+        }
+      ]
+    },
+
+    // Card 12: Final Quiz
+    {
+      type: 'quiz',
+      question: 'Which biblical figure\'s existence was confirmed by the Tel Dan Stele?',
+      options: [
+        'Moses',
+        'Abraham',
+        'King David',
+        'Jesus'
+      ],
+      correctAnswer: 2,
+      explanation: 'The Tel Dan Stele (1993 discovery) mentions the "House of David," confirming David as a historical figure. This was significant because some scholars had questioned David\'s existence.'
+    },
+
+    // Card 13: Completion
+    {
+      type: 'completion',
+      title: 'Archaeology Expert! 🎉',
+      message: 'You\'ve completed "Archaeology & the Bible"! You now understand how archaeological discoveries confirm, challenge, and illuminate Scripture.',
+      badge: {
+        icon: '🏺',
+        name: 'Biblical Archaeologist',
+        description: 'Completed Lesson 7: Archaeology & the Bible'
+      }
+    }
+  ]
+};
+
+// Interactive Lesson 8: Your Bible's Backstory
+
+export const lesson8Data = {
+  id: 8,
+  title: "Your Bible's Backstory",
+  subtitle: "Practical skills for informed Bible reading",
+  cards: [
+    // Card 1: Introduction
+    {
+      type: 'content',
+      title: 'Your Journey Complete!',
+      subtitle: 'Your Bible\'s Backstory',
+      content: [
+        'You\'ve journeyed through **2,000+ years** of biblical history:',
+        '✅ From oral tradition to manuscript copying',
+        '✅ From Latin Vulgate to English translations',
+        '✅ From disputed canons to archaeological discoveries',
+        'Now it\'s time to bring it all together with **practical skills**.',
+        'This final lesson equips you to read your Bible with informed confidence:',
+        '• Understanding footnotes',
+        '• Choosing translations wisely',
+        '• Recognizing textual issues',
+        '• Selecting study resources that fit your needs',
+        '**You\'re about to become a much more informed Bible reader!**'
+      ],
+      highlight: '🎯 Goal: Develop practical skills for confident, informed Bible reading'
+    },
+
+    // Card 2: Decoding Manuscript Footnotes
+    {
+      type: 'content',
+      title: 'Decoding Manuscript Footnotes',
+      content: [
+        'Open your Bible to almost any page and you\'ll see small letters (a, b, c) with footnotes at the bottom.',
+        'These aren\'t distractions—they\'re **windows into textual history**!',
+        '📝 **Common footnote types**:',
+        '📌 **"Some manuscripts read..."**: Indicates a variant reading in ancient manuscripts. Example: Romans 8:28 might note different word order. Usually minor.',
+        '📌 **"The earliest manuscripts do not include..."**: Signals significant textual questions. Example: Mark 16:9-20.',
+        '📌 **"Or..."**: Alternative translations of the same Greek/Hebrew word. Example: "justify" or "declare righteous."',
+        '📌 **"Greek: ..."**: Shows the original language when English doesn\'t capture nuance.',
+        'These footnotes don\'t mean your Bible is unreliable—they mean **translators are being honest** about uncertainty and giving you full information.',
+        '💪 Embrace them! They show scholarly integrity.'
+      ]
+    },
+
+    // Card 3: Quiz on Footnotes
+    {
+      type: 'quiz',
+      question: 'What does a footnote saying "Some manuscripts read..." indicate?',
+      options: [
+        'The Bible is unreliable',
+        'There is a minor variation between ancient manuscripts',
+        'You should stop reading that version',
+        'The translators made a mistake'
+      ],
+      correctAnswer: 1,
+      explanation: 'This footnote indicates a minor variation between ancient manuscript families. It shows transparency and honesty—translators are giving you full information about textual evidence. Most variants are insignificant spelling or word order differences.'
+    },
+
+    // Card 4: Know Your Translation's Approach
+    {
+      type: 'content',
+      title: 'Know Your Translation\'s Approach',
+      content: [
+        'Every Bible includes an introduction or preface explaining the translation philosophy. **Read it!**',
+        '🔍 **Look for**:',
+        '📚 **Source texts**: Nestle-Aland/UBS for NT? Biblia Hebraica for OT?',
+        '⚖️ **Translation philosophy**: Formal (word-for-word) or dynamic (thought-for-thought)?',
+        '👥 **Committee composition**: Denominational? Ecumenical? Conservative? Liberal?',
+        '🎯 **Target audience**: Scholars? New believers? Children?',
+        '✝️ **Example - ESV**: Uses NA28 Greek text, formal equivalence, evangelical committee, aims for word-for-word accuracy.',
+        '📖 **Example - NIV**: Uses eclectic Greek text, dynamic equivalence, evangelical committee, prioritizes clarity and readability.',
+        '🎓 **Example - NRSV**: Ecumenical committee, formal equivalence, gender-inclusive language, scholarly.',
+        'Knowing your translation\'s approach helps you understand its strengths and limitations!'
+      ]
+    },
+
+    // Card 5: Matching Game - Translation Features
+    {
+      type: 'matching',
+      title: 'Match the Translation Feature',
+      pairs: [
+        {
+          term: 'Source Texts',
+          definition: 'The original language manuscripts used (NA28, etc.)'
+        },
+        {
+          term: 'Translation Philosophy',
+          definition: 'Formal equivalence vs. dynamic equivalence'
+        },
+        {
+          term: 'Committee Composition',
+          definition: 'Who translated it (denominational, ecumenical, etc.)'
+        },
+        {
+          term: 'Target Audience',
+          definition: 'Who it\'s designed for (scholars, new believers, etc.)'
+        }
+      ]
+    },
+
+    // Card 6: Brackets and Textual Markers
+    {
+      type: 'content',
+      title: 'Brackets, Italics, and Textual Markers',
+      content: [
+        'Your Bible uses typography to signal textual issues:',
+        '📌 **Brackets [text]**: Indicates significant textual uncertainty.',
+        '• **John 7:53-8:11** (woman caught in adultery) is bracketed in most modern Bibles because it\'s absent from earliest manuscripts. The story is likely historical tradition but wasn\'t originally in John\'s Gospel.',
+        '• **Mark 16:9-20** (longer ending with snake-handling) similarly bracketed.',
+        '📌 **Double brackets [[text]]**: Even more uncertain.',
+        '📌 **Italics** (in KJV): Added words for English readability not in the original.',
+        '📌 **Paragraph headings**: Added by publishers, not in the original text. Don\'t treat them as Scripture.',
+        '📌 **Red letters** (Jesus\'s words): Helpful but interpretive—sometimes debated what counts as Jesus\'s words.',
+        'Understanding these markers helps you read critically and recognize where uncertainty exists.'
+      ],
+      highlight: '💡 These markers aren\'t hiding anything—they\'re showing you exactly where scholars have questions!'
+    },
+
+    // Card 7: Fill in the Blank
+    {
+      type: 'fillblank',
+      prompt: 'In modern Bibles, text enclosed in ________ indicates significant textual uncertainty, like John 7:53-8:11.',
+      correctAnswer: 'brackets',
+      explanation: 'Brackets [ ] in modern Bibles indicate passages with significant textual uncertainty—they\'re not found in the earliest or best manuscripts but are included because they\'re part of church tradition and may be historically authentic.'
+    },
+
+    // Card 8: Choosing a Study Bible
+    {
+      type: 'content',
+      title: 'Choosing a Study Bible',
+      content: [
+        'Study Bibles add notes, maps, articles, and cross-references. But not all study Bibles are alike!',
+        '🔬 **For deep word study**: ESV Study Bible, NASB Study Bible—formal translations with detailed notes',
+        '⚖️ **For balanced evangelical perspective**: NIV Study Bible, CSB Study Bible—readable with solid scholarship',
+        '🎓 **For ecumenical/academic**: NRSV Oxford Annotated, HarperCollins Study Bible—multiple viewpoints, scholarly',
+        '✝️ **For Catholic readers**: Catholic Study Bible, Ignatius Catholic Study Bible—includes Deuterocanonical books, Catholic tradition',
+        '🙏 **For devotional use**: Life Application Study Bible, NLT Study Bible—practical application focus',
+        '🏛️ **For historical/cultural context**: IVP Bible Background Commentary, Zondervan Illustrated Bible Backgrounds',
+        '🚩 **Red flags**: Study Bibles pushing fringe interpretations, claiming exclusive correctness, or ignoring mainstream scholarship'
+      ]
+    },
+
+    // Card 9: Quiz on Study Resources
+    {
+      type: 'quiz',
+      question: 'For devotional reading and practical application, which type of study Bible is best?',
+      options: [
+        'NRSV Oxford Annotated (academic)',
+        'ESV Study Bible (deep word study)',
+        'Life Application Study Bible (practical application)',
+        'Catholic Study Bible (Catholic tradition)'
+      ],
+      correctAnswer: 2,
+      explanation: 'For devotional use and practical application, study Bibles like the Life Application Study Bible or NLT Study Bible are designed to help you apply Scripture to daily life, rather than focusing on technical scholarly details.'
+    },
+
+    // Card 10: Becoming a Confident Reader
+    {
+      type: 'content',
+      title: 'Becoming a Confident Bible Reader',
+      content: [
+        'You now have the tools to read Scripture with informed confidence! 🎉',
+        '📋 **Practical habits**:',
+        '1️⃣ **Compare translations**: Check 2-3 translations for important passages. Differences often reveal interpretive choices.',
+        '2️⃣ **Read footnotes**: Don\'t skip them! They provide crucial context.',
+        '3️⃣ **Use study helps wisely**: Commentaries and study Bibles are helpful but not infallible.',
+        '4️⃣ **Understand genre**: Read poetry as poetry, apocalyptic as apocalyptic, history as ancient history.',
+        '5️⃣ **Learn some Greek/Hebrew**: Even basic knowledge helps (free resources: Mounce\'s Greek, Pratico\'s Hebrew).',
+        '6️⃣ **Join a Bible study**: Community guards against individualistic misinterpretation.',
+        '7️⃣ **Pray for illumination**: The Holy Spirit guides understanding (1 Cor 2:10-14).'
+      ],
+      highlight: '💪 You don\'t need to be a scholar to read the Bible faithfully—but a little knowledge goes a long way!'
+    },
+
+    // Card 11: Matching Game - Reading Strategies
+    {
+      type: 'matching',
+      title: 'Match the Reading Strategy',
+      pairs: [
+        {
+          term: 'Compare Translations',
+          definition: 'Check 2-3 versions to see interpretive choices'
+        },
+        {
+          term: 'Read Footnotes',
+          definition: 'Don\'t skip them—they provide crucial context'
+        },
+        {
+          term: 'Understand Genre',
+          definition: 'Read poetry as poetry, history as history'
+        },
+        {
+          term: 'Join a Bible Study',
+          definition: 'Community guards against misinterpretation'
+        }
+      ]
+    },
+
+    // Card 12: Final Quiz
+    {
+      type: 'quiz',
+      question: 'What is the best practice for becoming a confident Bible reader?',
+      options: [
+        'Only read one translation and never question it',
+        'Ignore footnotes because they just confuse things',
+        'Memorize Greek and Hebrew before reading',
+        'Compare translations, read footnotes, understand genre, and use study helps wisely'
+      ],
+      correctAnswer: 3,
+      explanation: 'Confident Bible reading involves comparing translations, reading footnotes, understanding literary genres, using study resources wisely, and combining scholarship with prayer. It doesn\'t require expertise, just curiosity and willingness to learn.'
+    },
+
+    // Card 13: Course Completion
+    {
+      type: 'completion',
+      title: 'Congratulations! 🎉🎊',
+      message: 'You\'ve completed ALL 8 lessons of the Bible History Study Guide! You\'re now an informed, confident Bible reader equipped to understand Scripture\'s rich backstory. Share what you\'ve learned with others!',
+      badge: {
+        icon: '🏆',
+        name: 'Bible History Master',
+        description: 'Completed ALL 8 Lessons: From Mouth to Manuscript to Modern Reader'
+      }
+    }
+  ]
+};
