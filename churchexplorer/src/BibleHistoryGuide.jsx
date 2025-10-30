@@ -1084,12 +1084,12 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${
                         isCompleted ? 'bg-green-100 text-green-700' : isLocked ? 'bg-gray-200 text-gray-400' : 'bg-amber-100 text-amber-700'
                       }`}>
-                        {isCompleted ? <CheckCircle className="w-6 h-6" /> : isLocked ? <Lock className="w-6 h-6" /> : lesson.lesson}
+                        {isCompleted ? <CheckCircle className="w-6 h-6" /> : lesson.lesson}
                       </div>
                       <div className="text-left">
                         <h3 className={`text-xl font-bold ${isLocked ? 'text-gray-400' : 'text-gray-800'}`}>{lesson.title}</h3>
                         <p className={`${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {isLocked ? 'Complete previous lesson to unlock' : lesson.subtitle}
+                          {lesson.subtitle}
                         </p>
                       </div>
                     </div>
