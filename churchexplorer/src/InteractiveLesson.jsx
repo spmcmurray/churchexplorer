@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
 
 // Helper function to parse markdown bold syntax
@@ -268,6 +268,17 @@ const MatchingCard = ({ card, cardIndex, onComplete }) => {
   const [selected, setSelected] = useState(null);
   const [completed, setCompleted] = useState(false);
 
+  // Shuffle definitions once when component mounts
+  const shuffledDefinitions = useMemo(() => {
+    const definitions = card.pairs.map(pair => pair.definition);
+    // Fisher-Yates shuffle algorithm
+    for (let i = definitions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [definitions[i], definitions[j]] = [definitions[j], definitions[i]];
+    }
+    return definitions;
+  }, [card.pairs]);
+
   const handleTermClick = (term) => {
     if (completed) return;
     setSelected(term);
@@ -317,17 +328,17 @@ const MatchingCard = ({ card, cardIndex, onComplete }) => {
 
         <div className="space-y-3">
           <h4 className="font-bold text-gray-800 text-lg mb-4">Definitions</h4>
-          {card.pairs.map((pair, idx) => (
+          {shuffledDefinitions.map((definition, idx) => (
             <button
               key={idx}
-              onClick={() => handleDefinitionClick(pair.definition)}
+              onClick={() => handleDefinitionClick(definition)}
               className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
-                Object.values(matches).includes(pair.definition)
+                Object.values(matches).includes(definition)
                   ? 'border-green-500 bg-green-50 text-green-900'
                   : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md'
               }`}
             >
-              <span className="text-base">{pair.definition}</span>
+              <span className="text-base">{definition}</span>
             </button>
           ))}
         </div>
