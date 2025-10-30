@@ -1048,6 +1048,9 @@ const BibleHistoryGuide = ({ onNavigate }) => {
             const isCompleted = completedLessons.includes(lesson.lesson);
             const quizResult = quizResults[lesson.lesson];
 
+            // Check if this lesson has interactive mode (lessons 1-4)
+            const hasInteractiveMode = lesson.lesson >= 1 && lesson.lesson <= 4;
+
             return (
               <div
                 key={lesson.lesson}
@@ -1057,44 +1060,44 @@ const BibleHistoryGuide = ({ onNavigate }) => {
               >
                 {/* Lesson Header */}
                 <button
-                  onClick={() => setExpandedLesson(isExpanded ? null : lesson.lesson)}
-                  className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition"
+                  onClick={() => {
+                    if (hasInteractiveMode) {
+                      // Launch interactive mode directly for lessons 1-4
+                      setInteractiveMode(lesson.lesson);
+                    } else {
+                      // Toggle expand for lessons 5-8
+                      setExpandedLesson(isExpanded ? null : lesson.lesson);
+                    }
+                  }}
+                  className="w-full p-6 hover:bg-gray-50 transition"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${
-                      isCompleted ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-                    }`}>
-                      {isCompleted ? <CheckCircle className="w-6 h-6" /> : lesson.lesson}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${
+                        isCompleted ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {isCompleted ? <CheckCircle className="w-6 h-6" /> : lesson.lesson}
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-bold text-gray-800">{lesson.title}</h3>
+                        <p className="text-gray-600">{lesson.subtitle}</p>
+                      </div>
                     </div>
-                    <div className="text-left">
-                      <h3 className="text-xl font-bold text-gray-800">{lesson.title}</h3>
-                      <p className="text-gray-600">{lesson.subtitle}</p>
-                    </div>
+
+                    {/* Show interactive icon for lessons 1-4, chevron for 5-8 */}
+                    {hasInteractiveMode ? (
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-5 h-5 text-purple-600" />
+                        <span className="text-sm font-semibold text-purple-600">Interactive</span>
+                      </div>
+                    ) : (
+                      isExpanded ? <ChevronDown className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />
+                    )}
                   </div>
-                  {isExpanded ? <ChevronDown className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
                 </button>
 
-                {/* Interactive Mode Button for Lessons 1-4 */}
-                {(lesson.lesson === 1 || lesson.lesson === 2 || lesson.lesson === 3 || lesson.lesson === 4) && !isExpanded && (
-                  <div className="px-6 pb-4 border-t-2 border-amber-100">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setInteractiveMode(lesson.lesson);
-                      }}
-                      className="w-full mt-4 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold hover:from-purple-600 hover:to-pink-600 transition shadow-lg"
-                    >
-                      <Zap className="w-5 h-5" />
-                      Try Interactive Mode! 🎮
-                    </button>
-                    <p className="text-center text-sm text-gray-600 mt-2">
-                      Learn through games, quizzes, and interactive cards
-                    </p>
-                  </div>
-                )}
-
-                {/* Lesson Content - Expandable */}
-                {isExpanded && (
+                {/* Lesson Content - Expandable (only for lessons 5-8) */}
+                {!hasInteractiveMode && isExpanded && (
                   <div className="px-6 pb-6 border-t-2 border-gray-100 pt-6">
                     {/* Introduction */}
                     <div className="mb-6">
