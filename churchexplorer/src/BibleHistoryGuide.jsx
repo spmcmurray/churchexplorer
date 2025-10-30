@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target, Scroll, Lock } from 'lucide-react';
+import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, TrendingUp } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
 
@@ -56,6 +56,33 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     }
   }, []);
 
+  // Calculate quiz accuracy across completed lessons
+  const calculateQuizAccuracy = () => {
+    const savedResults = localStorage.getItem('bibleHistoryQuizResults');
+    if (!savedResults) return 0;
+
+    const results = JSON.parse(savedResults);
+    const lessonResults = Object.values(results);
+
+    if (lessonResults.length === 0) return 0;
+
+    const totalScore = lessonResults.reduce((sum, result) => {
+      return sum + (result.score / result.total) * 100;
+    }, 0);
+
+    return Math.round(totalScore / lessonResults.length);
+  };
+
+  // Get mastery level based on completion
+  const getMasteryLevel = (completed, total) => {
+    const percentage = (completed / total) * 100;
+    if (percentage === 0) return 'Beginner';
+    if (percentage < 38) return 'Novice';
+    if (percentage < 63) return 'Scholar';
+    if (percentage < 88) return 'Expert';
+    return 'Master';
+  };
+
   // Save progress to localStorage
   const markLessonComplete = (lessonNum) => {
     if (!completedLessons.includes(lessonNum)) {
@@ -80,10 +107,18 @@ const BibleHistoryGuide = ({ onNavigate }) => {
       }
     });
 
+    const quizResult = { score: correct, total: quiz.length };
+
     setQuizResults(prev => ({
       ...prev,
-      [lessonNum]: { score: correct, total: quiz.length }
+      [lessonNum]: quizResult
     }));
+
+    // Save quiz results to localStorage for accuracy calculation
+    const savedResults = localStorage.getItem('bibleHistoryQuizResults');
+    const results = savedResults ? JSON.parse(savedResults) : {};
+    results[lessonNum] = quizResult;
+    localStorage.setItem('bibleHistoryQuizResults', JSON.stringify(results));
 
     if (correct >= quiz.length * 0.7) {
       markLessonComplete(lessonNum);
@@ -911,7 +946,10 @@ const BibleHistoryGuide = ({ onNavigate }) => {
   const stats = {
     completed: completedLessons.length,
     total: curriculum.length,
-    percentage: Math.round((completedLessons.length / curriculum.length) * 100)
+    percentage: Math.round((completedLessons.length / curriculum.length) * 100),
+    badges: completedLessons.length, // Each completed lesson earns a badge
+    quizAccuracy: calculateQuizAccuracy(),
+    masteryLevel: getMasteryLevel(completedLessons.length, curriculum.length)
   };
 
   // If in interactive mode, show interactive lesson
@@ -1038,33 +1076,31 @@ const BibleHistoryGuide = ({ onNavigate }) => {
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-semibold">Completed</span>
               </div>
-              <p className="text-2xl font-bold text-amber-900">{stats.completed}</p>
+              <p className="text-2xl font-bold text-amber-900">{stats.completed}/{stats.total}</p>
             </div>
 
-            <div className="bg-orange-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-orange-700 mb-1">
-                <Target className="w-5 h-5" />
-                <span className="font-semibold">Remaining</span>
+            <div className="bg-purple-50 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-purple-700 mb-1">
+                <Trophy className="w-5 h-5" />
+                <span className="font-semibold">Badges Earned</span>
               </div>
-              <p className="text-2xl font-bold text-orange-900">{stats.total - stats.completed}</p>
-            </div>
-
-            <div className="bg-blue-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-blue-700 mb-1">
-                <Calendar className="w-5 h-5" />
-                <span className="font-semibold">Total Lessons</span>
-              </div>
-              <p className="text-2xl font-bold text-blue-900">{stats.total}</p>
+              <p className="text-2xl font-bold text-purple-900">{stats.badges}</p>
             </div>
 
             <div className="bg-green-50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-green-700 mb-1">
-                <Award className="w-5 h-5" />
-                <span className="font-semibold">Next Lesson</span>
+                <TrendingUp className="w-5 h-5" />
+                <span className="font-semibold">Quiz Accuracy</span>
               </div>
-              <p className="text-2xl font-bold text-green-900">
-                {stats.completed < stats.total ? stats.completed + 1 : '✓'}
-              </p>
+              <p className="text-2xl font-bold text-green-900">{stats.quizAccuracy > 0 ? `${stats.quizAccuracy}%` : 'N/A'}</p>
+            </div>
+
+            <div className="bg-blue-50 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-blue-700 mb-1">
+                <Award className="w-5 h-5" />
+                <span className="font-semibold">Mastery Level</span>
+              </div>
+              <p className="text-2xl font-bold text-blue-900">{stats.masteryLevel}</p>
             </div>
           </div>
         </div>
