@@ -1008,8 +1008,8 @@ const BibleHistoryGuide = ({ onNavigate }) => {
             An 8-Lesson Journey from Ancient Scrolls to Modern Translations
           </p>
           <p className="text-lg text-amber-50 max-w-2xl mx-auto">
-            Perfect for beginners! Discover how the Bible was written, preserved, and translated.
-            Track your progress as you learn. No prior knowledge required.
+            Discover how the Bible was written, preserved, and translated.
+            Track your progress as you learn.
           </p>
         </div>
       </div>
