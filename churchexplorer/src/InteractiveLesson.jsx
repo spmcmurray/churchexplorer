@@ -41,17 +41,19 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   };
 
   const handleAnswer = (cardIndex, answer, isCorrect) => {
-    setAnswers(prev => ({ ...prev, [cardIndex]: answer }));
-    setShowFeedback(prev => ({ ...prev, [cardIndex]: true }));
-
-    // Track quiz results for accuracy calculation
+    // Track quiz results for accuracy calculation BEFORE updating answers
     const card = lessonData.cards[cardIndex];
-    if (card.type === 'quiz' && !answers[cardIndex]) {
+    const isFirstAttempt = !answers[cardIndex];
+
+    if (card.type === 'quiz' && isFirstAttempt) {
       setQuizResults(prev => ({
         correct: prev.correct + (isCorrect ? 1 : 0),
         total: prev.total + 1
       }));
     }
+
+    setAnswers(prev => ({ ...prev, [cardIndex]: answer }));
+    setShowFeedback(prev => ({ ...prev, [cardIndex]: true }));
 
     if (isCorrect && !completedCards.has(cardIndex)) {
       setXp(prev => prev + 10);
