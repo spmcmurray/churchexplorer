@@ -267,6 +267,7 @@ const MatchingCard = ({ card, cardIndex, onComplete }) => {
   const [matches, setMatches] = useState({});
   const [selected, setSelected] = useState(null);
   const [completed, setCompleted] = useState(false);
+  const [wrongMatch, setWrongMatch] = useState(null);
 
   // Shuffle definitions once when component mounts
   const shuffledDefinitions = useMemo(() => {
@@ -280,24 +281,36 @@ const MatchingCard = ({ card, cardIndex, onComplete }) => {
   }, [card.pairs]);
 
   const handleTermClick = (term) => {
-    if (completed) return;
+    if (completed || matches[term]) return; // Don't allow clicking already matched terms
     setSelected(term);
   };
 
   const handleDefinitionClick = (definition) => {
-    if (completed || !selected) return;
+    if (completed || !selected || Object.values(matches).includes(definition)) return;
 
-    const newMatches = { ...matches, [selected]: definition };
-    setMatches(newMatches);
-    setSelected(null);
+    // Find the correct definition for the selected term
+    const correctPair = card.pairs.find(pair => pair.term === selected);
+    const isCorrect = correctPair && correctPair.definition === definition;
 
-    // Check if all matched
-    if (Object.keys(newMatches).length === card.pairs.length) {
-      const allCorrect = card.pairs.every(pair => newMatches[pair.term] === pair.definition);
-      if (allCorrect) {
+    if (isCorrect) {
+      // Correct match!
+      const newMatches = { ...matches, [selected]: definition };
+      setMatches(newMatches);
+      setSelected(null);
+      setWrongMatch(null);
+
+      // Check if all matched
+      if (Object.keys(newMatches).length === card.pairs.length) {
         setCompleted(true);
         onComplete();
       }
+    } else {
+      // Wrong match - show feedback briefly
+      setWrongMatch({ term: selected, definition });
+      setTimeout(() => {
+        setWrongMatch(null);
+        setSelected(null);
+      }, 1500);
     }
   };
 
@@ -309,40 +322,59 @@ const MatchingCard = ({ card, cardIndex, onComplete }) => {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-3">
           <h4 className="font-bold text-gray-800 text-lg mb-4">Terms</h4>
-          {card.pairs.map((pair, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleTermClick(pair.term)}
-              className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
-                selected === pair.term
-                  ? 'border-purple-500 bg-purple-50 shadow-md'
-                  : matches[pair.term]
-                  ? 'border-green-500 bg-green-50 text-green-900'
-                  : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 hover:shadow-md'
-              }`}
-            >
-              <span className="font-semibold">{pair.term}</span>
-            </button>
-          ))}
+          {card.pairs.map((pair, idx) => {
+            const isWrongMatch = wrongMatch && wrongMatch.term === pair.term;
+            return (
+              <button
+                key={idx}
+                onClick={() => handleTermClick(pair.term)}
+                disabled={matches[pair.term] || completed}
+                className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
+                  isWrongMatch
+                    ? 'border-red-500 bg-red-50 text-red-900 shake'
+                    : selected === pair.term
+                    ? 'border-purple-500 bg-purple-50 shadow-md'
+                    : matches[pair.term]
+                    ? 'border-green-500 bg-green-50 text-green-900'
+                    : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 hover:shadow-md'
+                }`}
+              >
+                <span className="font-semibold">{pair.term}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="space-y-3">
           <h4 className="font-bold text-gray-800 text-lg mb-4">Definitions</h4>
-          {shuffledDefinitions.map((definition, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleDefinitionClick(definition)}
-              className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
-                Object.values(matches).includes(definition)
-                  ? 'border-green-500 bg-green-50 text-green-900'
-                  : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md'
-              }`}
-            >
-              <span className="text-base">{definition}</span>
-            </button>
-          ))}
+          {shuffledDefinitions.map((definition, idx) => {
+            const isWrongMatch = wrongMatch && wrongMatch.definition === definition;
+            const isMatched = Object.values(matches).includes(definition);
+            return (
+              <button
+                key={idx}
+                onClick={() => handleDefinitionClick(definition)}
+                disabled={isMatched || completed}
+                className={`w-full text-left p-5 rounded-xl border-2 transition font-medium shadow-sm ${
+                  isWrongMatch
+                    ? 'border-red-500 bg-red-50 text-red-900 shake'
+                    : isMatched
+                    ? 'border-green-500 bg-green-50 text-green-900'
+                    : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md'
+                }`}
+              >
+                <span className="text-base">{definition}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {wrongMatch && (
+        <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl">
+          <p className="text-red-800 font-bold">❌ Not quite! Try again.</p>
+        </div>
+      )}
 
       {completed && (
         <div className="mt-8 p-5 bg-green-50 border-l-4 border-green-500 rounded-xl">

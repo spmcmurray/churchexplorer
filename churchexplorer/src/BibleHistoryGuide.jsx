@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, Target } from 'lucide-react';
+import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, Star } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
 
@@ -56,6 +56,12 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     }
   }, []);
 
+  // Calculate total XP earned
+  const getTotalXP = () => {
+    const savedXP = localStorage.getItem('bibleHistoryTotalXP');
+    return savedXP ? parseInt(savedXP) : 0;
+  };
+
   // Get mastery level based on completion
   const getMasteryLevel = (completed, total) => {
     const percentage = (completed / total) * 100;
@@ -110,6 +116,14 @@ const BibleHistoryGuide = ({ onNavigate }) => {
 
   const handleCompleteInteractive = (lessonNum, xpEarned) => {
     markLessonComplete(lessonNum);
+
+    // Save XP to localStorage
+    if (xpEarned) {
+      const currentXP = getTotalXP();
+      const newTotalXP = currentXP + xpEarned;
+      localStorage.setItem('bibleHistoryTotalXP', newTotalXP.toString());
+    }
+
     setInteractiveMode(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -931,7 +945,9 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     total: curriculum.length,
     percentage: Math.round((completedLessons.length / curriculum.length) * 100),
     badges: completedLessons.length, // Each completed lesson earns a badge
-    masteryLevel: getMasteryLevel(completedLessons.length, curriculum.length)
+    masteryLevel: getMasteryLevel(completedLessons.length, curriculum.length),
+    xp: getTotalXP(),
+    maxXP: 800 // 40 activities × 10 XP + 8 lessons × 50 XP bonus
   };
 
   // If in interactive mode, show interactive lesson
@@ -1079,12 +1095,10 @@ const BibleHistoryGuide = ({ onNavigate }) => {
 
             <div className="bg-green-50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-green-700 mb-1">
-                <Target className="w-5 h-5" />
-                <span className="font-semibold">Next Lesson</span>
+                <Star className="w-5 h-5" />
+                <span className="font-semibold">Total XP</span>
               </div>
-              <p className="text-2xl font-bold text-green-900">
-                {stats.completed < stats.total ? `#${stats.completed + 1}` : '✓'}
-              </p>
+              <p className="text-2xl font-bold text-green-900">{stats.xp}/{stats.maxXP}</p>
             </div>
           </div>
         </div>
