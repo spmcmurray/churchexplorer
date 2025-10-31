@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Flame, PlayCircle, Sparkles } from 'lucide-react';
 import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile, saveProfile } from './services/progressService';
+import DailyChallenge from './DailyChallenge';
 
 const Home = ({ onNavigate, onStartOnboarding }) => {
   const overall = getOverallProgress();
@@ -11,6 +12,13 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
   const firstTime = useMemo(() => !existingProfile && overall.percentage === 0, [existingProfile, overall.percentage]);
   const [startingPoint, setStartingPoint] = useState('');
   const canCreate = !!startingPoint;
+
+  const getTotalXP = () => {
+    const bibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
+    const churchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
+    const apologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
+    return bibleXP + churchXP + apologeticsXP;
+  };
 
   const handleQuickStart = () => {
     if (!canCreate) return;
@@ -96,7 +104,13 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
                 <div className="flex items-center gap-2 text-slate-700 font-bold">
                   <Flame className="w-5 h-5" /> Your Progress
                 </div>
-                <span className="text-2xl font-black text-blue-700">{overall.percentage}%</span>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <div className="text-xs text-slate-500 font-medium">Total XP</div>
+                    <div className="text-xl font-black text-amber-600">{getTotalXP()}</div>
+                  </div>
+                  <span className="text-2xl font-black text-blue-700">{overall.percentage}%</span>
+                </div>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-3 mb-6">
                 <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full" style={{ width: `${overall.percentage}%` }}></div>
@@ -129,6 +143,11 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
               recommended={firstTime && startingPoint === 'apologetics'}
             />
           </div>
+        </div>
+
+        {/* Daily Challenge */}
+        <div className="mt-6">
+          <DailyChallenge onNavigate={onNavigate} />
         </div>
       </div>
 

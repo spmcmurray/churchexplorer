@@ -1,0 +1,22 @@
+nohup: ignoring input
+
+> churchexplorer@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  206.68 kB  build/static/js/main.6dad50af.js
+  7.74 kB    build/static/css/main.7f08cd0e.css
+
+The project was built assuming it is hosted at ./.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
