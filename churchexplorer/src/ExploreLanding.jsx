@@ -37,7 +37,7 @@ const ExploreLanding = ({ onNavigate }) => {
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-black mb-4">Explore Timelines</h1>
           <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
-            Visual journeys through Scripture and Church history with a coherent, modern UI.
+            Explore the story of Scripture and Christianity through interactive visual timelines.
           </p>
         </div>
       </div>
@@ -52,8 +52,7 @@ const ExploreLanding = ({ onNavigate }) => {
             >
               <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${c.color} text-white flex items-center justify-center mb-4`}>{c.icon}</div>
               <h2 className="text-xl font-bold text-slate-900">{c.title}</h2>
-              <p className="text-slate-600 mb-2">{c.subtitle}</p>
-              <span className="inline-block text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-full">Refreshed UI</span>
+              <p className="text-slate-600">{c.subtitle}</p>
             </button>
           ))}
         </div>
