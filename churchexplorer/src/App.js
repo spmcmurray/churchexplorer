@@ -12,10 +12,27 @@ import DenominationExplorer from './DenominationExplorer';
 
 function App() {
   const [currentView, setCurrentView] = useState('home'); // 'home','learn','explorer','study-guide','bible-history','apologetics','onboarding'
+  const [navigationHistory, setNavigationHistory] = useState(['home']); // Track navigation history
 
   const navigate = (view /*, optional payload */) => {
     setCurrentView(view);
+    setNavigationHistory(prev => [...prev, view]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goBack = () => {
+    if (navigationHistory.length > 1) {
+      // Remove current view and go to previous
+      const newHistory = [...navigationHistory];
+      newHistory.pop(); // Remove current
+      const previousView = newHistory[newHistory.length - 1];
+      setNavigationHistory(newHistory);
+      setCurrentView(previousView);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Default to home if no history
+      navigate('home');
+    }
   };
 
   return (
@@ -73,19 +90,19 @@ function App() {
           <Home onNavigate={navigate} onStartOnboarding={() => navigate('onboarding')} />
         )}
         {currentView === 'learn' && (
-          <Paths onNavigate={navigate} />
+          <Paths onNavigate={navigate} onGoBack={goBack} />
         )}
         {currentView === 'explorer' && (
-          <ExploreLanding onNavigate={navigate} />
+          <ExploreLanding onNavigate={navigate} onGoBack={goBack} />
         )}
         {currentView === 'study-guide' && (
-          <ChurchHistoryGuide onNavigate={navigate} />
+          <ChurchHistoryGuide onNavigate={navigate} onGoBack={goBack} />
         )}
         {currentView === 'bible-history' && (
-          <BibleHistoryGuide onNavigate={navigate} />
+          <BibleHistoryGuide onNavigate={navigate} onGoBack={goBack} />
         )}
         {currentView === 'apologetics' && (
-          <ApologeticsGuide onNavigate={navigate} />
+          <ApologeticsGuide onNavigate={navigate} onGoBack={goBack} />
         )}
         {currentView === 'explore-church' && (
           <DenominationVisualizer initialView="church" onNavigate={navigate} />

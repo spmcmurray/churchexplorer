@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Scroll, BookOpen, Users, ArrowLeft } from 'lucide-react';
 
-const ExploreLanding = ({ onNavigate }) => {
+const ExploreLanding = ({ onNavigate, onGoBack }) => {
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -45,11 +45,11 @@ const ExploreLanding = ({ onNavigate }) => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Back button */}
         <button
-          onClick={() => onNavigate('home')}
+          onClick={() => onGoBack ? onGoBack() : onNavigate('home')}
           className="inline-flex items-center gap-2 px-4 py-2 mb-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Home</span>
+          <span>Back</span>
         </button>
 
         <div className="grid md:grid-cols-3 gap-6">

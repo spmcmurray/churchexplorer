@@ -5,7 +5,7 @@ import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './churchHistoryLessonData';
 import { scheduleReviews } from './services/reviewService';
 
-const ChurchHistoryGuide = ({ onNavigate }) => {
+const ChurchHistoryGuide = ({ onNavigate, onGoBack }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [quizAnswers, setQuizAnswers] = useState({});
@@ -350,11 +350,11 @@ const ChurchHistoryGuide = ({ onNavigate }) => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back button */}
         <button
-          onClick={() => onNavigate('paths')}
+          onClick={() => onGoBack ? onGoBack() : onNavigate('paths')}
           className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Learning Paths</span>
+          <span>Back</span>
         </button>
 
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-12 border-2 border-amber-100">

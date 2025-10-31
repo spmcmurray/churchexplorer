@@ -383,11 +383,11 @@ const ApologeticsGuide = ({ onNavigate }) => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back button */}
         <button
-          onClick={() => onNavigate('paths')}
+          onClick={() => onGoBack ? onGoBack() : onNavigate('paths')}
           className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Learning Paths</span>
+          <span>Back</span>
         </button>
 
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-12 border-2 border-blue-100">
