@@ -139,6 +139,10 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
             />
           )}
 
+          {card.type === 'reflection' && (
+            <ReflectionCard card={card} />
+          )}
+
           {card.type === 'completion' && (
             <CompletionCard
               card={card}
@@ -213,6 +217,7 @@ const ContentCard = ({ card, cardIndex, isAcknowledged, onAcknowledge }) => (
 // Quiz Card Component
 const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
   const [selected, setSelected] = useState(answer);
+  const [showHint, setShowHint] = useState(false);
 
   const handleSelect = (optionIndex) => {
     setSelected(optionIndex);
@@ -227,6 +232,26 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
 
       <div className="mb-8">
         <p className="text-xl font-bold text-gray-800 mb-6">{parseMarkdown(card.question)}</p>
+
+        {/* Hint Button */}
+        {card.hint && !showFeedback && (
+          <div className="mb-4">
+            {!showHint ? (
+              <button
+                onClick={() => setShowHint(true)}
+                className="text-purple-600 hover:text-purple-700 font-semibold text-sm flex items-center gap-1 transition"
+              >
+                💡 Need a hint?
+              </button>
+            ) : (
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <p className="text-purple-900 text-sm">
+                  <span className="font-bold">💡 Hint:</span> {parseMarkdown(card.hint)}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="space-y-3">
           {card.options.map((option, idx) => {
@@ -455,6 +480,58 @@ const FillBlankCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
           <p className="text-gray-800 text-lg leading-relaxed">{parseMarkdown(card.explanation)}</p>
         </div>
       )}
+    </div>
+  );
+};
+
+// Reflection Card Component
+const ReflectionCard = ({ card }) => {
+  const [thoughts, setThoughts] = useState('');
+  const [acknowledged, setAcknowledged] = useState(false);
+
+  return (
+    <div className="p-10">
+      <h3 className="text-3xl font-black text-gray-900 mb-2">💭 Pause & Reflect</h3>
+      <p className="text-gray-600 text-lg mb-8">Take a moment to think about what you've learned.</p>
+
+      <div className="mb-8">
+        <p className="text-xl font-bold text-gray-800 mb-6">{parseMarkdown(card.question)}</p>
+
+        <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 mb-6">
+          <p className="text-purple-900 text-sm mb-4">
+            <span className="font-bold">💡 This is just for you—</span> there's no right or wrong answer. Reflecting helps you remember and apply what you've learned.
+          </p>
+          <textarea
+            value={thoughts}
+            onChange={(e) => setThoughts(e.target.value)}
+            placeholder="Share your thoughts here (optional)..."
+            className="w-full p-4 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none resize-none"
+            rows={4}
+          />
+        </div>
+
+        {card.prompts && (
+          <div className="bg-blue-50 border-l-4 border-blue-500 rounded-xl p-5 mb-6">
+            <p className="text-blue-900 font-bold mb-3">💬 Think about:</p>
+            <ul className="space-y-2">
+              {card.prompts.map((prompt, idx) => (
+                <li key={idx} className="text-blue-800 text-base">
+                  • {prompt}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {!acknowledged && (
+          <button
+            onClick={() => setAcknowledged(true)}
+            className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-purple-700 transition shadow-lg"
+          >
+            Continue →
+          </button>
+        )}
+      </div>
     </div>
   );
 };

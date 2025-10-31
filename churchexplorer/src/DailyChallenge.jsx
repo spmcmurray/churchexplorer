@@ -338,19 +338,34 @@ const DailyChallenge = ({ onNavigate }) => {
           {challenge.type === 'trivia' ? 'Got it! 👍' : 'Submit Answer'}
         </button>
       ) : (
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           {!isCorrect && challenge.type !== 'trivia' && (
             <button
               onClick={handleTryAgain}
-              className="flex-1 px-6 py-3 bg-white/30 text-white rounded-xl font-bold hover:bg-white/40 transition"
+              className="w-full px-6 py-3 bg-white/30 text-white rounded-xl font-bold hover:bg-white/40 transition"
             >
               Try Again
             </button>
           )}
+          {/* Lesson-based review CTA */}
+          {isCorrect && challenge.requiredLesson && (
+            <button
+              onClick={() => {
+                const path = challenge.requiredLesson.path;
+                if (path === 'bible') onNavigate('bible');
+                else if (path === 'church') onNavigate('church');
+                else if (path === 'apologetics') onNavigate('apologetics');
+              }}
+              className="w-full px-6 py-3 bg-white text-amber-700 rounded-xl font-bold hover:bg-amber-50 transition"
+            >
+              📚 Review Lesson {challenge.requiredLesson.lesson}
+            </button>
+          )}
+          {/* Timeline CTA */}
           {challenge.cta && (
             <button
               onClick={() => onNavigate('explorer')}
-              className="flex-1 px-6 py-3 bg-white text-amber-700 rounded-xl font-bold hover:bg-amber-50 transition"
+              className="w-full px-6 py-3 bg-white text-amber-700 rounded-xl font-bold hover:bg-amber-50 transition"
             >
               {challenge.cta}
             </button>
