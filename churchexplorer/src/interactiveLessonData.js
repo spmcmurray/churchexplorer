@@ -4,18 +4,20 @@ export const lesson1Data = {
   id: 1,
   title: "From Mouth to Manuscript",
   subtitle: "How oral tradition became written text",
+  duration: "6 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
-      title: 'Welcome to Your First Lesson!',
-      subtitle: 'From Mouth to Manuscript',
+      title: 'From Mouth to Manuscript',
+      subtitle: '⏱️ About 6 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how oral traditions became the written Scriptures we read today.',
         'Long before the printing press, before paper, even before parchment was common, the stories that would become the Bible were passed down by word of mouth.',
-        'Imagine sitting around a campfire as an elder recounts the story of Moses parting the Red Sea, or Jesus feeding the 5,000. These weren\'t just stories—they were sacred memories, carefully preserved and passed from generation to generation.',
-        'In this lesson, you\'ll discover how these oral traditions became the written Scriptures we read today.'
+        'Imagine sitting around a campfire as an elder recounts the story of Moses parting the Red Sea, or Jesus feeding the 5,000. These weren\'t just stories—they were sacred memories, carefully preserved and passed from generation to generation.'
       ],
-      highlight: '🎯 Goal: Understand how the Bible transitioned from spoken word to written text'
+      highlight: '💭 Quick reflection: Have you ever memorized a Bible verse or passage? Think about how you did it as we explore ancient memorization techniques.',
+      requireAcknowledgment: true
     },
 
     // Card 2: Oral Tradition Content
@@ -142,6 +144,11 @@ export const lesson1Data = {
       type: 'completion',
       title: 'Lesson Complete! 🎉',
       message: 'You\'ve mastered "From Mouth to Manuscript"! You now understand how the Bible transitioned from oral tradition to written text.',
+      keyTakeaways: [
+        'Oral tradition was highly reliable—professional memorizers preserved texts with 99%+ accuracy',
+        'Biblical manuscripts were copied on papyrus, parchment, and eventually the revolutionary codex format',
+        'Manuscript variants exist, but most are minor and don\'t affect any core Christian doctrine'
+      ],
       badge: {
         icon: '📜',
         name: 'Scroll Scholar',

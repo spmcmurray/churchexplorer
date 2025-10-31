@@ -20,6 +20,13 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
     return bibleXP + churchXP + apologeticsXP;
   };
 
+  const getStreak = () => {
+    const streakData = localStorage.getItem('dailyChallengeStreak');
+    if (!streakData) return 0;
+    const { count } = JSON.parse(streakData);
+    return count;
+  };
+
   const handleQuickStart = () => {
     if (!canCreate) return;
   const profile = saveProfile({ startingPoint });
@@ -105,6 +112,15 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
                   <Flame className="w-5 h-5" /> Your Progress
                 </div>
                 <div className="flex items-center gap-4">
+                  {getStreak() > 0 && (
+                    <div className="text-right">
+                      <div className="text-xs text-slate-500 font-medium">Streak</div>
+                      <div className="text-xl font-black text-orange-600 flex items-center gap-1">
+                        <Flame className="w-5 h-5 fill-orange-500" />
+                        {getStreak()}
+                      </div>
+                    </div>
+                  )}
                   <div className="text-right">
                     <div className="text-xs text-slate-500 font-medium">Total XP</div>
                     <div className="text-xl font-black text-amber-600">{getTotalXP()}</div>

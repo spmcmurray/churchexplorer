@@ -20,6 +20,7 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const [answers, setAnswers] = useState({});
   const [showFeedback, setShowFeedback] = useState({});
   const [completedCards, setCompletedCards] = useState(new Set());
+  const [acknowledgedCards, setAcknowledgedCards] = useState(new Set());
 
   const totalCards = lessonData.cards.length;
   const progress = ((currentCard + 1) / totalCards) * 100;
@@ -99,7 +100,12 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[500px]">
           {card.type === 'content' && (
-            <ContentCard card={card} />
+            <ContentCard
+              card={card}
+              cardIndex={currentCard}
+              isAcknowledged={acknowledgedCards.has(currentCard)}
+              onAcknowledge={() => setAcknowledgedCards(prev => new Set([...prev, currentCard]))}
+            />
           )}
 
           {card.type === 'quiz' && (
@@ -170,7 +176,7 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
 };
 
 // Content Card Component
-const ContentCard = ({ card }) => (
+const ContentCard = ({ card, cardIndex, isAcknowledged, onAcknowledge }) => (
   <div className="p-10">
     <h2 className="text-4xl font-black text-gray-900 mb-3">{card.title}</h2>
     {card.subtitle && (
@@ -186,6 +192,16 @@ const ContentCard = ({ card }) => (
     {card.highlight && (
       <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-purple-500 p-5 rounded-xl">
         <p className="text-purple-900 font-semibold text-lg">{parseMarkdown(card.highlight)}</p>
+      </div>
+    )}
+    {card.requireAcknowledgment && !isAcknowledged && (
+      <div className="mt-8 text-center">
+        <button
+          onClick={onAcknowledge}
+          className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-purple-700 transition shadow-lg"
+        >
+          Got it! ✓
+        </button>
       </div>
     )}
   </div>
@@ -458,6 +474,20 @@ const CompletionCard = ({ card, xp, onComplete }) => {
             <h2 className="text-4xl font-black text-gray-900 mb-4">{card.title}</h2>
             <p className="text-xl text-gray-600 leading-relaxed">{card.message}</p>
           </div>
+
+          {card.keyTakeaways && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 mb-8 border-2 border-blue-200 shadow-lg text-left max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">🎯 Key Takeaways</h3>
+              <ul className="space-y-3">
+                {card.keyTakeaways.map((takeaway, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <span className="text-blue-600 font-bold text-xl mt-0.5">•</span>
+                    <span className="text-gray-700 text-lg leading-relaxed">{takeaway}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-2xl p-8 mb-8 border-2 border-yellow-200 shadow-lg">
             <p className="text-2xl font-bold text-gray-800 mb-3">Total XP Earned</p>

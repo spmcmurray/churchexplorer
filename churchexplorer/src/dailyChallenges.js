@@ -7,6 +7,7 @@ export const timelineChallenges = [
   // Church History Timeline
   {
     type: 'quiz',
+    objective: 'Test your knowledge of major church splits',
     question: 'What year did the Great Schism split Catholic and Orthodox churches?',
     options: ['1054', '1517', '325', '1204'],
     correctAnswer: 0,
@@ -16,6 +17,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Recall key Reformation dates',
     question: 'When did Martin Luther post the 95 Theses?',
     options: ['1517', '1521', '1530', '1054'],
     correctAnswer: 0,
@@ -25,6 +27,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Remember foundational church councils',
     question: 'What year was the Council of Nicaea?',
     options: ['325', '381', '451', '1054'],
     correctAnswer: 0,
@@ -34,6 +37,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Test your church history timeline',
     question: 'Which came first?',
     options: ['Council of Nicaea (325)', 'Fall of Constantinople (1453)'],
     correctAnswer: 0,
@@ -43,6 +47,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Recall major East-West church events',
     question: 'When did the Fourth Crusade sack Constantinople?',
     options: ['1204', '1054', '1453', '1517'],
     correctAnswer: 0,
@@ -52,6 +57,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Remember Luther\'s stand for truth',
     question: 'What happened at the Diet of Worms in 1521?',
     options: ['Luther refused to recant', 'Calvin published Institutes', 'Great Schism occurred', 'Council met'],
     correctAnswer: 0,
@@ -61,6 +67,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Know modern Catholic reforms',
     question: 'When was Vatican II held?',
     options: ['1962-65', '1545-63', '1870', '2013'],
     correctAnswer: 0,
@@ -70,6 +77,7 @@ export const timelineChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Understand the 1054 schism\'s complexity',
     statement: 'The 1054 schism was almost accidental—the Pope had died during negotiations, voiding his legates\' authority.',
     answer: true,
     explanation: 'Pope Leo IX died April 19, 1054, technically voiding his legates\' authority, but Cardinal Humbert excommunicated the Patriarch anyway.',
@@ -78,6 +86,7 @@ export const timelineChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Know what sparked the Reformation',
     statement: 'The Council of Trent was the Catholic Counter-Reformation response to Protestantism.',
     answer: true,
     explanation: 'The Council of Trent (1545-63) systematically responded to Protestant challenges, affirming Catholic doctrine.',

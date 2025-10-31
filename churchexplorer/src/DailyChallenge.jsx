@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, CheckCircle, X, Star, Trophy } from 'lucide-react';
+import { Zap, CheckCircle, X, Star, Trophy, Flame } from 'lucide-react';
 import { timelineChallenges, lessonChallenges } from './dailyChallenges';
 
 const DailyChallenge = ({ onNavigate }) => {
@@ -9,9 +9,11 @@ const DailyChallenge = ({ onNavigate }) => {
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [completedToday, setCompletedToday] = useState(false);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     loadDailyChallenge();
+    loadStreak();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -55,6 +57,48 @@ const DailyChallenge = ({ onNavigate }) => {
 
   const getRandomChallenge = (pool) => {
     return pool[Math.floor(Math.random() * pool.length)];
+  };
+
+  const loadStreak = () => {
+    const streakData = localStorage.getItem('dailyChallengeStreak');
+    if (streakData) {
+      const { count, lastCompletedDate } = JSON.parse(streakData);
+      setStreak(count);
+    }
+  };
+
+  const updateStreak = () => {
+    const today = new Date().toDateString();
+    const streakData = localStorage.getItem('dailyChallengeStreak');
+    
+    if (!streakData) {
+      // First time completing
+      const newStreak = { count: 1, lastCompletedDate: today };
+      localStorage.setItem('dailyChallengeStreak', JSON.stringify(newStreak));
+      setStreak(1);
+      return;
+    }
+
+    const { count, lastCompletedDate } = JSON.parse(streakData);
+    const lastDate = new Date(lastCompletedDate);
+    const todayDate = new Date(today);
+    const yesterday = new Date(todayDate);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (lastCompletedDate === today) {
+      // Already completed today, no change
+      return;
+    } else if (lastDate.toDateString() === yesterday.toDateString()) {
+      // Consecutive day - increment streak
+      const newStreak = { count: count + 1, lastCompletedDate: today };
+      localStorage.setItem('dailyChallengeStreak', JSON.stringify(newStreak));
+      setStreak(count + 1);
+    } else {
+      // Streak broken - reset to 1
+      const newStreak = { count: 1, lastCompletedDate: today };
+      localStorage.setItem('dailyChallengeStreak', JSON.stringify(newStreak));
+      setStreak(1);
+    }
   };
 
   const handleSubmit = () => {
@@ -103,6 +147,7 @@ const DailyChallenge = ({ onNavigate }) => {
   const markCompleted = () => {
     const today = new Date().toDateString();
     localStorage.setItem('dailyChallengeCompletion', today);
+    updateStreak();
     setCompletedToday(true);
   };
 
@@ -116,9 +161,17 @@ const DailyChallenge = ({ onNavigate }) => {
   if (completedToday) {
     return (
       <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-6 text-white">
-        <div className="flex items-center gap-3 mb-2">
-          <Trophy className="w-6 h-6" />
-          <span className="font-bold text-lg">Daily Challenge Complete! ✓</span>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <Trophy className="w-6 h-6" />
+            <span className="font-bold text-lg">Daily Challenge Complete! ✓</span>
+          </div>
+          {streak > 0 && (
+            <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full">
+              <Flame className="w-5 h-5 fill-white" />
+              <span className="font-bold">{streak} day{streak !== 1 ? 's' : ''}</span>
+            </div>
+          )}
         </div>
         <p className="text-white/90">Great job! Come back tomorrow for a new challenge.</p>
       </div>
@@ -146,11 +199,26 @@ const DailyChallenge = ({ onNavigate }) => {
           <Zap className="w-6 h-6" />
           <span className="font-bold text-lg">Today's Quick Win</span>
         </div>
-        <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-          <Star className="w-4 h-4 fill-white" />
-          <span className="font-bold text-sm">+{challenge.xp} XP</span>
+        <div className="flex items-center gap-3">
+          {streak > 0 && (
+            <div className="flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-full">
+              <Flame className="w-4 h-4 fill-white" />
+              <span className="font-bold text-sm">{streak}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
+            <Star className="w-4 h-4 fill-white" />
+            <span className="font-bold text-sm">+{challenge.xp} XP</span>
+          </div>
         </div>
       </div>
+
+      {/* Objective */}
+      {challenge.objective && (
+        <div className="mb-3 text-white/90 text-sm">
+          🎯 <span className="font-medium">{challenge.objective}</span>
+        </div>
+      )}
 
       {/* Question */}
       {challenge.type === 'quiz' && (
