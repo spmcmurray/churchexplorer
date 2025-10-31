@@ -6,7 +6,7 @@ import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './apologeticsLessonData.clean';
 import { scheduleReviews } from './services/reviewService';
 
-const ApologeticsGuide = ({ onNavigate }) => {
+const ApologeticsGuide = ({ onNavigate, onGoBack }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
