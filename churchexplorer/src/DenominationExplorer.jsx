@@ -490,7 +490,7 @@ const DenominationExplorer = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Toolbar */}
         <div className="bg-white rounded-2xl border-2 border-slate-200 p-4 mb-8 shadow">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <button
               onClick={() => onNavigate && onNavigate('explorer')}
               className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-slate-200 text-slate-700 hover:bg-slate-50 transition"
@@ -500,10 +500,10 @@ const DenominationExplorer = ({ onNavigate }) => {
             </button>
 
             {/* Tab switcher */}
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab('compare')}
-                className={`px-5 py-2.5 rounded-xl font-semibold transition inline-flex items-center gap-2 ${
+                className={`px-5 py-2.5 rounded-xl font-semibold transition inline-flex items-center justify-center gap-2 ${
                   activeTab === 'compare'
                     ? 'bg-purple-600 text-white shadow'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -514,7 +514,7 @@ const DenominationExplorer = ({ onNavigate }) => {
               </button>
               <button
                 onClick={() => setActiveTab('worship')}
-                className={`px-5 py-2.5 rounded-xl font-semibold transition inline-flex items-center gap-2 ${
+                className={`px-5 py-2.5 rounded-xl font-semibold transition inline-flex items-center justify-center gap-2 ${
                   activeTab === 'worship'
                     ? 'bg-purple-600 text-white shadow'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
