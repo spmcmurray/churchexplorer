@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BookOpen, Globe, AlertCircle, Calendar, ExternalLink, MapPin } from 'lucide-react';
 
-const DenominationVisualizer = () => {
+const DenominationVisualizer = ({ initialView, onNavigate }) => {
   const [selectedDenom, setSelectedDenom] = useState(null);
   const [contestedEvent, setContestedEvent] = useState(null);
   const [apostolicModalOpen, setApostolicModalOpen] = useState(false);
@@ -542,6 +542,22 @@ const DenominationVisualizer = () => {
     }
   };
 
+  // Respect initialView to open a specific timeline mode
+  useEffect(() => {
+    if (initialView === 'bible') {
+      setBibleTimelineOpen(true);
+      // Close denomination-specific modals if any are open
+      setApostolicModalOpen(false);
+      setSchismModalOpen(false);
+      setReformationModalOpen(false);
+      setRevivalModalOpen(false);
+      setModernModalOpen(false);
+    }
+    if (initialView === 'church') {
+      setBibleTimelineOpen(false);
+    }
+  }, [initialView]);
+
   const bibleTimeline = {
     writing: [
       { period: "1400-400 BC", books: "Old Testament", details: "Torah/Pentateuch (1400-1200 BC—traditional dating, though scholars debate), Historical books (Joshua-Esther), Prophets (Isaiah-Malachi), Wisdom literature (Job, Psalms, Proverbs, Ecclesiastes, Song of Songs)", note: "Dates are approximate and heavily debated among scholars—traditional vs. critical scholarship" },
@@ -852,39 +868,41 @@ const DenominationVisualizer = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-slate-100 px-2 sm:px-4 py-8 sm:py-12">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 sm:mb-16 px-2">
-          <div className="inline-block mb-4 sm:mb-6">
-            <BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-amber-700 mx-auto mb-3 sm:mb-4" />
-          </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif text-slate-900 mb-3 sm:mb-4">
-            Church Explorer
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Brand hero */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-black mb-3">
+            {initialView === 'bible' ? 'Bible Timeline' : 'Church Timeline'}
           </h1>
-          <p className="text-sm sm:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed px-4">
-            From one root, many branches. Christianity transformed from a unified apostolic movement to 2.6 billion adherents across Catholic, Orthodox, and Protestant traditions spanning every continent. Three pivotal ruptures—the East-West Schism of 1054, the Protestant Reformation beginning in 1517, and the Pentecostal explosion starting in 1906—reshaped Christianity's landscape.
+          <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
+            A modern, coherent look—same rich content and interactions.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8 sm:py-12">
+        {/* Utility toolbar */}
+        <div className="bg-white rounded-2xl border-2 border-slate-200 p-4 mb-8 shadow">
+          <div className="flex items-center justify-between">
             <button
-              onClick={() => setComparisonOpen(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all inline-flex items-center gap-2"
+              onClick={() => onNavigate && onNavigate('explorer')}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-slate-200 text-slate-700 hover:bg-slate-50 transition"
+              aria-label="Back to Explore"
             >
-              <Globe className="w-5 h-5" />
-              Compare Denominations
+              <span className="-ml-1">←</span>
+              <span>Back to Explore</span>
             </button>
-            <button
-              onClick={() => setWorshipExperienceOpen(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all inline-flex items-center gap-2"
-            >
-              <Calendar className="w-5 h-5" />
-              Worship Experiences
-            </button>
+            <span className="text-sm font-semibold text-slate-500">
+              {initialView === 'bible' ? 'Bible Timeline' : 'Church Timeline'}
+            </span>
           </div>
         </div>
-
-        <div className="relative bg-gradient-to-b from-white to-amber-50 rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 mb-8 sm:mb-16 border border-amber-200">
+        {/* Church overview section - only show when initialView is 'church' or not set */}
+        {(!initialView || initialView === 'church') && (
+        <div className="relative bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 mb-8 sm:mb-16 border-2 border-slate-200">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl font-serif text-slate-900 mb-2">A Contested History</h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">A Contested History</h2>
             <p className="text-sm sm:text-base text-slate-600">Each claims authentic continuity—but define it differently</p>
           </div>
 
@@ -1065,8 +1083,11 @@ const DenominationVisualizer = () => {
             </div>
           </div>
         </div>
+        )}
 
         {/* Bible Timeline - keeping existing structure but with proper scrolling */}
+        {/* Bible Timeline section - only show when initialView is 'bible' or not set */}
+        {(!initialView || initialView === 'bible') && (
         <div className="relative bg-gradient-to-b from-white to-blue-50 rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 mb-8 sm:mb-16 border border-blue-200">
           <div className="text-center mb-6">
             <div className="inline-block mb-4">
@@ -1204,7 +1225,11 @@ const DenominationVisualizer = () => {
             </div>
           )}
         </div>
+        )}
 
+        {/* Church timeline content - only show when initialView is 'church' or not set */}
+        {(!initialView || initialView === 'church') && (
+        <>
         {/* Denomination Detail Modals */}
         {selectedDenom && (
           <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 overflow-auto p-2 sm:p-4" onClick={() => setSelectedDenom(null)}>
@@ -2237,6 +2262,8 @@ const DenominationVisualizer = () => {
             </div>
           </div>
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

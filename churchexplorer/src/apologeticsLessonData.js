@@ -1,229 +1,557 @@
+/*
+// Apologetics Interactive Lesson Data (clean, adapted for InteractiveLesson)
+// 8 lessons covering Christian apologetics from Craig, Lennox, Lewis, Keller, Sproul, Huff, Hanegraaff
+
+export const lesson1Data = {
+  id: 1,
+  title: "The Case for God's Existence",
+  subtitle: 'Cosmological and fine-tuning arguments that point to a Creator',
+  description: "Explore two core arguments that many thinkers find compelling: the Kalam Cosmological Argument and fine-tuning.",
+  cards: [
+    { type: 'content', title: 'Welcome to Apologetics', subtitle: 'A reasoned defense of the hope we have', content: [
+      "Apologetics comes from the Greek word 'apologia'—a reasoned defense.",
+      '1 Peter 3:15 calls us to be ready to give reasons for our hope with gentleness and respect.',
+      "In this lesson, you'll learn the structure of two key arguments for God and how to explain them clearly."
+    ] },
+    { type: 'content', title: 'The Kalam Cosmological Argument', content: [
+      '1) Whatever begins to exist has a cause.',
+      '2) The universe began to exist.',
+      '3) Therefore, the universe has a cause.',
+      'Modern cosmology (Big Bang, expansion) supports premise 2. The cause must transcend space, time, and matter.'
+    ], highlight: 'If the universe began, it points to a Beginner.' },
+    { type: 'content', title: "Why 'begins to exist' matters", content: [
+      "The premise isn't 'everything has a cause' but 'whatever begins to exist has a cause.'",
+      "God is eternal and doesn't begin to exist, so He doesn't need a cause.",
+      'The universe began—so it is reasonable to ask for a cause.'
+    ], highlight: 'Only things that begin need causes.' },
+    { type: 'content', title: "Actual infinities and Hilbert's Hotel", content: [
+      "If the past were actually infinite, we'd never arrive at today.",
+      "Hilbert's Hotel illustrates paradoxes with actual infinities, suggesting an infinite regress is impossible."
+    ], highlight: 'A finite past implies a beginning.' },
+    { type: 'fillblank', prompt: 'Whatever ______ to exist has a cause.', correctAnswer: 'begins', explanation: "The Kalam's first premise is 'Whatever begins to exist has a cause.'" },
+    { type: 'content', title: 'Quote: John Lennox', content: [
+      '“Nonsense remains nonsense, even when talked by world‑famous scientists. The God hypothesis is more logical than its denial.”',
+      '— Responding to claims that the universe came from “nothing”'
+    ] },
+    { type: 'content', title: 'The Fine-Tuning Argument', content: [
+      'The universe is fine‑tuned for life with staggering precision.',
+      '• Gravity: if altered by 1 part in 10^40, stars would not form.',
+      '• Cosmological constant: exquisitely precise; tiny changes collapse or disperse the universe.',
+      "• Strong nuclear force, electron‑proton ratio, carbon resonance—all set 'just right.'",
+      'Taken together, these suggest design rather than accident.'
+    ], highlight: 'The cosmos looks designed because it is designed.' },
+    { type: 'matching', title: 'Match the constant to its description', pairs: [
+      { term: 'Gravity', definition: 'If altered by 1 in 10^40, stars could not form' },
+      { term: 'Cosmological constant', definition: 'Controls cosmic expansion; must be exquisitely precise' },
+      { term: 'Strong nuclear force', definition: 'Binds nuclei; small changes prevent chemistry' },
+      { term: 'Carbon resonance', definition: 'Energy level that enables carbon formation in stars' }
+    ] },
+    { type: 'quiz', question: "Your friend says: 'Science explains everything. We don't need God.'", options: [
+      "Science explains how things work, not why they exist. Who designed the laws science studies?",
+      "That's ridiculous. Everything screams design!",
+      "Yeah, you're probably right. Faith is just a feeling."
+    ], correctAnswer: 0, explanation: "Science and God answer different questions. Science is the 'how,' God is the 'why.' Lennox: God no more competes with science than Henry Ford with combustion laws." },
+    { type: 'quiz', question: 'What are the three premises of the Kalam?', options: [
+      "God exists; the Bible says so; therefore it's true.",
+      'Everything has a cause; God is first cause; God exists.',
+      'Whatever begins has a cause; the universe began; therefore the universe has a cause.',
+      'The universe is complex; complexity needs design; God designed it.'
+    ], correctAnswer: 2, explanation: 'Kalam: whatever begins to exist has a cause; the universe began; therefore the universe has a cause.' },
+    { type: 'content', title: 'Common objections', content: [
+      'Who made God? — Only things that begin need causes; God is eternal.',
+      'Multiverse? — Speculative and itself requires fine‑tuned laws/initial conditions.',
+      "We'll find a natural explanation — That assumes naturalism; inference to best explanation points to intelligence."
+    ], highlight: 'Anticipate objections; answer with clarity and grace.' },
+    { type: 'content', title: "This Week's Challenge", content: [
+      'Watch Craig or Lennox explain Kalam or fine‑tuning. Share one insight with a friend.'
+    ], highlight: 'Practice explaining your favorite argument in 90 seconds.' },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Great work finishing “The Case for God’s Existence.” Keep going—you’re building a strong apologetics foundation.', badge: { icon: '🛡️', name: 'Apologetics 1', description: 'Completed: The Case for God’s Existence' } }
+  ]
+};
+
+export const lesson2Data = {
+  id: 2,
+  title: 'The Problem of Evil & Suffering',
+  subtitle: 'Answering the toughest objection to faith',
+  description: 'Address both logical and pastoral dimensions of evil and suffering.',
+  cards: [
+    { type: 'content', title: "The skeptic's challenge", subtitle: 'A head-and-heart question', content: [
+      "Hume: If God can and wants to stop evil, why does evil exist?",
+      'Evil is both an intellectual problem and a deeply personal pain.'
+    ] },
+    { type: 'content', title: 'Two forms: logical vs evidential', content: [
+      'Logical: claims a contradiction between God and evil — free will and greater-goods remove the contradiction.',
+      "Evidential: certain evils seem unlikely on theism — but we aren't positioned to know all God’s reasons."
+    ], highlight: "We're limited creatures; we can't survey all possible reasons." },
+    { type: 'content', title: 'The Free Will Defense', content: [
+      'Genuine love requires freedom; freedom entails the possibility of wrong.',
+      'A world with free agents capable of love and moral growth is better than a world of robots.'
+    ] },
+    { type: 'content', title: 'Soul‑making and greater‑good', content: [
+      'Some virtues require hardship: courage requires danger; compassion requires need; perseverance requires trial.',
+      "Genesis 50:20; Romans 5:3–5 frame suffering within God’s purposes."
+    ], highlight: 'God can use evil for good without authoring evil.' },
+    { type: 'quiz', question: 'Pastoral care scenario: What’s the wisest first response to suffering?', options: [
+      'Offer a detailed theodicy and ask what they learned.',
+      'Acknowledge the pain; express presence and point to the God who suffers with us.',
+      'Say sin caused this specific event.'
+    ], correctAnswer: 1, explanation: "Lead with compassion. Keller: Christianity gives the deepest answer — God Himself suffered." },
+    { type: 'content', title: 'The Cross: God with us', content: [
+      'Christianity offers not only arguments but a God who suffers with us.',
+      "At the cross, God in Christ entered our pain. We don’t know all reasons, but we know His heart."
+    ], highlight: 'God is not distant from suffering.' },
+    { type: 'quiz', question: 'According to the free will defense, why does God allow evil?', options: [
+      "God isn't powerful enough",
+      'Genuine love and moral goodness require freedom, which includes the possibility of evil',
+      'Evil is an illusion'
+    ], correctAnswer: 1, explanation: 'Love must be freely chosen; freedom entails the possibility of evil.' },
+    { type: 'content', title: 'Reflection', content: [
+      'Have you experienced suffering that challenged your faith? What helped you endure?'
+    ] },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'You addressed evil with both rigor and empathy.', badge: { icon: '🛡️', name: 'Apologetics 2', description: 'Completed: Evil & Suffering' } }
+  ]
+};
+
+export const lesson3Data = {
+  id: 3,
+  title: 'The Resurrection of Jesus',
+  subtitle: "Historical evidence for Christianity's central claim",
+  description: 'Examine minimal facts, early testimony, empty tomb, and transformed witnesses.',
+  cards: [
+    { type: 'content', title: 'The central claim', content: [
+      '1 Cor 15:14: If Christ is not raised, faith is futile.',
+      'If true, Jesus is Lord; if false, Christianity collapses.'
+    ] },
+    { type: 'content', title: 'Minimal facts approach', content: [
+      '1) Jesus died by crucifixion.',
+      '2) Disciples believed they saw the risen Jesus.',
+      '3) Paul converted after an experience he took as an appearance.',
+      '4) James (skeptic) converted.'
+    ], highlight: 'Start with what skeptics grant; ask which explanation best fits.' },
+    { type: 'content', title: 'Early testimony timeline', subtitle: 'Why legend doesn’t fit', content: [
+      '1 Cor 15:3–7 is an early creed (within 3–5 years).',
+      'Acts preserves early proclamations; Gospels draw on earlier traditions.'
+    ] },
+    { type: 'quiz', question: 'Professor claims “resurrection is a late legend.” What’s the best reply?', options: [
+      'We have very early testimony (1 Cor 15 creed), far too soon for legend; and the empty tomb lacked a body.',
+      "You’re insulting my Lord!",
+      'We just take it on faith.'
+    ], correctAnswer: 0, explanation: 'Legends take generations; early testimony plus empty tomb undercut legend theory.' },
+    { type: 'content', title: 'The empty tomb', content: [
+      'Burial by Joseph of Arimathea is multiply attested.',
+      'Women as first witnesses would be counter-productive if fabricated.',
+      'Earliest Jewish claim alleges theft — implicitly concedes the tomb was empty.'
+    ], highlight: 'The empty tomb is historically robust.' },
+    { type: 'content', title: 'Transformed disciples', content: [
+      'From fear to bold witness; people die for what they think is true, not what they know is false.',
+      'Conspiracy and hallucination theories fail to explain the data.'
+    ] },
+    { type: 'quiz', question: 'Which is NOT a minimal fact?', options: [
+      'Jesus died by crucifixion',
+      'Disciples believed they saw the risen Jesus',
+      'Roman guards saw angels',
+      'Paul converted after an experience he took as an appearance'
+    ], correctAnswer: 2, explanation: "Guards seeing angels isn't part of the cross-skeptic consensus." },
+    { type: 'content', title: 'This Week’s Challenge', content: [
+      'Watch Craig or Habermas present the minimal facts. Practice explaining them succinctly.'
+    ] },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Historical bedrock examined with clarity.', badge: { icon: '🛡️', name: 'Apologetics 3', description: 'Completed: Resurrection' } }
+  ]
+};
+
+export const lesson4Data = {
+  id: 4,
+  title: 'Science & Faith: Friends or Foes?',
+  subtitle: "The Big Bang, fine-tuning, and God's cosmos",
+  description: 'Modern science points toward a Creator more than many think.',
+  cards: [
+    { type: 'content', title: 'The conflict myth', content: [
+      "Most scientific pioneers (Newton, Kepler, Faraday, Maxwell) were Christians who saw science as thinking God's thoughts after Him."
+    ] },
+    { type: 'content', title: 'Quote: John Lennox', content: [
+      '“Nonsense remains nonsense even when talked by world‑famous scientists.”',
+      'The more we learn, the more a Creator hypothesis remains credible.'
+    ] },
+    { type: 'content', title: 'The Big Bang and creation', content: [
+      'Big Bang implies a beginning to space-time and matter — a strong consonance with Genesis 1:1.'
+    ], highlight: "The Big Bang is consistent with 'In the beginning, God created.'" },
+    { type: 'content', title: 'Cosmic fine‑tuning', content: [
+      'Dozens of constants (gravity, cosmological constant, etc.) require exquisite calibration for life.'
+    ], highlight: 'The universe looks rigged for life.' },
+    { type: 'quiz', question: 'What is the fine‑tuning argument?', options: [
+      'The universe is old, so it evolved naturally',
+      'Physical constants are precisely calibrated for life, suggesting design',
+      'Scientists fine‑tuned their instruments',
+      'Evolution fine‑tunes organisms'
+    ], correctAnswer: 1, explanation: 'The precision of constants suggests intentional design.' },
+    { type: 'content', title: 'DNA: The language of God', content: [
+      'DNA is a digital code (A, T, G, C) that encodes biological information. In our experience, information comes from intelligence.'
+    ], highlight: 'Information points to an Informer.' },
+    { type: 'quiz', question: 'Class claim: “Evolution explains everything.” Best reply?', options: [
+      'Evolution explains development, not origin of life or the fine‑tuned cosmos; DNA information remains to be explained.',
+      'Evolution is a lie!',
+      'Science has all the answers.'
+    ], correctAnswer: 0, explanation: 'Evolution is about biological changes; origin, information, and physics still need explanation.' },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Science and faith explored as complementary.', badge: { icon: '🛡️', name: 'Apologetics 4', description: 'Completed: Science & Faith' } }
+  ]
+};
+
+export const lesson5Data = {
+  id: 5,
+  title: 'The Reliability of Scripture',
+  subtitle: 'Can we trust the Bible?',
+  description: 'Manuscripts, archaeology, fulfilled prophecy, and textual criticism.',
+  cards: [
+    { type: 'content', title: "The skeptic's attack", content: [
+      "'Corrupted text!' 'Contradictions!' 'Myth!' Let's weigh the evidence."
+    ] },
+    { type: 'content', title: 'Manuscript evidence', content: [
+      '≈5,800 Greek NT manuscripts; 10,000+ Latin; thousands more. Earliest fragments within decades.'
+    ], highlight: "No ancient work rivals the Bible's attestation." },
+    { type: 'content', title: 'Archaeological confirmations', content: [
+      'Hittites, Pool of Siloam, Pontius Pilate, House of David — once doubted, later confirmed.'
+    ], highlight: 'Archaeology consistently confirms biblical history.' },
+    { type: 'quiz', question: 'How many Greek NT manuscripts exist?', options: [
+      'About 50', 'Around 650', 'Approximately 5,800', "We don't have any"
+    ], correctAnswer: 2, explanation: '≈5,800 Greek manuscripts + many others.' },
+    { type: 'content', title: 'Fulfilled prophecy', content: [
+      'Jesus fulfilled numerous OT prophecies (Mic 5:2, Isa 7:14, Ps 22, Zech 11:12–13).'
+    ], highlight: "Hanegraaff: Prophecy is God's signature on Scripture." },
+    { type: 'content', title: 'Textual criticism', content: [
+      "Comparing manuscripts recovers the original with high confidence; differences are mostly minor and don't affect doctrine."
+    ], highlight: 'More manuscripts → more certainty.' },
+    { type: 'content', title: 'Reflection', content: [
+      'How does manuscript and archaeology evidence strengthen your confidence in Scripture?'
+    ] },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Scripture’s reliability considered on multiple fronts.', badge: { icon: '🛡️', name: 'Apologetics 5', description: 'Completed: Reliability of Scripture' } }
+  ]
+};
+
+export const lesson6Data = {
+  id: 6,
+  title: 'The Moral Argument for God',
+  subtitle: 'Where do right and wrong come from?',
+  description: 'Objective morality points to a Moral Lawgiver.',
+  cards: [
+    { type: 'content', title: 'The universal moral sense', content: [
+      "Across cultures: 'Is torturing babies for fun wrong?' Answer is 'yes.'"
+    ] },
+    { type: 'content', title: 'Formal argument', content: [
+      "1) If God doesn't exist, objective moral values don't exist.",
+      '2) Objective moral values do exist.',
+      '3) Therefore, God exists.'
+    ], highlight: "Atheism explains feelings, not objective moral facts." },
+    { type: 'content', title: 'Euthyphro dilemma answered', content: [
+      "Goodness flows from God's nature — neither arbitrary command nor a standard above God."
+    ] },
+    { type: 'quiz', question: 'Relativism says morality is preference. What follows?', options: [
+      'You cannot condemn atrocities as truly wrong',
+      'It enhances moral accountability',
+      'It proves atheism',
+      'It removes the need for justice'
+    ], correctAnswer: 0, explanation: 'If mere preference, nothing is objectively wrong — which we all know is false.' },
+    { type: 'content', title: 'Evolution and morality', content: [
+      'Evolution may explain instincts, not objective obligations — you can’t derive “ought” from “is.”'
+    ] },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Moral knowledge seen as a signpost to God.', badge: { icon: '🛡️', name: 'Apologetics 6', description: 'Completed: Moral Argument' } }
+  ]
+};
+
+export const lesson7Data = {
+  id: 7,
+  title: 'Jesus: The Only Way?',
+  subtitle: 'Addressing religious pluralism and exclusivity',
+  description: 'Why Christian exclusivity is humble and true.',
+  cards: [
+    { type: 'content', title: 'The scandal of exclusivity', content: [
+      'John 14:6 — Jesus claims uniqueness.'
+    ] },
+    { type: 'content', title: "Lewis's trilemma", content: [
+      "Jesus is liar, lunatic, or Lord — 'great moral teacher' doesn’t fit the claims."
+    ] },
+    { type: 'quiz', question: 'Pluralism says “all paths lead to the same God.” Best reply?', options: [
+      'Religions make contradictory claims; they cannot all be true. Truth is exclusive by nature.',
+      'Maybe all are half true',
+      'All are false'
+    ], correctAnswer: 0, explanation: 'Mutually exclusive claims cannot all be true.' },
+    { type: 'content', title: 'Responding with grace', content: [
+      "Exclusivity isn't arrogance; it’s acknowledging we can’t save ourselves and pointing to Christ."
+    ] },
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Exclusivity explained with humility.', badge: { icon: '🛡️', name: 'Apologetics 7', description: 'Completed: Jesus the Only Way' } }
+  ]
+};
+
+export const lesson8Data = {
+  id: 8,
+  title: 'Engaging Skeptics with Grace',
+  subtitle: 'Your apologetics toolkit for real conversations',
+  description: 'Practical conversations with truth and love.',
+  cards: [
+    { type: 'content', title: 'Goal of apologetics', content: [
+      '1 Peter 3:15–16 — be ready, with gentleness and respect.'
+    ] },
+    { type: 'content', title: 'Common objections & responses', content: [
+      'Blind faith? — Faith is trust based on evidence (resurrection, arguments, science).',
+      'Religion harms? — Humans misuse everything; judge Christianity by Jesus.'
+    ] },
+    { type: 'content', title: 'Ask good questions', content: [
+      'What do you mean? How did you conclude that? What would change your mind?'
+    ] },
+    { type: 'quiz', question: '“No evidence for God.” Best first move?', options: [
+      'Ask what evidence they would accept; then offer cosmological, fine‑tuning, resurrection lines of evidence.',
+      'Accuse them of loving sin',
+      'Concede there is none'
+    ], correctAnswer: 0, explanation: 'Lead with curiosity, then point to specific evidence.' },
+    { type: 'content', title: 'Toolkit summary', content: [
+      "1) God's existence: cosmological, fine‑tuning, moral.",
+      '2) Evil and suffering: free will, greater good, the Cross.',
+      '3) Resurrection: minimal facts, empty tomb, transformation.',
+      '4) Science: Big Bang, fine‑tuning, DNA information.',
+      '5) Scripture: manuscripts, archaeology.',
+      '6) Exclusivity: Jesus’s unique claims.'
+    ], highlight: 'Use truth with grace.' },
+    { type: 'completion', title: 'All lessons complete! 🎉', message: 'You now have a robust, gracious apologetics toolkit. Keep learning and sharing.', badge: { icon: '🛡️', name: 'Apologetics Mastery', description: 'Completed: Apologetics Study Guide' } }
+  ]
+};
 // Apologetics Interactive Lesson Data
 // 8 lessons covering Christian apologetics from Craig, Lennox, Lewis, Keller, Sproul, Huff, Hanegraaff
 
 export const lesson1Data = {
   id: 1,
   title: "The Case for God's Existence",
-  subtitle: "Cosmological, teleological, and moral arguments",
-  description: "Explore the powerful logical arguments for God's existence. Learn the Kalam Cosmological Argument, the Fine-Tuning Argument, and why many scholars believe the universe points to a Creator.",
+  subtitle: "Cosmological and fine-tuning arguments that point to a Creator",
+  description: "Explore two core arguments that many thinkers find compelling: the Kalam Cosmological Argument (the universe began to exist) and the Fine‑Tuning Argument (the universe is calibrated for life).",
   cards: [
     {
       type: "info",
       title: "Welcome to Apologetics",
-      content: "Apologetics comes from the Greek word 'apologia'—a reasoned defense. 1 Peter 3:15 says: 'Always be prepared to give an answer to everyone who asks you to give the reason for the hope that you have. But do this with gentleness and respect.' You're about to learn how!",
+      subtitle: "A reasoned defense of the hope we have",
+      content: [
+        "Apologetics comes from the Greek word 'apologia'—a reasoned defense.",
+        "1 Peter 3:15 calls us to be ready to give reasons for our hope with gentleness and respect.",
+        "In this lesson, you'll learn the structure of two key arguments for God and how to explain them clearly."
+      ],
       xp: 10
     },
     {
       type: "teaching",
       title: "The Kalam Cosmological Argument",
-      content: "William Lane Craig champions this ancient argument: (1) Whatever begins to exist has a cause. (2) The universe began to exist. (3) Therefore, the universe has a cause. Modern science (Big Bang) confirms premise 2. Since the universe can't cause itself, something beyond it must have caused it—God.",
-      keyPoint: "The universe's beginning points to a Beginner.",
-      xp: 10
-    },
-    {
-      type: "quote",
-      author: "John Lennox",
-      text: "Nonsense remains nonsense, even when talked by world-famous scientists. The 'God hypothesis' is more logical than its denial.",
-      context: "Responding to claims that the universe came from 'nothing'",
-      xp: 10
-    },
-    {
-      type: "teaching",
-      title: "The Fine-Tuning Argument",
-      content: "The universe is fine-tuned for life with staggering precision. Change gravity by 1 part in 10^40 and stars can't form. Change the cosmological constant slightly and the universe collapses or flies apart. Over 200 parameters must be perfectly calibrated. This screams 'design,' not accident.",
-      keyPoint: "The cosmos looks designed because it IS designed.",
-      xp: 10
-    },
-    {
-      type: "scenario",
-      title: "Coffee Shop Challenge",
-      question: "Your friend says: 'Science has explained everything. We don't need God anymore.' How do you respond?",
-      options: [
-        {
-          text: "Science explains HOW things work, not WHY they exist. Who designed the laws science studies?",
-          isCorrect: true,
-          feedback: "Excellent! Science and God answer different questions. Science is the 'how,' God is the 'why.' John Lennox says, 'God no more competes with science than Henry Ford competes with the laws of combustion.'",
-          xp: 15
-        },
-        {
-          text: "That's ridiculous. Look around—everything screams design!",
-          isCorrect: false,
-          feedback: "While you're right about design, this response sounds defensive. Start by affirming science, then show how it actually points TO God. Be winsome, not combative."
-        },
-        {
-          text: "Yeah, you're probably right. Faith is just a feeling anyway.",
-          isCorrect: false,
-          feedback: "Don't give up! Christianity is intellectually robust. Faith isn't blind—it's trust based on evidence. The fine-tuning of the universe is powerful evidence for a Designer."
-        }
-      ]
-    },
-    {
-      type: "quiz",
-      question: "What are the three premises of the Kalam Cosmological Argument?",
-      options: [
-        "1) God exists. 2) The Bible says so. 3) Therefore it's true.",
-        "1) Everything has a cause. 2) God is the first cause. 3) God exists.",
-        "1) Whatever begins has a cause. 2) The universe began. 3) The universe has a cause.",
-        "1) The universe is complex. 2) Complexity requires design. 3) God designed it."
-      ],
-      correctAnswer: 2,
-      explanation: "The Kalam argument: (1) Whatever BEGINS to exist has a cause, (2) The universe began to exist, (3) Therefore the universe has a cause. This cause must be timeless, spaceless, immaterial, and powerful—matching God's description.",
-      xp: 10
-    },
-    {
-      type: "reflection",
-      title: "Personal Application",
-      prompt: "Which argument for God's existence resonates most with you: cosmological (the universe's beginning), teleological (fine-tuning/design), or moral (objective right and wrong)? Why?",
-      xp: 10
-    },
-    {
-      type: "teaching",
-      title: "Common Objections",
-      content: "Objection: 'Who made God?' Response: God didn't begin to exist—He's eternal. Only things that BEGIN need a cause. Objection: 'Multiverse explains fine-tuning!' Response: The multiverse is speculation with zero evidence. Plus, it just pushes the question back—what fine-tuned the multiverse generator?",
-      keyPoint: "Good apologetics anticipates objections and has gracious answers ready.",
-      xp: 10
-    },
-    {
-      type: "action",
-      title: "This Week's Challenge",
-      task: "Read one article or watch one video by William Lane Craig or John Lennox on the cosmological or fine-tuning argument. Share one key insight with a friend.",
-      xp: 15
-    }
-  ],
-  summary: "You've learned powerful arguments for God's existence that convince many skeptics. The universe's beginning and fine-tuning point compellingly to a Creator. Remember: apologetics plants seeds. Trust the Holy Spirit to bring growth.",
-  nextSteps: "Next lesson: We'll tackle the toughest objection to faith—the problem of evil and suffering."
-};
+      content: [
+        "William Lane Craig revitalized this ancient argument:",
+        "1) Whatever begins to exist has a cause.",
+        "2) The universe began to exist.",
+        "3) Therefore, the universe has a cause.",
+        "Modern cosmology (Big Bang, expanding universe) supports premise 2. If the universe began, the cause must be beyond space, time, and matter—and powerful enough to bring the universe into being."
+      export const lesson4Data = {
+        id: 4,
+        title: "Science & Faith: Friends or Foes?",
+        subtitle: "The Big Bang, fine-tuning, and God's cosmos",
+        description: "Many think science has disproven God. But what if modern science actually points toward a Creator? Explore how the Big Bang, cosmic fine-tuning, and DNA point to an intelligent Designer.",
+        cards: [
+          {
+            type: "info",
+            title: "The Conflict Myth",
+            content: "Popular culture says science and religion are at war. But history tells a different story. Most scientific pioneers (Newton, Galileo, Kepler, Faraday, Pasteur, Maxwell) were Christians who saw science as 'thinking God's thoughts after Him.' The conflict is a modern myth.",
+            xp: 10
+          },
+          {
+            type: "quote",
+            author: "John Lennox",
+            text: "Nonsense remains nonsense even when talked by world-famous scientists. The more we get to know about our universe, the more the hypothesis that there is a Creator gains in credibility.",
+            context: "Oxford mathematician and philosopher of science",
+            xp: 10
+          },
+          {
+            type: "teaching",
+            title: "The Big Bang and Creation",
+            content: "In the beginning, the universe exploded into existence from nothing. Sound familiar? The Big Bang confirms Genesis 1:1—the universe had a beginning. Atheist scientists initially RESISTED this because it sounded too much like creation. Lennox notes: 'The Bible said it first, and science caught up 3,000 years later.'",
+            keyPoint: "The Big Bang is a scientific confirmation of 'In the beginning, God created.'",
+            xp: 10
+          },
+          {
+            type: "teaching",
+            title: "Cosmic Fine-Tuning",
+            content: "Over 200 parameters must be fine-tuned for life: gravity, electromagnetic force, the cosmological constant, the ratio of electrons to protons, carbon resonance levels. Change any slightly and life is impossible. Odds of this happening by chance? Astronomer Fred Hoyle (an atheist!) said it looked like 'a superintellect has monkeyed with physics.'",
+            keyPoint: "The universe looks rigged for life because it was designed for life.",
+            xp: 10
+          },
+          {
+            type: "scenario",
+            title: "University Science Class",
+            question: "Your biology professor says: 'Evolution proves God is unnecessary. Natural selection explains everything.' Your response?",
+            options: [
+              {
+                text: "Evolution explains the development of life, not its origin or the laws that govern it. Who designed DNA? Who fine-tuned the universe so evolution could even happen?",
+                isCorrect: true,
+                feedback: "Perfect! Francis Collins (Christian, led Human Genome Project) says evolution is HOW God created. Natural selection doesn't replace God—it reveals His method. The question is: where did the information in DNA come from? Information always comes from intelligence.",
+                xp: 15
+              },
+              {
+                text: "Evolution is a lie! The Bible says God created everything in 6 days!",
+                isCorrect: false,
+                feedback: "While you may hold to young-earth creationism, this approach alienates rather than engages. Many Christians (like Francis Collins, John Lennox) accept evolution as God's tool. Focus on what evolution CAN'T explain: origin of life, information in DNA, cosmic fine-tuning."
+              },
+              {
+                text: "You're probably right. Science has all the answers.",
+                isCorrect: false,
+                feedback: "Don't give up! Science is wonderful but limited—it can't answer 'why' questions, moral questions, or questions about meaning. And evolution doesn't explain the origin of life, the fine-tuning of physics, or the information in DNA."
+              }
+            ]
+          },
+          {
+            type: "teaching",
+            title: "DNA: The Language of God",
+            content: "Francis Collins calls DNA 'the language of God.' DNA is a digital code—4 chemical letters (A, T, G, C) spelling out instructions for every living thing. The info in one human genome would fill 1,000 encyclopedia volumes. Where does information come from? In our experience, ALWAYS from intelligence. Why would DNA be different?",
+            keyPoint: "Information requires an Informer. DNA points to a Divine Programmer.",
+            xp: 10
+          },
+          {
+            type: "quote",
+            author: "Francis Collins",
+            text: "When you make a breakthrough in science, it is a moment of discovery of something that God knew all along. It is a deeply worshipful experience.",
+            // Apologetics Interactive Lesson Data
+            // 8 lessons covering Christian apologetics from Craig, Lennox, Lewis, Keller, Sproul, Huff, Hanegraaff
 
-export const lesson2Data = {
-  id: 2,
-  title: "The Problem of Evil & Suffering",
-  subtitle: "Answering the toughest objection to faith",
-  description: "If God is good and all-powerful, why does evil exist? Explore how Lewis, Keller, and Lennox answer this emotionally charged question with both intellectual rigor and pastoral sensitivity.",
-  cards: [
-    {
-      type: "info",
-      title: "The Skeptic's Challenge",
-      content: "David Hume formulated it famously: 'Is God willing to prevent evil but not able? Then He's not omnipotent. Is He able but not willing? Then He's malevolent. Is He both able and willing? Then why does evil exist?' This is the problem of evil—and it's a real challenge.",
-      xp: 10
-    },
-    {
-      type: "teaching",
-      title: "The Free Will Defense",
-      content: "C.S. Lewis argued that God gave humans free will because genuine love requires the freedom to choose. But freedom also means the possibility of choosing evil. A world with free creatures who sometimes choose wrong is better than a world of robots programmed to obey.",
-      keyPoint: "Love requires freedom. Freedom allows evil. But love is worth the risk.",
-      xp: 10
-    },
-    {
-      type: "quote",
-      author: "C.S. Lewis",
-      text: "God whispers to us in our pleasures, speaks in our conscience, but shouts in our pains: it is His megaphone to rouse a deaf world.",
-      context: "From 'The Problem of Pain'",
-      xp: 10
-    },
-    {
-      type: "teaching",
-      title: "The Greater Good Theodicy",
-      content: "Some suffering allows greater goods that couldn't exist otherwise. Courage requires danger. Compassion requires suffering to relieve. Character develops through trials. John Lennox points out that even suffering can serve God's purposes—Joseph told his brothers, 'You meant evil, but God meant it for good.'",
-      keyPoint: "God can use even evil for ultimate good without being the author of evil.",
-      xp: 10
-    },
-    {
-      type: "scenario",
-      title: "Hospital Visit",
-      question: "A friend's child is seriously ill. She asks through tears, 'Why would God let this happen?' What do you say?",
-      options: [
-        {
-          text: "I don't know why this happened. But I know God grieves with you, and He's not distant—He entered our suffering on the cross.",
-          isCorrect: true,
-          feedback: "Beautiful response. Sometimes the best apologetics is simply presence and empathy. Tim Keller says, 'Christianity doesn't give easy answers to suffering, but it gives the deepest answer: God Himself suffered.' The cross changes everything.",
-          xp: 15
-        },
-        {
-          text: "Maybe God is trying to teach you something. Have you examined your heart?",
-          isCorrect: false,
-          feedback: "Careful! While suffering CAN refine us, Job's friends made this mistake—assuming all suffering is punishment. Don't add guilt to grief. Lead with compassion, not theological explanations."
-        },
-        {
-          text: "Well, we live in a fallen world. Sin brought death and disease into creation.",
-          isCorrect: false,
-          feedback: "Theologically true, but pastorally tone-deaf in this moment. Save the theological seminar for later. Right now, weep with those who weep. Presence before arguments."
-        }
-      ]
-    },
-    {
-      type: "teaching",
-      title: "The Evidential vs. Logical Problem",
-      content: "Philosophers distinguish two problems: LOGICAL (evil and God can't coexist) and EVIDENTIAL (the amount/type of evil makes God unlikely). Most philosophers agree the logical problem is solved—free will explains the possibility of evil. The evidential problem remains emotionally powerful but relies on the assumption that we'd know God's reasons. We wouldn't.",
-      keyPoint: "We're not in a position to judge whether God has good reasons for allowing specific evils.",
-      xp: 10
-    },
-    {
-      type: "quote",
-      author: "Tim Keller",
-      text: "If you have a God great enough to be mad at because He hasn't stopped evil, you also have a God great enough to have reasons you can't understand.",
-      context: "From 'The Reason for God'",
-      xp: 10
-    },
-    {
-      type: "quiz",
-      question: "According to the free will defense, why does God allow evil?",
-      options: [
-        "God isn't powerful enough to stop it",
-        "God doesn't care about human suffering",
-        "Genuine love and moral goodness require free choice, which includes the possibility of choosing evil",
-        "Evil doesn't really exist—it's just our perception"
-      ],
-      correctAnswer: 2,
-      explanation: "The free will defense argues that for love to be real, it must be freely chosen. But freedom means we can also choose evil. God allows evil because the alternative—a world without genuine freedom and love—would be worse.",
-      xp: 10
-    },
-    {
-      type: "reflection",
-      title: "Personal Application",
-      prompt: "Have you experienced suffering that initially made you question God? How did (or didn't) you find answers or peace? What role did community play?",
-      xp: 10
-    },
-    {
-      type: "action",
-      title: "This Week's Challenge",
-      task: "Read C.S. Lewis's 'The Problem of Pain' (or Tim Keller's chapter on suffering in 'The Reason for God'). Write down one insight that helps you personally.",
-      xp: 15
-    }
-  ],
-  summary: "The problem of evil is emotionally powerful but not intellectually fatal to faith. Free will, the greater good, and God's own suffering on the cross provide compelling responses. Remember: you don't need all the answers—just enough reason to trust.",
-  nextSteps: "Next lesson: The Resurrection of Jesus—the historical bedrock of Christianity."
-};
-
-export const lesson3Data = {
-  id: 3,
-  title: "The Resurrection of Jesus",
-  subtitle: "Historical evidence for Christianity's central claim",
-  description: "Christianity stands or falls on the resurrection. Examine the 'minimal facts' approach, early testimony, and why even skeptical scholars agree on facts that point to Jesus rising from the dead.",
-  cards: [
-    {
-      type: "info",
-      title: "The Central Claim",
-      content: "Paul wrote: 'If Christ has not been raised, our preaching is useless and so is your faith' (1 Cor 15:14). The resurrection isn't a nice add-on—it's everything. Without it, Christianity collapses. But what if the evidence is stronger than you think?",
-      xp: 10
-    },
-    {
-      type: "teaching",
-      title: "The Minimal Facts Approach",
-      content: "Gary Habermas and William Lane Craig use facts accepted by the vast majority of scholars (even skeptical ones): (1) Jesus died by crucifixion, (2) His disciples believed He rose and appeared to them, (3) Paul (a persecutor) converted due to an experience he believed was the risen Jesus, (4) James (Jesus's skeptical brother) converted. How do you explain these without the resurrection?",
-      keyPoint: "Start with what even skeptics agree on. The minimal facts still demand an explanation.",
-      xp: 10
-    },
-    {
-      type: "scenario",
-      title: "The Debate",
-      question: "A professor says: 'The resurrection is just a legend that developed over time.' How do you respond?",
-      options: [
-        {
-          text: "Paul's testimony in 1 Cor 15 dates to within 3-5 years of the crucifixion—way too early for legend. Plus, the tomb was empty and enemies never produced a body.",
-          isCorrect: true,
-          feedback: "Excellent! Legends take generations. We have testimony from within years—even months. And the empty tomb is a historical bedrock. If Jesus didn't rise, His enemies could have ended Christianity by displaying the corpse. They didn't because they couldn't.",
-          xp: 15
-        },
+            export const lesson1Data = {
+              id: 1,
+              title: "The Case for God's Existence",
+              subtitle: "Cosmological and fine-tuning arguments that point to a Creator",
+              description: "Explore two core arguments that many thinkers find compelling: the Kalam Cosmological Argument (the universe began to exist) and the Fine‑Tuning Argument (the universe is calibrated for life).",
+              cards: [
+                {
+                  type: "info",
+                  title: "Welcome to Apologetics",
+                  subtitle: "A reasoned defense of the hope we have",
+                  content: [
+                    "Apologetics comes from the Greek word 'apologia'—a reasoned defense.",
+                    "1 Peter 3:15 calls us to be ready to give reasons for our hope with gentleness and respect.",
+                    "In this lesson, you'll learn the structure of two key arguments for God and how to explain them clearly."
+                  ]
+                },
+                {
+                  type: "teaching",
+                  title: "The Kalam Cosmological Argument",
+                  content: [
+                    "William Lane Craig revitalized this ancient argument:",
+                    "1) Whatever begins to exist has a cause.",
+                    "2) The universe began to exist.",
+                    "3) Therefore, the universe has a cause.",
+                    "Modern cosmology (Big Bang, expanding universe) supports premise 2. If the universe began, the cause must be beyond space, time, and matter—and powerful enough to bring the universe into being."
+                  ],
+                  keyPoint: "If the universe began, it points to a Beginner."
+                },
+                {
+                  type: "teaching",
+                  title: "Why 'begins to exist' matters",
+                  content: [
+                    "The premise isn't 'everything has a cause' but 'whatever begins to exist has a cause.'",
+                    "God is eternal and doesn't begin to exist, so He doesn't need a cause.",
+                    "The universe, however, did begin—so it's reasonable to ask for a cause."
+                  ],
+                  keyPoint: "Only things that begin need causes. An eternal God does not."
+                },
+                {
+                  type: "teaching",
+                  title: "Actual infinities and Hilbert's Hotel",
+                  content: [
+                    "Philosophically, traversing an actual infinite past is problematic. If the past were actually infinite, we'd never arrive at 'today.'",
+                    "Hilbert's Hotel is a thought experiment showing the paradoxes that arise with actual infinities (like a 'full' hotel still having room for infinitely many guests).",
+                    "These paradoxes suggest an infinite regress of past events is impossible—again pointing to a beginning."
+                  ],
+                  keyPoint: "An actually infinite past leads to paradox; a finite past implies a beginning."
+                },
+                {
+                  type: 'fillblank',
+                  prompt: "Whatever ______ to exist has a cause.",
+                  correctAnswer: 'begins',
+                  explanation: "The Kalam's first premise is 'Whatever begins to exist has a cause.'"
+                },
+                {
+                  type: "quote",
+                  author: "John Lennox",
+                  text: "Nonsense remains nonsense, even when talked by world‑famous scientists. The 'God hypothesis' is more logical than its denial.",
+                  context: "Responding to claims that the universe came from 'nothing'"
+                },
+                {
+                  type: "teaching",
+                  title: "The Fine-Tuning Argument",
+                  content: [
+                    "The universe is fine‑tuned for life with staggering precision.",
+                    "• Gravity: if altered by 1 part in 10^40, stars wouldn't form.",
+                    "• Cosmological constant: so precise that a tiny change would cause a rapid collapse or endless dispersal of matter.",
+                    "• Strong nuclear force, electron‑proton ratio, carbon resonance levels—all set 'just right.'",
+                    "Taken together, these suggest design rather than accident."
+                  ],
+                  keyPoint: "The cosmos looks designed because it IS designed."
+                },
+                {
+                  type: 'matching',
+                  title: 'Match the constant to its description',
+                  pairs: [
+                    { term: 'Gravity', definition: 'If altered by 1 in 10^40, stars could not form' },
+                    { term: 'Cosmological constant', definition: 'Controls the universe’s expansion; must be exquisitely precise' },
+                    { term: 'Strong nuclear force', definition: 'Binds atomic nuclei; small changes prevent chemistry' },
+                    { term: 'Carbon resonance', definition: 'Energy level that enables carbon formation in stars' }
+                  ]
+                },
+                {
+                  type: "scenario",
+                  title: "Coffee Shop Challenge",
+                  question: "Your friend says: 'Science has explained everything. We don't need God anymore.' How do you respond?",
+                  options: [
+                    {
+                      text: "Science explains HOW things work, not WHY they exist. Who designed the laws science studies?",
+                      isCorrect: true,
+                      feedback: "Excellent! Science and God answer different questions. Science is the 'how,' God is the 'why.' John Lennox says, 'God no more competes with science than Henry Ford competes with the laws of combustion.'"
+                    },
+                    {
+                      text: "That's ridiculous. Look around—everything screams design!",
+                      isCorrect: false,
+                      feedback: "While you're right about design, this response sounds defensive. Start by affirming science, then show how it actually points TO God. Be winsome, not combative."
+                    },
+                    {
+                      text: "Yeah, you're probably right. Faith is just a feeling anyway.",
+                      isCorrect: false,
+                      feedback: "Don't give up! Christianity is intellectually robust. Faith isn't blind—it's trust based on evidence. The fine-tuning of the universe is powerful evidence for a Designer."
+                    }
+                  ]
+                },
+                {
+                  type: "quiz",
+                  question: "What are the three premises of the Kalam Cosmological Argument?",
+                  options: [
+                    "1) God exists. 2) The Bible says so. 3) Therefore it's true.",
+                    "1) Everything has a cause. 2) God is the first cause. 3) God exists.",
+                    "1) Whatever begins has a cause. 2) The universe began. 3) The universe has a cause.",
+                    "1) The universe is complex. 2) Complexity requires design. 3) God designed it."
+                  ],
+                  correctAnswer: 2,
+                  explanation: "The Kalam argument: (1) Whatever BEGINS to exist has a cause, (2) The universe began to exist, (3) Therefore the universe has a cause. This cause must be timeless, spaceless, immaterial, and powerful—matching God's description."
+                },
+                {
+                  type: "reflection",
+                  title: "Personal Application",
+                  prompt: "Which argument for God's existence resonates most with you: cosmological (the universe's beginning) or teleological (fine‑tuning/design)? Why? How would you explain it in 90 seconds?"
+                },
+                {
+                  type: "teaching",
+                  title: "Common Objections",
+                  content: [
+                    "Objection: 'Who made God?' Response: God is eternal and uncaused. Only things that begin need a cause.",
+                    "Objection: 'The multiverse explains fine‑tuning.' Response: The multiverse is speculative and doesn’t remove the need for fine‑tuning. You’d still need an explanation for the laws and initial conditions that generate the multiverse.",
+                    "Objection: 'We’ll find a natural explanation.' Response: That assumes naturalism. The argument is that the best explanation for the data is an intelligent cause."
+                  ],
+                  keyPoint: "Good apologetics anticipates objections and has gracious answers ready."
+                },
+                {
+                  type: "action",
+                  title: "This Week's Challenge",
+                  task: "Read one article or watch one video by William Lane Craig or John Lennox on the cosmological or fine-tuning argument. Share one key insight with a friend."
+                }
+              ],
+              summary: "You've learned powerful arguments for God's existence that convince many skeptics. The universe's beginning and fine-tuning point compellingly to a Creator. Remember: apologetics plants seeds. Trust the Holy Spirit to bring growth.",
+              nextSteps: "Next lesson: We'll tackle the toughest objection to faith—the problem of evil and suffering."
+            };
         {
           text: "You're calling my Lord a liar! That's offensive!",
           isCorrect: false,
@@ -305,20 +633,31 @@ export const lesson4Data = {
       title: "The Conflict Myth",
       content: "Popular culture says science and religion are at war. But history tells a different story. Most scientific pioneers (Newton, Galileo, Kepler, Faraday, Pasteur, Maxwell) were Christians who saw science as 'thinking God's thoughts after Him.' The conflict is a modern myth.",
       xp: 10
-    },
+        subtitle: "A head-and-heart question",
+        content: [
+          "David Hume framed it memorably: If God is willing to prevent evil but not able, He’s not omnipotent. If able but not willing, He’s not good. If both, why is there evil?",
+          "Evil is both an intellectual and deeply personal problem. This lesson addresses both dimensions—with truth and compassion."
+        ],
     {
       type: "quote",
       author: "John Lennox",
       text: "Nonsense remains nonsense even when talked by world-famous scientists. The more we get to know about our universe, the more the hypothesis that there is a Creator gains in credibility.",
       context: "Oxford mathematician and philosopher of science",
-      xp: 10
+        content: [
+          "Logical problem: God and evil are claimed to be incompatible. Response: Free will and greater‑good reasons show no contradiction.",
+          "Evidential problem: Given the amount and kinds of evil, is God unlikely? Response: We’re not in a position to see all God’s reasons; limited creatures can’t judge infinite wisdom.",
+        ],
     },
     {
       type: "teaching",
       title: "The Big Bang and Creation",
       content: "In the beginning, the universe exploded into existence from nothing. Sound familiar? The Big Bang confirms Genesis 1:1—the universe had a beginning. Atheist scientists initially RESISTED this because it sounded too much like creation. Lennox notes: 'The Bible said it first, and science caught up 3,000 years later.'",
       keyPoint: "The Big Bang is a scientific confirmation of 'In the beginning, God created.'",
-      xp: 10
+        content: [
+          "Genuine love requires freedom; freedom entails the possibility of wrong.",
+          "A world with free agents capable of love and moral growth is better than a world of robots.",
+          "Therefore, the possibility of moral evil is a necessary condition of a morally significant world."
+        ],
     },
     {
       type: "teaching",
@@ -332,7 +671,11 @@ export const lesson4Data = {
       title: "University Science Class",
       question: "Your biology professor says: 'Evolution proves God is unnecessary. Natural selection explains everything.' Your response?",
       options: [
-        {
+        content: [
+          "Some virtues require hardship: courage requires danger; compassion requires need; perseverance requires trial.",
+          "Scripture frames suffering within God’s purposes (Genesis 50:20; Romans 5:3–5).",
+          "God can sovereignly use evil without authoring it."
+        ],
           text: "Evolution explains the development of life, not its origin or the laws that govern it. Who designed DNA? Who fine-tuned the universe so evolution could even happen?",
           isCorrect: true,
           feedback: "Perfect! Francis Collins (Christian, led Human Genome Project) says evolution is HOW God created. Natural selection doesn't replace God—it reveals His method. The question is: where did the information in DNA come from? Information always comes from intelligence.",
@@ -361,9 +704,13 @@ export const lesson4Data = {
       type: "quote",
       author: "Francis Collins",
       text: "When you make a breakthrough in science, it is a moment of discovery of something that God knew all along. It is a deeply worshipful experience.",
-      context: "Christian geneticist who led the Human Genome Project",
-      xp: 10
-    },
+        title: "The Cross: God with us in suffering",
+        content: [
+          "Christianity offers not only arguments but a God who suffers with us.",
+          "At the cross, God in Christ entered our pain. We don't know all of God's reasons, but we know His heart.",
+          "This doesn’t answer every 'why', but it gives the deepest 'who'—the Suffering Servant with us."
+        ],
+        keyPoint: "God is not distant from suffering—He entered it.",
     {
       type: "quiz",
       question: "What is the fine-tuning argument?",
@@ -412,16 +759,36 @@ export const lesson5Data = {
       title: "The Skeptic's Attack",
       content: "Critics claim: 'The Bible has been corrupted over centuries!' 'It contradicts itself!' 'It's just ancient mythology!' Are these charges true? Or is the Bible more reliable than any other ancient document? Let's look at the evidence.",
       xp: 10
-    },
+        content: [
+          "Paul wrote: 'If Christ has not been raised, our preaching is useless and so is your faith' (1 Cor 15:14).",
+          "The resurrection is the linchpin of Christianity. If false, the faith collapses; if true, it confirms Jesus as Lord."
+        ],
     {
       type: "teaching",
       title: "Manuscript Evidence",
       content: "The New Testament has ~5,800 Greek manuscripts, 10,000+ Latin, thousands more in other languages. Compare: Homer's Iliad has ~650 manuscripts. Caesar's Gallic Wars? 10 manuscripts. The NT is the most well-attested ancient document by far. And the earliest fragments date to within decades of the originals.",
       keyPoint: "No other ancient text comes close to the Bible's manuscript evidence.",
-      xp: 10
+        content: [
+          "Gary Habermas and William Lane Craig argue from facts widely accepted by scholars (including skeptics):",
+          "1) Jesus died by crucifixion.",
+          "2) The disciples believed they saw the risen Jesus.",
+          "3) Paul, a persecutor, converted after an experience he took as an appearance of the risen Jesus.",
+          "4) James, once skeptical, converted.",
+          "How best to explain these?"
+        ],
     },
     {
       type: "quote",
+      {
+        type: 'content',
+        title: 'Early testimony timeline',
+        subtitle: 'Why “legend” doesn’t fit',
+        content: [
+          "1 Corinthians 15:3–7 preserves an early creed many date to within 3–5 years of the crucifixion.",
+          "Acts contains early proclamation summaries. The Gospels draw on even earlier traditions.",
+          "This is far too early for legends to develop and dominate all independent sources."
+        ]
+      },
       author: "F.F. Bruce",
       text: "The evidence for our New Testament writings is ever so much greater than the evidence for many writings of classical authors, the authenticity of which no one dreams of questioning.",
       context: "Biblical scholar and textual critic",
@@ -448,7 +815,12 @@ export const lesson5Data = {
         {
           text: "The Bible is God's Word! It CAN'T have contradictions!",
           isCorrect: false,
-          feedback: "Theologically true, but this doesn't help the skeptic. They need to see HOW the alleged contradictions resolve. Engage the specific examples. Show how harmonization works."
+        content: [
+          "Three lines of evidence support the empty tomb:",
+          "1) Burial by Joseph of Arimathea is multiply attested (unlikely as invention).",
+          "2) Women as first witnesses—counter‑productive in that culture if fabricating.",
+          "3) The earliest Jewish response alleged theft—implicitly conceding the tomb was empty."
+        ],
         },
         {
           text: "Yeah, I've wondered about that too. Maybe it's not all true.",
@@ -462,7 +834,11 @@ export const lesson5Data = {
       title: "Fulfilled Prophecy",
       content: "The odds of one person fulfilling just 8 messianic prophecies by chance: 1 in 10^17 (one in 100 quadrillion). Jesus fulfilled over 300 OT prophecies about the Messiah: birthplace (Micah 5:2), virgin birth (Isaiah 7:14), crucifixion details (Psalm 22), betrayal price (Zechariah 11:12-13). Hank Hanegraaff calls this 'God's signature on Scripture.'",
       keyPoint: "Fulfilled prophecy is statistically impossible without divine inspiration.",
-      xp: 10
+        content: [
+          "The disciples changed from fearful deserters to bold witnesses willing to suffer and die.",
+          "People may die for what they think is true, but not for what they know is false.",
+          "Conspiracy theories (body stolen) don’t account for this transformation across many witnesses."
+        ],
     },
     {
       type: "quiz",
@@ -482,7 +858,11 @@ export const lesson5Data = {
       title: "Textual Criticism",
       content: "Textual criticism compares manuscripts to recover the original wording. With 5,800+ manuscripts, scholars can cross-check variations. Result? We're 99.5% certain of the NT text. The 0.5% uncertainty involves minor issues (spelling, word order) that don't affect any doctrine. No other ancient text is this reliable.",
       keyPoint: "The more manuscripts, the MORE certain we are of the original text.",
-      xp: 10
+        content: [
+          "Swoon theory: Jesus didn’t die. Problem: Roman execution was efficient; a half‑dead Jesus wouldn’t inspire worship.",
+          "Hallucination: Disciples hallucinated. Problem: Group hallucinations are highly implausible; plus the empty tomb remains.",
+          "Conspiracy: Disciples lied. Problem: Doesn’t square with their suffering and deaths for the claim."
+        ],
     },
     {
       type: "quote",
@@ -828,3 +1208,4 @@ export const lesson8Data = {
   summary: "Apologetics is both an art and a science. You've learned powerful arguments for the faith. Now practice using them with humility, grace, and prayer. Remember: arguments open doors, but only the Holy Spirit changes hearts. Go forth as a defender of the faith—with both truth and love.",
   nextSteps: "Congratulations! You've completed the Apologetics Study Guide. Continue growing: read more Craig, Lennox, Lewis, Keller. Watch debates. Engage skeptics graciously. And always remember: 'The Lord's servant must not be quarrelsome but kind to everyone, able to teach, patiently enduring evil' (2 Tim 2:24)."
 };
+*/

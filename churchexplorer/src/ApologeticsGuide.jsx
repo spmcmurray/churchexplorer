@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Lock, Trophy, Star, Shield } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
-import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './apologeticsLessonData';
+// Use the clean lesson data source
+import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './apologeticsLessonData.clean';
 
 const ApologeticsGuide = ({ onNavigate }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
