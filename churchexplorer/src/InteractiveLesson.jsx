@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
 
 // Helper function to parse markdown bold syntax
@@ -25,18 +25,21 @@ const InteractiveLesson = ({ lessonData, onComplete, onExit }) => {
   const totalCards = lessonData.cards.length;
   const progress = ((currentCard + 1) / totalCards) * 100;
 
+  // Scroll to top when component mounts or card changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentCard]);
+
   const handleNext = () => {
     if (currentCard < totalCards - 1) {
       setCompletedCards(prev => new Set([...prev, currentCard]));
       setCurrentCard(currentCard + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevious = () => {
     if (currentCard > 0) {
       setCurrentCard(currentCard - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

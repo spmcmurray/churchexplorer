@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BookOpen, Scroll, Shield, CheckCircle2 } from 'lucide-react';
 import { getPathProgress, getProfile } from './services/progressService';
 
@@ -9,6 +9,11 @@ const Paths = ({ onNavigate }) => {
 
   const profile = getProfile();
   const recommended = profile?.startingPoint;
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   const cards = [
     {

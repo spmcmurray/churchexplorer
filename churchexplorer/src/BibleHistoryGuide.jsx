@@ -10,6 +10,11 @@ const BibleHistoryGuide = ({ onNavigate }) => {
   const [quizResults, setQuizResults] = useState({});
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   // Helper function to handle navigation from appLinks
   const handleLinkClick = (link) => {
     if (link.includes('Bible Timeline') || link.includes('Denomination')) {

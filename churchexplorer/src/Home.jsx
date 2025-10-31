@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Flame, PlayCircle, Sparkles } from 'lucide-react';
 import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile, saveProfile } from './services/progressService';
 import DailyChallenge from './DailyChallenge';
@@ -12,6 +12,11 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
   const firstTime = useMemo(() => !existingProfile && overall.percentage === 0, [existingProfile, overall.percentage]);
   const [startingPoint, setStartingPoint] = useState('');
   const canCreate = !!startingPoint;
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   const getTotalXP = () => {
     const bibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');

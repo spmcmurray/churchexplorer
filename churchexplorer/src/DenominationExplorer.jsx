@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, Calendar, ArrowLeft, Globe } from 'lucide-react';
 
 const DenominationExplorer = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState('compare'); // 'compare' | 'worship'
   const [comparisonDenoms, setComparisonDenoms] = useState([]);
   const [selectedWorshipDenom, setSelectedWorshipDenom] = useState(null);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   // Data copied from DenominationVisualizer to power comparison and worship views
   const denominations = {

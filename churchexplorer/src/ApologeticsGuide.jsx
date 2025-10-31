@@ -9,6 +9,11 @@ const ApologeticsGuide = ({ onNavigate }) => {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   // Adapt Apologetics lesson data (info/teaching/quote/scenario/reflection/action)
   // to the InteractiveLesson schema (content/quiz/matching/fillblank/completion)
   const adaptLessonForInteractive = (src) => {

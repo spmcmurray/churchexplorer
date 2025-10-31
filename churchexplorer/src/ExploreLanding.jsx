@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Scroll, BookOpen, Users } from 'lucide-react';
 
 const ExploreLanding = ({ onNavigate }) => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const cards = [
     {
       id: 'explore-bible',
