@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
+import { scheduleReviews } from './services/reviewService';
 
 // Helper function to parse markdown bold syntax
 const parseMarkdown = (text) => {
@@ -217,7 +218,6 @@ const ContentCard = ({ card, cardIndex, isAcknowledged, onAcknowledge }) => (
 // Quiz Card Component
 const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
   const [selected, setSelected] = useState(answer);
-  const [showHint, setShowHint] = useState(false);
 
   const handleSelect = (optionIndex) => {
     setSelected(optionIndex);
@@ -232,26 +232,6 @@ const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
 
       <div className="mb-8">
         <p className="text-xl font-bold text-gray-800 mb-6">{parseMarkdown(card.question)}</p>
-
-        {/* Hint Button */}
-        {card.hint && !showFeedback && (
-          <div className="mb-4">
-            {!showHint ? (
-              <button
-                onClick={() => setShowHint(true)}
-                className="text-purple-600 hover:text-purple-700 font-semibold text-sm flex items-center gap-1 transition"
-              >
-                💡 Need a hint?
-              </button>
-            ) : (
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <p className="text-purple-900 text-sm">
-                  <span className="font-bold">💡 Hint:</span> {parseMarkdown(card.hint)}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
 
         <div className="space-y-3">
           {card.options.map((option, idx) => {

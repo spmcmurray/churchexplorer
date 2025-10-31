@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, Star } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
+import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
+import { scheduleReviews } from './services/reviewService';
 
 const BibleHistoryGuide = ({ onNavigate }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
@@ -9,6 +11,19 @@ const BibleHistoryGuide = ({ onNavigate }) => {
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResults, setQuizResults] = useState({});
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
+  const [reviewMode, setReviewMode] = useState(null); // null or { path, lessonNumber }
+
+  // Check for review mode on mount
+  useEffect(() => {
+    const savedReviewMode = localStorage.getItem('reviewMode');
+    if (savedReviewMode) {
+      const review = JSON.parse(savedReviewMode);
+      if (review.path === 'bible') {
+        setReviewMode(review);
+        localStorage.removeItem('reviewMode'); // Clear after reading
+      }
+    }
+  }, []);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -121,6 +136,9 @@ const BibleHistoryGuide = ({ onNavigate }) => {
 
   const handleCompleteInteractive = (lessonNum, xpEarned) => {
     markLessonComplete(lessonNum);
+
+    // Schedule spaced repetition reviews
+    scheduleReviews('bible', lessonNum);
 
     // Save XP to localStorage
     if (xpEarned) {
@@ -954,6 +972,37 @@ const BibleHistoryGuide = ({ onNavigate }) => {
     xp: getTotalXP(),
     maxXP: 800 // 40 activities × 10 XP + 8 lessons × 50 XP bonus
   };
+
+  // If in review mode, show review session
+  if (reviewMode) {
+    const lessonDataMap = {
+      1: lesson1Data, 2: lesson2Data, 3: lesson3Data, 4: lesson4Data,
+      5: lesson5Data, 6: lesson6Data, 7: lesson7Data, 8: lesson8Data
+    };
+    
+    const lessonData = lessonDataMap[reviewMode.lessonNumber];
+    
+    if (lessonData) {
+      return (
+        <ReviewSession
+          lessonData={lessonData}
+          path="bible"
+          lessonNumber={reviewMode.lessonNumber}
+          onComplete={(xp) => {
+            // Award XP for review
+            const currentXP = getTotalXP();
+            localStorage.setItem('bibleHistoryTotalXP', (currentXP + xp).toString());
+            setReviewMode(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onExit={() => {
+            setReviewMode(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      );
+    }
+  }
 
   // If in interactive mode, show interactive lesson
   if (interactiveMode === 1) {

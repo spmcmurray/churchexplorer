@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Flame, PlayCircle, Sparkles } from 'lucide-react';
+import { Flame, PlayCircle, Sparkles, BookOpen, Calendar } from 'lucide-react';
 import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile, saveProfile } from './services/progressService';
 import DailyChallenge from './DailyChallenge';
+import { getDueReviews, getMasteryInfo } from './services/reviewService';
 
 const Home = ({ onNavigate, onStartOnboarding }) => {
   const overall = getOverallProgress();
@@ -166,6 +167,9 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
           </div>
         </div>
 
+        {/* Reviews Section */}
+        {!firstTime && <ReviewsAlert onNavigate={onNavigate} />}
+
         {/* Daily Challenge */}
         <div className="mt-6">
           <DailyChallenge onNavigate={onNavigate} />
@@ -216,3 +220,127 @@ const Pick = ({ label, active, onClick }) => (
     {label}
   </button>
 );
+
+// Reviews Alert Component
+const ReviewsAlert = ({ onNavigate }) => {
+  const [dueReviews, setDueReviews] = useState([]);
+  const [showReviewMode, setShowReviewMode] = useState(false);
+
+  useEffect(() => {
+    const reviews = getDueReviews();
+    setDueReviews(reviews);
+  }, []);
+
+  if (dueReviews.length === 0) {
+    return null; // Don't show anything if no reviews due
+  }
+
+  const getLessonTitle = (path, lessonNumber) => {
+    // This is a simplified mapping - could be enhanced
+    const titles = {
+      bible: {
+        1: 'From Mouth to Manuscript',
+        2: 'The Manuscript Detective Story',
+        3: 'Lost in Translation?',
+        4: 'The English Bible\'s Dramatic History',
+        5: 'The Books That Almost Made It',
+        6: 'How Christians Read the Bible Over Time',
+        7: 'Archaeology & the Bible',
+        8: 'Your Bible\'s Backstory'
+      },
+      church: {
+        1: 'Early Christianity',
+        2: 'The Great Divide',
+        3: 'The Reformation',
+        4: 'Anglicans & Methodists',
+        5: 'Baptists & Anabaptists',
+        6: 'Pentecostals & Holiness',
+        7: 'Restorationists',
+        8: 'Finding Your Church Home'
+      },
+      apologetics: {
+        1: 'God\'s Existence',
+        2: 'Evil & Suffering',
+        3: 'The Resurrection',
+        4: 'Science & Faith',
+        5: 'Scripture Reliability',
+        6: 'The Moral Argument',
+        7: 'Jesus: The Only Way?',
+        8: 'Engaging Skeptics'
+      }
+    };
+    return titles[path]?.[lessonNumber] || `Lesson ${lessonNumber}`;
+  };
+
+  const getPathName = (path) => {
+    const names = {
+      bible: 'Bible History',
+      church: 'Church History',
+      apologetics: 'Apologetics'
+    };
+    return names[path] || path;
+  };
+
+  const handleStartReview = (review) => {
+    // Navigate to the appropriate path with review mode
+    localStorage.setItem('reviewMode', JSON.stringify(review));
+    
+    if (review.path === 'bible') onNavigate('bible-history');
+    else if (review.path === 'church') onNavigate('study-guide');
+    else if (review.path === 'apologetics') onNavigate('apologetics');
+  };
+
+  return (
+    <div className="mt-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white shadow-lg">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <BookOpen className="w-6 h-6" />
+          <span className="font-bold text-lg">
+            {dueReviews.length === 1 ? '1 Review Due' : `${dueReviews.length} Reviews Due`}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full">
+          <Calendar className="w-4 h-4" />
+          <span className="text-sm font-bold">Today</span>
+        </div>
+      </div>
+
+      <p className="text-white/90 mb-4">
+        Keep your knowledge fresh! Review these lessons to strengthen your long-term retention.
+      </p>
+
+      <div className="space-y-2 mb-4">
+        {dueReviews.slice(0, 3).map((review) => {
+          const mastery = getMasteryInfo(review.path, review.lessonNumber);
+          return (
+            <button
+              key={review.lessonKey}
+              onClick={() => handleStartReview(review)}
+              className="w-full text-left bg-white/10 backdrop-blur border border-white/20 rounded-xl p-4 hover:bg-white/20 transition"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-white flex items-center gap-2">
+                    <span>{mastery.icon}</span>
+                    {getPathName(review.path)}: {getLessonTitle(review.path, review.lessonNumber)}
+                  </div>
+                  <div className="text-sm text-white/80 mt-1">
+                    Review #{review.reviewNumber} • {mastery.label}
+                    {review.isOverdue && <span className="ml-2 text-yellow-300">⚠️ Overdue</span>}
+                  </div>
+                </div>
+                <div className="text-white/60">→</div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {dueReviews.length > 3 && (
+        <p className="text-white/70 text-sm text-center">
+          +{dueReviews.length - 3} more {dueReviews.length - 3 === 1 ? 'review' : 'reviews'} available
+        </p>
+      )}
+    </div>
+  );
+};

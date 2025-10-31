@@ -43,7 +43,6 @@ export const lesson1Data = {
         'Stories were shorter and easier to remember'
       ],
       correctAnswer: 1,
-      hint: 'Think about the "serious business" mentioned earlier—this wasn\'t casual!',
       explanation: 'Ancient cultures trained professional memorizers who could accurately preserve and transmit sacred texts. This wasn\'t casual storytelling—it was a skilled profession with rigorous standards.'
     },
 
@@ -137,7 +136,6 @@ export const lesson1Data = {
         'It proves there were many different versions of the Bible'
       ],
       correctAnswer: 2,
-      hint: 'Remember: more copies = easier to spot errors and find the original wording!',
       explanation: 'Having thousands of manuscripts is a strength, not a weakness. The more copies we have, the easier it is to compare them and determine the original wording. The Bible has far more manuscript evidence than any other ancient text.'
     },
 
