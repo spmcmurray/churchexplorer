@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BookOpen, Scroll, Shield, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Scroll, Shield, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { getPathProgress, getProfile } from './services/progressService';
 
 const Paths = ({ onNavigate }) => {
@@ -56,7 +56,15 @@ const Paths = ({ onNavigate }) => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Back button */}
+        <button
+          onClick={() => onNavigate('home')}
+          className="inline-flex items-center gap-2 px-4 py-2 mb-4 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Home</span>
+        </button>
 
         <div className="grid md:grid-cols-3 gap-6">
           {cards.map((c, idx) => (

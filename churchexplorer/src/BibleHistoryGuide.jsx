@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, Star } from 'lucide-react';
+import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, Star, ArrowLeft } from 'lucide-react';
 import InteractiveLesson from './InteractiveLesson';
 import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
@@ -1105,7 +1105,16 @@ const BibleHistoryGuide = ({ onNavigate }) => {
       </div>
 
       {/* Progress Section */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Back button */}
+        <button
+          onClick={() => onNavigate('paths')}
+          className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Learning Paths</span>
+        </button>
+
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-12 border-2 border-amber-100">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center">
