@@ -95,6 +95,7 @@ export const timelineChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Recall the cost of faith in Soviet Russia',
     statement: 'Over 100,000 Orthodox priests and believers were martyred during the Russian Revolution.',
     answer: true,
     explanation: 'The Bolsheviks closed 98% of churches and executed clergy. An estimated 100,000+ were martyred between 1917-1991.',
@@ -103,6 +104,7 @@ export const timelineChallenges = [
   },
   {
     type: 'trivia',
+    objective: 'Learn about modern Catholic leadership',
     fact: 'Pope Francis, elected in 2013, is the first Jesuit pope and the first from Latin America.',
     cta: 'Explore Church Timeline →',
     xp: 2,
@@ -110,6 +112,7 @@ export const timelineChallenges = [
   },
   {
     type: 'trivia',
+    objective: 'Discover key medieval church councils',
     fact: 'The Fourth Lateran Council (1215) formally defined the seven sacraments and transubstantiation.',
     cta: 'Explore Church Timeline →',
     xp: 2,
@@ -117,6 +120,7 @@ export const timelineChallenges = [
   },
   {
     type: 'trivia',
+    objective: 'Learn about Orthodox Christianity\'s spread',
     fact: 'Prince Vladimir of Kiev converted in 988, bringing Orthodox Christianity to Russia and making it integral to Russian identity.',
     cta: 'Explore Church Timeline →',
     xp: 2,
@@ -124,6 +128,7 @@ export const timelineChallenges = [
   },
   {
     type: 'trivia',
+    objective: 'Understand the Reformation settlement',
     fact: 'The Peace of Augsburg (1555) established "cuius regio, eius religio"—rulers determine their territories\' religion.',
     cta: 'Explore Church Timeline →',
     xp: 2,
@@ -131,6 +136,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Test your knowledge of Catholic sacraments',
     question: 'Which denomination believes in seven sacraments?',
     options: ['Catholic', 'Lutheran', 'Baptist', 'Methodist'],
     correctAnswer: 0,
@@ -140,6 +146,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Understand Orthodox theology of salvation',
     question: 'Which tradition emphasizes "theosis" (becoming one with God)?',
     options: ['Orthodox', 'Lutheran', 'Baptist', 'Methodist'],
     correctAnswer: 0,
@@ -149,6 +156,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Learn about Reformed theology',
     question: 'Which denomination believes in "unconditional election"?',
     options: ['Reformed/Presbyterian', 'Lutheran', 'Anglican', 'Methodist'],
     correctAnswer: 0,
@@ -158,6 +166,7 @@ export const timelineChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Recall key Reformation principles',
     question: 'What does "sola scriptura" mean?',
     options: ['Scripture alone', 'Faith alone', 'Grace alone', 'Christ alone'],
     correctAnswer: 0,
@@ -167,6 +176,7 @@ export const timelineChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Understand Lutheran sacramental theology',
     statement: 'Lutherans believe in the "Real Presence"—Christ\'s body and blood "in, with, and under" bread and wine.',
     answer: true,
     explanation: 'Unlike symbolic views, Lutherans affirm Real Presence while rejecting transubstantiation.',
@@ -175,6 +185,7 @@ export const timelineChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Know the East-West theological divide',
     statement: 'The Orthodox Church accepts the filioque clause in the Nicene Creed.',
     answer: false,
     explanation: 'Orthodox reject the filioque ("and the Son"), viewing it as an unauthorized Western addition.',
@@ -190,6 +201,7 @@ export const lessonChallenges = [
   // Bible History Lesson 1
   {
     type: 'quiz',
+    objective: 'Recall how oral tradition worked',
     question: 'Why was oral tradition considered reliable in ancient cultures?',
     options: [
       'They had better memories than modern people',
@@ -204,6 +216,7 @@ export const lessonChallenges = [
   },
   {
     type: 'fillblank',
+    objective: 'Remember the role of ancient copyists',
     prompt: 'Ancient ________ were professional copyists who preserved Scripture.',
     answer: 'scribes',
     explanation: 'Scribes meticulously copied manuscripts, though minor variations occurred over centuries.',
@@ -212,6 +225,7 @@ export const lessonChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Know the strength of biblical manuscripts',
     statement: 'We have more biblical manuscripts than any other ancient document.',
     answer: true,
     explanation: 'With 5,800+ Greek NT manuscripts plus thousands more in other languages, biblical manuscript evidence far exceeds other ancient texts.',
@@ -222,6 +236,7 @@ export const lessonChallenges = [
   // Bible History Lesson 2
   {
     type: 'quiz',
+    objective: 'Recall the Dead Sea Scrolls discovery',
     question: 'What was significant about the Dead Sea Scrolls discovery?',
     options: [
       'They contained lost books of the Bible',
@@ -236,6 +251,7 @@ export const lessonChallenges = [
   },
   {
     type: 'fillblank',
+    objective: 'Remember the textual evidence discovery',
     prompt: 'The ________ Scrolls confirmed 99% biblical textual accuracy.',
     answer: 'Dead Sea',
     explanation: 'Discovered in 1947, they showed remarkable preservation of Hebrew Scripture over 1,000+ years.',
@@ -246,6 +262,7 @@ export const lessonChallenges = [
   // Bible History Lesson 3
   {
     type: 'quiz',
+    objective: 'Learn about the Greek Old Testament',
     question: 'What was significant about the Septuagint?',
     options: [
       'It was the first English Bible',
@@ -260,6 +277,7 @@ export const lessonChallenges = [
   },
   {
     type: 'fillblank',
+    objective: 'Recall Jerome\'s Latin translation',
     prompt: 'Jerome\'s Latin translation of the Bible is called the ________.',
     answer: 'Vulgate',
     explanation: 'The Latin Vulgate became the standard Bible for Western Christianity for over 1,000 years.',
@@ -270,6 +288,7 @@ export const lessonChallenges = [
   // Bible History Lesson 4
   {
     type: 'quiz',
+    objective: 'Understand early English Bible translation',
     question: 'What was illegal about Wycliffe\'s Bible?',
     options: [
       'It contradicted church teaching',
@@ -284,6 +303,7 @@ export const lessonChallenges = [
   },
   {
     type: 'fillblank',
+    objective: 'Remember the most influential English Bible',
     prompt: 'The ________ James Version became the most influential English Bible.',
     answer: 'King',
     explanation: 'The KJV (1611) dominated English-speaking Christianity for centuries.',
@@ -294,6 +314,7 @@ export const lessonChallenges = [
   // Bible History Lesson 5
   {
     type: 'quiz',
+    objective: 'Learn about the Deuterocanonical books',
     question: 'What are the Deuterocanonical books?',
     options: [
       'Books lost from the Bible',
@@ -308,6 +329,7 @@ export const lessonChallenges = [
   },
   {
     type: 'fillblank',
+    objective: 'Recall Protestant vs Catholic canon differences',
     prompt: 'The Protestant Old Testament is based on the ________ canon.',
     answer: 'Hebrew',
     explanation: 'Protestants follow the Hebrew canon (39 books), while Catholics include the Deuterocanonical books.',
@@ -318,6 +340,7 @@ export const lessonChallenges = [
   // Bible History Lesson 6
   {
     type: 'quiz',
+    objective: 'Understand why Gnostic gospels were rejected',
     question: 'Why were the Nag Hammadi gospels (like Gospel of Thomas) rejected?',
     options: [
       'They were too short',
@@ -332,6 +355,7 @@ export const lessonChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Know the criteria for biblical canon',
     question: 'What criteria did the early church use to determine which books were canonical?',
     options: [
       'Popularity vote',
@@ -348,6 +372,7 @@ export const lessonChallenges = [
   // Church History Lesson 1
   {
     type: 'quiz',
+    objective: 'Recall the church\'s birth event',
     question: 'What event marked the birth of the Christian church?',
     options: ['Jesus\' baptism', 'Pentecost', 'Jesus\' crucifixion', 'Paul\'s conversion'],
     correctAnswer: 1,
@@ -357,6 +382,7 @@ export const lessonChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Know the apostle to the Gentiles',
     question: 'Who was known as the "apostle to the Gentiles"?',
     options: ['Peter', 'Paul', 'John', 'James'],
     correctAnswer: 1,
@@ -368,6 +394,7 @@ export const lessonChallenges = [
   // Church History Lesson 2
   {
     type: 'quiz',
+    objective: 'Understand the Great Schism\'s cause',
     question: 'What was the primary cause of the East-West Schism?',
     options: [
       'Disagreement over papal authority and the filioque',
@@ -382,6 +409,7 @@ export const lessonChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Know the schism was gradual, not sudden',
     statement: 'The Orthodox and Catholic churches split was gradual, not sudden.',
     answer: true,
     explanation: 'The 1054 event formalized centuries of cultural, linguistic, and theological drift between East and West.',
@@ -392,6 +420,7 @@ export const lessonChallenges = [
   // Church History Lesson 3
   {
     type: 'quiz',
+    objective: 'Recall what sparked the Reformation',
     question: 'What were Luther\'s 95 Theses primarily about?',
     options: ['Bible translation', 'Indulgences', 'Predestination', 'Church architecture'],
     correctAnswer: 1,
@@ -401,6 +430,7 @@ export const lessonChallenges = [
   },
   {
     type: 'truefalse',
+    objective: 'Know how Reformation ideas spread fast',
     statement: 'The printing press helped spread Reformation ideas rapidly.',
     answer: true,
     explanation: 'The printing press enabled Luther\'s writings to spread across Europe in weeks instead of years.',
@@ -411,6 +441,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 1
   {
     type: 'fillblank',
+    objective: 'Recall the Kalam argument\'s first premise',
     prompt: 'Whatever ________ to exist has a cause.',
     answer: 'begins',
     explanation: 'The Kalam Cosmological Argument\'s first premise: "Whatever begins to exist has a cause."',
@@ -419,6 +450,7 @@ export const lessonChallenges = [
   },
   {
     type: 'quiz',
+    objective: 'Master the Kalam Cosmological Argument',
     question: 'What are the three premises of the Kalam Cosmological Argument?',
     options: [
       'Everything has a cause; God is eternal; therefore God exists',
@@ -435,6 +467,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 2
   {
     type: 'quiz',
+    objective: 'Understand the free will defense',
     question: 'According to the free will defense, why does God allow evil?',
     options: [
       'God doesn\'t care about evil',
@@ -451,6 +484,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 3
   {
     type: 'quiz',
+    objective: 'Know the minimal facts about resurrection',
     question: 'Which is NOT a minimal fact about Jesus\' resurrection?',
     options: [
       'Jesus died by crucifixion',
@@ -465,6 +499,7 @@ export const lessonChallenges = [
   },
   {
     type: 'fillblank',
+    objective: 'Recall Paul\'s teaching on resurrection',
     prompt: 'If Christ has not been raised, your faith is ________ (1 Cor 15:14).',
     answer: 'futile',
     explanation: 'Paul grounds Christianity in the historical event of the resurrection—no resurrection, no Christianity.',
@@ -475,6 +510,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 4
   {
     type: 'quiz',
+    objective: 'Understand the fine-tuning argument',
     question: 'What is the fine-tuning argument?',
     options: [
       'The universe is beautiful',
@@ -491,6 +527,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 5
   {
     type: 'quiz',
+    objective: 'Know the strength of NT manuscript evidence',
     question: 'How many Greek New Testament manuscripts exist?',
     options: ['About 500', 'About 2,000', 'About 5,800', 'About 10,000'],
     correctAnswer: 2,
@@ -502,6 +539,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 6
   {
     type: 'quiz',
+    objective: 'Understand moral relativism\'s claims',
     question: 'What does moral relativism claim?',
     options: [
       'Morality is objective and universal',
@@ -518,6 +556,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 7
   {
     type: 'quiz',
+    objective: 'Recall C.S. Lewis\'s trilemma',
     question: 'What was C.S. Lewis\'s "Liar, Lunatic, or Lord" trilemma?',
     options: [
       'Jesus must be either a liar, lunatic, or Lord—not just a good teacher',
@@ -534,6 +573,7 @@ export const lessonChallenges = [
   // Apologetics Lesson 8
   {
     type: 'quiz',
+    objective: 'Remember the biblical basis for apologetics',
     question: 'What does 1 Peter 3:15 say about defending your faith?',
     options: [
       'Never answer critics',
