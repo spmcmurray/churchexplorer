@@ -3,7 +3,7 @@ import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import ApologeticsGuide from "./ApologeticsGuide";
-import { Home as HomeIcon, Scroll, LayoutGrid } from 'lucide-react';
+import { Home as HomeIcon, Scroll, Globe } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
 import Onboarding from './Onboarding';
@@ -48,36 +48,36 @@ function App() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => navigate('home')}
-                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
                     currentView === 'home'
                       ? 'bg-white text-blue-600 shadow-md'
                       : 'bg-blue-700 hover:bg-blue-800'
                   }`}
                 >
-                  <HomeIcon className="w-4 h-4 mr-2" />
-                  <span>Home</span>
+                  <HomeIcon className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Home</span>
                 </button>
                 <button
                   onClick={() => navigate('learn')}
-                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
                     currentView === 'learn'
                       ? 'bg-white text-blue-600 shadow-md'
                       : 'bg-blue-700 hover:bg-blue-800'
                   }`}
                 >
-                  <LayoutGrid className="w-4 h-4 mr-2" />
-                  <span>Learn</span>
+                  <Scroll className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Learn</span>
                 </button>
                 <button
                   onClick={() => navigate('explorer')}
-                  className={`flex items-center px-4 py-2 rounded-lg transition ${
+                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
                     currentView === 'explorer'
                       ? 'bg-white text-blue-600 shadow-md'
                       : 'bg-blue-700 hover:bg-blue-800'
                   }`}
                 >
-                  <Scroll className="w-4 h-4 mr-2" />
-                  <span>Explore</span>
+                  <Globe className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Explore</span>
                 </button>
               </div>
             </div>
