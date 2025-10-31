@@ -104,7 +104,7 @@ function App() {
         onClick={() => setMobileMenuOpen(false)}
       >
         <div
-          className={`fixed top-0 right-0 h-full w-64 bg-gradient-to-b from-blue-600 to-purple-600 shadow-2xl transform transition-transform duration-300 ${
+          className={`fixed top-0 right-0 h-full w-64 bg-white/10 backdrop-blur-xl shadow-2xl border-l border-white/20 transform transition-transform duration-300 ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
           onClick={(e) => e.stopPropagation()}
@@ -115,7 +115,7 @@ function App() {
               <h2 className="text-xl font-bold text-white">Menu</h2>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-lg bg-blue-700 hover:bg-blue-800 transition"
+                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5 text-white" />
@@ -129,7 +129,7 @@ function App() {
                 className={`flex items-center px-4 py-3 rounded-lg transition text-left ${
                   currentView === 'home'
                     ? 'bg-white text-blue-600 shadow-md'
-                    : 'bg-blue-700 hover:bg-blue-800 text-white'
+                    : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm'
                 }`}
               >
                 <HomeIcon className="w-5 h-5 mr-3" />
@@ -140,7 +140,7 @@ function App() {
                 className={`flex items-center px-4 py-3 rounded-lg transition text-left ${
                   currentView === 'learn'
                     ? 'bg-white text-blue-600 shadow-md'
-                    : 'bg-blue-700 hover:bg-blue-800 text-white'
+                    : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm'
                 }`}
               >
                 <LayoutGrid className="w-5 h-5 mr-3" />
@@ -151,7 +151,7 @@ function App() {
                 className={`flex items-center px-4 py-3 rounded-lg transition text-left ${
                   currentView === 'explorer'
                     ? 'bg-white text-blue-600 shadow-md'
-                    : 'bg-blue-700 hover:bg-blue-800 text-white'
+                    : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm'
                 }`}
               >
                 <Scroll className="w-5 h-5 mr-3" />
