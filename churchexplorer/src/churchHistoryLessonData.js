@@ -4,18 +4,21 @@ export const lesson1Data = {
   id: 1,
   title: "The Beginning: Early Christianity",
   subtitle: "How it all started (33-313 AD)",
+  duration: "8 min",
   cards: [
     // Welcome Card
     {
       type: 'content',
       title: 'Welcome to Church History!',
-      subtitle: 'The Beginning: Early Christianity',
+      subtitle: '⏱️ About 8 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how Christianity began after Jesus\'s resurrection and grew from a small Jewish sect into the Roman Empire\'s official religion.',
         'Welcome to your journey through church history! This lesson explores how Christianity began and grew in its first few centuries.',
         'We\'ll discover how Jesus\'s disciples became the apostles, how Christianity spread across the Roman Empire despite persecution, and how early Christians established the foundations of faith we still follow today.',
         'Don\'t worry if you\'re new to this - we\'ll start with the basics and build from there!'
       ],
-      highlight: '🎯 Goal: Understand how Christianity began and grew from 33-313 AD'
+      highlight: '💭 Curious: What do you already know about early Christianity?',
+      requireAcknowledgment: true
     },
 
     // Apostolic Age
@@ -188,6 +191,11 @@ export const lesson1Data = {
       type: 'completion',
       title: 'Lesson Complete!',
       message: 'You\'ve learned about the birth and early growth of Christianity from the Day of Pentecost to becoming the Roman Empire\'s official religion. Great work!',
+      keyTakeaways: [
+        'Christianity began at Pentecost (33 AD) and spread rapidly despite severe persecution',
+        'Paul\'s missionary journeys established churches across the Roman Empire',
+        'Constantine\'s Edict of Milan (313 AD) ended persecution and made Christianity legal, eventually becoming the empire\'s official religion'
+      ],
       badge: {
         icon: '🏛️',
         name: 'Early Church Explorer',
@@ -201,17 +209,20 @@ export const lesson2Data = {
   id: 2,
   title: "The Great Divide: East vs West",
   subtitle: "Understanding the 1054 split",
+  duration: "7 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to Lesson 2!',
-      subtitle: 'The Great Divide: East vs West',
+      subtitle: '⏱️ About 7 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand the causes and consequences of the 1054 split between Eastern Orthodox and Western Catholic Christianity.',
         'This lesson explores one of Christianity\'s most significant moments: when the church split into Eastern (Orthodox) and Western (Catholic) branches.',
         'This wasn\'t a sudden break but rather centuries of growing differences in culture, language, and theology.',
         'By the end, you\'ll understand why the church divided and how Orthodox and Catholic traditions differ today.'
       ],
-      highlight: '🎯 Goal: Understand the 1054 split between Eastern and Western Christianity'
+      highlight: '💭 Wonder: Have you noticed differences between Catholic and Orthodox churches?',
+      requireAcknowledgment: true
     },
 
     {
@@ -351,6 +362,11 @@ export const lesson2Data = {
       type: 'completion',
       title: 'Well Done!',
       message: 'You\'ve learned about the Great Schism of 1054 and how Eastern Orthodox and Western Catholic Christianity developed differently. You understand the historical, cultural, and theological factors behind this split.',
+      keyTakeaways: [
+        'The 1054 Great Schism split Christianity into Eastern (Orthodox) and Western (Catholic) branches',
+        'Key differences included the Filioque controversy, papal authority, and worship practices',
+        'Cultural and linguistic differences (Greek East vs. Latin West) contributed to the growing divide'
+      ],
       badge: {
         icon: '⛪',
         name: 'Schism Scholar',
@@ -364,17 +380,20 @@ export const lesson3Data = {
   id: 3,
   title: "The Reformation: A Revolution in Faith",
   subtitle: "Martin Luther and the Protestant movement",
+  duration: "9 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to Lesson 3!',
-      subtitle: 'The Reformation Explosion',
+      subtitle: '⏱️ About 9 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how Martin Luther sparked the Protestant Reformation and what the "Five Solas" mean.',
         'Get ready for one of history\'s most dramatic religious movements!',
         'In 1517, a German monk named Martin Luther challenged the Catholic Church\'s practices and sparked a revolution that would reshape Christianity forever.',
         'You\'ll discover why it happened, what changed, and how the Protestant Reformation split Western Christianity permanently.'
       ],
-      highlight: '🎯 Goal: Understand the Protestant Reformation and its lasting impact'
+      highlight: '💭 Think: What would it take to challenge a powerful institution like the medieval Church?',
+      requireAcknowledgment: true
     },
 
     {
@@ -537,6 +556,11 @@ export const lesson3Data = {
       type: 'completion',
       title: 'Reformation Complete!',
       message: 'You\'ve learned about Martin Luther, the 95 Theses, the Five Solas, and how the Protestant Reformation permanently changed Christianity. Excellent work!',
+      keyTakeaways: [
+        'Martin Luther\'s 95 Theses (1517) challenged indulgences and sparked the Protestant Reformation',
+        'The Five Solas (Scripture Alone, Faith Alone, Grace Alone, Christ Alone, Glory to God Alone) became Protestant theology\'s foundation',
+        'The Reformation split Western Christianity into Catholic and Protestant branches'
+      ],
       badge: {
         icon: '📜',
         name: 'Reformation Scholar',
@@ -550,17 +574,20 @@ export const lesson4Data = {
   id: 4,
   title: "The Middle Way: Anglicans & Methodists",
   subtitle: "Finding balance between Catholic and Protestant",
+  duration: "8 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to Lesson 4!',
-      subtitle: 'The Middle Way',
+      subtitle: '⏱️ About 8 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how Anglicanism and Methodism emerged as "middle way" traditions between Catholicism and Protestantism.',
         'Not all reformers wanted to completely break from Catholic tradition.',
         'This lesson explores two traditions that tried to find a "middle way" - keeping some Catholic practices while embracing Protestant theology.',
         'You\'ll learn about the English Reformation under Henry VIII and the Methodist revival led by John Wesley.'
       ],
-      highlight: '🎯 Goal: Understand Anglican via media and Methodist social holiness'
+      highlight: '💭 Consider: Can you find a "middle way" between opposing views?',
+      requireAcknowledgment: true
     },
 
     {
@@ -727,6 +754,11 @@ export const lesson4Data = {
       type: 'completion',
       title: 'Middle Way Mastered!',
       message: 'You\'ve learned about the Anglican via media and Methodist social holiness - two traditions that sought balance between Catholic tradition and Protestant reform.',
+      keyTakeaways: [
+        'Anglicanism began with Henry VIII\'s break from Rome (1534) for political reasons, developing into a "via media" between Catholic and Protestant',
+        'John Wesley founded Methodism emphasizing personal holiness, small group accountability, and social justice',
+        'Both traditions show you can blend Catholic liturgical elements with Protestant theology'
+      ],
       badge: {
         icon: '🕊️',
         name: 'Middle Way Explorer',
@@ -740,17 +772,20 @@ export const lesson5Data = {
   id: 5,
   title: "Believer's Baptism: Baptists & Anabaptists",
   subtitle: "Radical reformation and religious freedom",
+  duration: "7 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to Lesson 5!',
-      subtitle: 'Believer\'s Baptism',
+      subtitle: '⏱️ About 7 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand believer\'s baptism, Anabaptist principles, and how these radical reformers shaped religious freedom.',
         'Some reformers thought Luther and others didn\'t go far enough!',
         'This lesson explores traditions that took more radical stances on baptism, church-state separation, and religious freedom.',
         'These groups were often persecuted, but their ideas eventually shaped modern concepts of religious liberty.'
       ],
-      highlight: '🎯 Goal: Understand believer\'s baptism and church-state separation'
+      highlight: '💭 Question: Should church and state be completely separate?',
+      requireAcknowledgment: true
     },
 
     {
@@ -922,6 +957,11 @@ export const lesson5Data = {
       type: 'completion',
       title: 'Radical Reformation Complete!',
       message: 'You\'ve learned about Anabaptists and Baptists, their commitment to believer\'s baptism, and their pioneering role in establishing religious freedom!',
+      keyTakeaways: [
+        'Anabaptists rejected infant baptism, insisting only believers who can make a conscious choice should be baptized',
+        'Baptists championed separation of church and state and voluntary church membership',
+        'These "radical" reformers laid groundwork for modern religious freedom despite facing persecution'
+      ],
       badge: {
         icon: '💧',
         name: 'Freedom Fighter',
@@ -935,17 +975,20 @@ export const lesson6Data = {
   id: 6,
   title: "The Spirit Moves: Pentecostals & Holiness",
   subtitle: "Revival, spiritual gifts, and transformation",
+  duration: "8 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to Lesson 6!',
-      subtitle: 'The Spirit Moves',
+      subtitle: '⏱️ About 8 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand the Holiness movement\'s emphasis on sanctification and Pentecostalism\'s focus on spiritual gifts.',
         'In the late 1800s and early 1900s, powerful revival movements swept across America and beyond.',
         'These movements emphasized emotional worship, spiritual gifts, and complete personal transformation.',
         'You\'ll learn about the Holiness movement and the explosive birth of Pentecostalism!'
       ],
-      highlight: '🎯 Goal: Understand Holiness sanctification and Pentecostal spiritual gifts'
+      highlight: '💭 Reflect: What role do emotions play in your worship?',
+      requireAcknowledgment: true
     },
 
     {
@@ -1110,6 +1153,11 @@ export const lesson6Data = {
       type: 'completion',
       title: 'Spirit-Filled Success!',
       message: 'You\'ve learned about the Holiness movement\'s emphasis on sanctification and Pentecostalism\'s explosive growth through spiritual gifts and experiential worship!',
+      keyTakeaways: [
+        'The Holiness movement emphasized "entire sanctification" - complete transformation and holy living',
+        'Pentecostalism began at Azusa Street Revival (1906) emphasizing speaking in tongues and spiritual gifts',
+        'Pentecostalism has grown to over 600 million members worldwide, making it one of Christianity\'s fastest-growing movements'
+      ],
       badge: {
         icon: '🔥',
         name: 'Revival Scholar',
@@ -1123,17 +1171,20 @@ export const lesson7Data = {
   id: 7,
   title: "Back to Basics: Restorationists & Non-Denominational",
   subtitle: "Simplifying and reimagining church",
+  duration: "7 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to Lesson 7!',
-      subtitle: 'Back to Basics',
+      subtitle: '⏱️ About 7 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand the Restoration Movement\'s goal to return to New Testament Christianity and the rise of non-denominational churches.',
         'Some Christians asked: What if we went back to the New Testament and started over?',
         'They rejected all traditions and creeds, seeking to restore "simple, biblical Christianity."',
         'You\'ll learn about the Restoration Movement and today\'s non-denominational churches!'
       ],
-      highlight: '🎯 Goal: Understand Restorationist beliefs and modern non-denominational worship'
+      highlight: '💭 Question: Is it possible to have "just the Bible" without traditions?',
+      requireAcknowledgment: true
     },
 
     {
@@ -1314,6 +1365,11 @@ export const lesson7Data = {
       type: 'completion',
       title: 'Restoration Completed!',
       message: 'You\'ve learned about the Restoration Movement\'s quest to return to New Testament Christianity and the rise of contemporary non-denominational churches!',
+      keyTakeaways: [
+        'Restorationists (Churches of Christ, Disciples of Christ) sought to restore "simple New Testament Christianity" by rejecting all creeds and traditions',
+        'Non-denominational churches emphasize local autonomy, contemporary worship, and practical preaching',
+        'Contemporary worship (worship bands, projection screens, casual atmosphere) has become mainstream across many traditions'
+      ],
       badge: {
         icon: '📖',
         name: 'Restoration Expert',
@@ -1327,17 +1383,20 @@ export const lesson8Data = {
   id: 8,
   title: "Your Journey: Understanding & Choosing",
   subtitle: "Finding your church home",
+  duration: "9 min",
   cards: [
     {
       type: 'content',
       title: 'Welcome to the Final Lesson!',
-      subtitle: 'Your Journey',
+      subtitle: '⏱️ About 9 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will be able to identify what Christians share, understand denominational differences, and know how to find a church home.',
         'You\'ve journeyed through 2,000 years of church history!',
         'Now it\'s time to think about YOUR place in this ongoing story.',
         'This lesson helps you understand what different churches share, what divides them, and how to find a church home.'
       ],
-      highlight: '🎯 Goal: Navigate denominational differences and find where you belong'
+      highlight: '💭 Reflect: What questions do you have about finding a church?',
+      requireAcknowledgment: true
     },
 
     {
@@ -1532,6 +1591,11 @@ export const lesson8Data = {
       type: 'completion',
       title: 'Congratulations, Church History Scholar!',
       message: 'You\'ve completed the entire Church History journey! From Pentecost to today, you now understand the rich, complex story of Christianity. May this knowledge help you find your place in God\'s ongoing story!',
+      keyTakeaways: [
+        'All Christians share core beliefs (Trinity, Jesus as Savior, Bible\'s authority, resurrection)',
+        'Denominational differences are often about secondary issues - we can disagree charitably while maintaining unity on essentials',
+        'You are part of church history! Your faith journey contributes to the ongoing story of God\'s people'
+      ],
       badge: {
         icon: '🎓',
         name: 'Church History Graduate',

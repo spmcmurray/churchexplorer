@@ -164,18 +164,21 @@ export const lesson2Data = {
   id: 2,
   title: "The Manuscript Detective Story",
   subtitle: "Recovering the original text from thousands of copies",
+  duration: "7 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'Welcome, Detective!',
-      subtitle: 'The Manuscript Detective Story',
+      subtitle: '⏱️ About 7 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how scholars reconstruct the original biblical text from thousands of ancient manuscript copies.',
         'Imagine you\'re a detective, but instead of solving crimes, you\'re solving a textual mystery: What did the original biblical authors actually write?',
         'We don\'t have Paul\'s original letter to the Romans or Matthew\'s first draft of his Gospel. What we have are copies of copies of copies—thousands of them.',
         'Welcome to the fascinating world of **textual criticism**, where scholars piece together the original text like assembling a jigsaw puzzle.'
       ],
-      highlight: '🔍 Your Mission: Learn how scholars reconstruct the original biblical text from thousands of ancient copies'
+      highlight: '� Quick thought: How confident can we be in the Bible if we don\'t have the originals?',
+      requireAcknowledgment: true
     },
 
     // Card 2: Where Are the Originals?
@@ -317,6 +320,11 @@ export const lesson2Data = {
       type: 'completion',
       title: 'Case Closed! 🎉',
       message: 'You\'ve solved "The Manuscript Detective Story"! You now understand how scholars reconstruct the original biblical text from thousands of ancient copies.',
+      keyTakeaways: [
+        'We don\'t have original biblical manuscripts, but we have thousands of early copies',
+        'Textual criticism compares manuscripts to reconstruct the original text with >99% accuracy',
+        'The Bible has better manuscript evidence than any other ancient document'
+      ],
       badge: {
         icon: '🔍',
         name: 'Manuscript Detective',
@@ -332,19 +340,22 @@ export const lesson3Data = {
   id: 3,
   title: "Lost in Translation?",
   subtitle: "From Hebrew and Greek to your language",
+  duration: "8 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'Lost in Translation?',
-      subtitle: 'From Hebrew and Greek to English',
+      subtitle: '⏱️ About 8 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how the Bible was translated from Hebrew and Greek into English and why different versions exist.',
         'Have you ever played the game "telephone," where a message gets whispered from person to person and becomes hilariously garbled by the end?',
         'Translation can feel like that—but biblical translation is far more careful.',
         'Every time the Bible moves from one language to another, translators face a fundamental tension: Do you translate **word-for-word** (formal equivalence) or **thought-for-thought** (dynamic equivalence)?',
         'Let\'s explore this fascinating journey from ancient languages to English!'
       ],
-      highlight: '🎯 Goal: Understand how the Bible was translated and why different English versions exist'
+      highlight: '💭 Think about it: Have you noticed differences between Bible versions? Wonder why?',
+      requireAcknowledgment: true
     },
 
     // Card 2: The Septuagint
@@ -495,6 +506,11 @@ export const lesson3Data = {
       type: 'completion',
       title: 'Translation Master! 🎉',
       message: 'You\'ve completed "Lost in Translation"! You now understand how the Bible was translated from Hebrew and Greek to English, and why different versions exist.',
+      keyTakeaways: [
+        'The Bible was originally written in Hebrew (OT) and Greek (NT), requiring careful translation',
+        'Translation involves choosing between word-for-word (formal) and thought-for-thought (dynamic) approaches',
+        'Different Bible versions serve different purposes—study Bibles vs. readable versions'
+      ],
       badge: {
         icon: '🌐',
         name: 'Translation Scholar',
@@ -510,18 +526,21 @@ export const lesson4Data = {
   id: 4,
   title: "The English Bible's Dramatic History",
   subtitle: "Martyrs, kings, and the fight to read Scripture in English",
+  duration: "9 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'A Dangerous Book',
-      subtitle: 'The English Bible\'s Dramatic History',
+      subtitle: '⏱️ About 9 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand the dramatic story of how courageous people fought to bring the Bible into English.',
         'It\'s hard to imagine today, but for centuries, owning an English Bible could get you **killed**.',
         'The story of the English Bible is filled with smugglers, secret printings, political intrigue, and martyrs who believed ordinary people deserved to read God\'s Word in their own language.',
         'From illegal translations whispered in secret to a king\'s authorized version that shaped the English language itself, this is a story of **courage, controversy, and cultural transformation**.'
       ],
-      highlight: '🎯 Goal: Discover the dramatic story of how we got the English Bible'
+      highlight: '💭 Imagine: What would you risk to read the Bible in your own language?',
+      requireAcknowledgment: true
     },
 
     // Card 2: Wycliffe
@@ -655,6 +674,11 @@ export const lesson4Data = {
       type: 'completion',
       title: 'History Hero! 🎉',
       message: 'You\'ve completed "The English Bible\'s Dramatic History"! You now understand the courage and sacrifice behind the Bible you can freely read today.',
+      keyTakeaways: [
+        'Translating the Bible into English was once illegal and cost many people their lives',
+        'William Tyndale\'s translation (1520s) forms the foundation of modern English Bibles',
+        'The King James Version (1611) became the dominant English Bible for 400 years'
+      ],
       badge: {
         icon: '📖',
         name: 'Bible History Scholar',
@@ -670,19 +694,22 @@ export const lesson5Data = {
   id: 5,
   title: "The Books That Almost Made It",
   subtitle: "Understanding the Apocrypha and 'lost gospels'",
+  duration: "10 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'The Missing Books Mystery',
-      subtitle: 'The Books That Almost Made It',
+      subtitle: '⏱️ About 10 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand what the Apocrypha is, why Catholic and Protestant Bibles differ, and how the biblical canon was formed.',
         'Walk into a Catholic bookstore and count the books in their Bible: **73**. Walk into a Protestant bookstore: **66 books**.',
         'What happened to those 7 books? And what about the "Gospel of Thomas" or "Gospel of Judas" that make headlines every few years?',
         'Welcome to the fascinating world of texts that were popular, influential, or nearly canonical—but ultimately didn\'t make the cut for most Christian Bibles.',
         'Get ready to uncover why some books made it in... and others didn\'t!'
       ],
-      highlight: '🎯 Goal: Understand the Apocrypha, "lost gospels," and how the biblical canon was formed'
+      highlight: '💭 Ever wondered: Why do Catholic and Protestant Bibles have different books?',
+      requireAcknowledgment: true
     },
 
     // Card 2: What is the Apocrypha?
@@ -893,6 +920,11 @@ export const lesson5Data = {
       type: 'completion',
       title: 'Canon Expert! 🎉',
       message: 'You\'ve completed "The Books That Almost Made It"! You now understand the Apocrypha, the Gnostic gospels, and how the biblical canon was formed.',
+      keyTakeaways: [
+        'Catholic Bibles include 7 additional books (Apocrypha) that Protestants consider non-canonical',
+        '"Lost gospels" (Gospel of Thomas, Judas) were Gnostic texts written later, not apostolic',
+        'The biblical canon was determined by apostolicity, orthodoxy, antiquity, and widespread church usage'
+      ],
       badge: {
         icon: '📚',
         name: 'Canon Scholar',
@@ -908,20 +940,23 @@ export const lesson6Data = {
   id: 6,
   title: "How Christians Read the Bible Over Time",
   subtitle: "From allegory to literal: changing interpretation methods",
+  duration: "11 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'One Bible, Many Readings',
-      subtitle: 'How Christians Read the Bible Over Time',
+      subtitle: '⏱️ About 11 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how Christians have interpreted the Bible differently throughout history and why denominations disagree today.',
         'Open your Bible to Genesis 3, where Eve eats the forbidden fruit.',
         'Is this a literal historical event? An allegory about human free will? A mythological story teaching theological truth?',
         '🤔 How you answer depends partly on **when and where you lived**.',
         'Christians across history have read the same Bible but interpreted it very differently.',
         'Understanding these interpretation methods helps explain why denominations today disagree on the "plain meaning" of Scripture—and why your great-grandparents might have read passages differently than you do.'
       ],
-      highlight: '🎯 Goal: Understand how biblical interpretation has changed through history'
+      highlight: '💭 Consider: Have you ever heard two people interpret the same Bible verse differently?',
+      requireAcknowledgment: true
     },
 
     // Card 2: Origen's Allegorical Method
@@ -1112,6 +1147,11 @@ export const lesson6Data = {
       type: 'completion',
       title: 'Interpretation Master! 🎉',
       message: 'You\'ve completed "How Christians Read the Bible Over Time"! You now understand how biblical interpretation has evolved and why Christians disagree on what Scripture means.',
+      keyTakeaways: [
+        'Biblical interpretation has evolved from allegorical (early church) to literal (Reformation) to critical (modern)',
+        'The medieval "four-fold sense" saw literal, allegorical, moral, and anagogical meanings in every text',
+        'Christians today disagree because of different interpretive traditions, not because some ignore Scripture'
+      ],
       badge: {
         icon: '📖',
         name: 'Hermeneutics Scholar',
@@ -1127,20 +1167,23 @@ export const lesson7Data = {
   id: 7,
   title: "Archaeology & the Bible",
   subtitle: "How discoveries confirm, challenge, and illuminate Scripture",
+  duration: "9 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'Digging Into the Past',
-      subtitle: 'Archaeology & the Bible',
+      subtitle: '⏱️ About 9 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how archaeological discoveries have confirmed, challenged, and illuminated biblical accounts.',
         'In **1947**, a shepherd threw a rock into a cave and **changed biblical scholarship forever**.',
         'In **1868**, a missionary found a stone that mentioned King David\'s dynasty—confirming a biblical king skeptics doubted existed.',
         'Archaeology doesn\'t "prove" the Bible in a simplistic way, but it provides an astonishing amount of confirmation for biblical people, places, and events.',
         'It also raises questions and challenges traditional interpretations.',
         'Let\'s explore how **digging in the dirt illuminates the book we hold in our hands**!'
       ],
-      highlight: '🎯 Goal: Understand how archaeology confirms, challenges, and illuminates Scripture'
+      highlight: '💭 Curiosity check: What archaeological find would most strengthen your faith?',
+      requireAcknowledgment: true
     },
 
     // Card 2: Dead Sea Scrolls Discovery
@@ -1332,6 +1375,11 @@ export const lesson7Data = {
       type: 'completion',
       title: 'Archaeology Expert! 🎉',
       message: 'You\'ve completed "Archaeology & the Bible"! You now understand how archaeological discoveries confirm, challenge, and illuminate Scripture.',
+      keyTakeaways: [
+        'The Dead Sea Scrolls (1947) showed the Old Testament was transmitted with remarkable accuracy',
+        'Archaeology has confirmed many biblical people and places (David, Pontius Pilate, Pool of Siloam)',
+        'Some archaeological evidence challenges traditional timelines (Exodus, Jericho) requiring nuanced interpretation'
+      ],
       badge: {
         icon: '🏺',
         name: 'Biblical Archaeologist',
@@ -1347,13 +1395,15 @@ export const lesson8Data = {
   id: 8,
   title: "Your Bible's Backstory",
   subtitle: "Practical skills for informed Bible reading",
+  duration: "10 min",
   cards: [
     // Card 1: Introduction
     {
       type: 'content',
       title: 'Your Journey Complete!',
-      subtitle: 'Your Bible\'s Backstory',
+      subtitle: '⏱️ About 10 minutes',
       content: [
+        '**Learning Objective:** By the end of this lesson, you will have practical skills for informed Bible reading, including choosing translations, understanding footnotes, and using study resources.',
         'You\'ve journeyed through **2,000+ years** of biblical history:',
         '✅ From oral tradition to manuscript copying',
         '✅ From Latin Vulgate to English translations',
@@ -1366,7 +1416,8 @@ export const lesson8Data = {
         '• Selecting study resources that fit your needs',
         '**You\'re about to become a much more informed Bible reader!**'
       ],
-      highlight: '🎯 Goal: Develop practical skills for confident, informed Bible reading'
+      highlight: '💭 Reflect: How has learning the Bible\'s backstory changed how you read Scripture?',
+      requireAcknowledgment: true
     },
 
     // Card 2: Decoding Manuscript Footnotes
@@ -1559,6 +1610,11 @@ export const lesson8Data = {
       type: 'completion',
       title: 'Congratulations! 🎉🎊',
       message: 'You\'ve completed ALL 8 lessons of the Bible History Study Guide! You\'re now an informed, confident Bible reader equipped to understand Scripture\'s rich backstory. Share what you\'ve learned with others!',
+      keyTakeaways: [
+        'Manuscript footnotes reveal textual variants—don\'t skip them!',
+        'Different Bible translations serve different purposes (study vs. readability)',
+        'Informed Bible reading combines good study tools, genre awareness, and prayerful dependence on the Spirit'
+      ],
       badge: {
         icon: '🏆',
         name: 'Bible History Master',

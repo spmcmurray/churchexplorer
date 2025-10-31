@@ -6,14 +6,16 @@ export const lesson1Data = {
   title: "The Case for God's Existence",
   subtitle: 'Cosmological and fine-tuning arguments that point to a Creator',
   description: "Explore two core arguments that many thinkers find compelling: the Kalam Cosmological Argument and fine-tuning.",
+  duration: "10 min",
   cards: [
     // Welcome and goal
-    { type: 'content', title: 'Welcome to Apologetics', subtitle: 'A reasoned defense of the hope we have', content: [
+    { type: 'content', title: 'Welcome to Apologetics', subtitle: '⏱️ About 10 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will be able to explain the Kalam Cosmological Argument and the Fine-Tuning Argument for God\'s existence.',
       "Apologetics comes from the Greek word 'apologia'—a reasoned defense.",
       '1 Peter 3:15 calls us to be ready to give reasons for our hope with gentleness and respect.',
       "In this lesson, you'll learn the structure of two key arguments for God and how to explain them clearly.",
       'We will focus on a simple structure: teach the core ideas, check your understanding with quick quizzes, and end with a practical challenge.'
-    ], highlight: '🎯 Goal: Explain Kalam and Fine-Tuning in 90 seconds each.' },
+    ], highlight: '💭 Ready: Can you give reasons for why you believe in God?', requireAcknowledgment: true },
 
     // Kalam: structure and support
     { type: 'content', title: 'The Kalam Cosmological Argument', content: [
@@ -104,7 +106,7 @@ export const lesson1Data = {
       'Bonus: Watch a short presentation by William Lane Craig or John Lennox and note one new insight.'
     ], highlight: 'Practice makes clarity.' },
 
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Great work finishing “The Case for God’s Existence.” Keep going—you’re building a strong apologetics foundation.', badge: { icon: '🛡️', name: 'Apologetics 1', description: 'Completed: The Case for God’s Existence' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Great work finishing "The Case for God\'s Existence." Keep going—you\'re building a strong apologetics foundation.', keyTakeaways: ['The Kalam Argument: Whatever begins to exist has a cause; the universe began; therefore it has a cause', 'Fine-Tuning: Physical constants are precisely calibrated for life, suggesting intentional design', 'Both arguments point to a transcendent, powerful, intelligent Creator'], badge: { icon: '🛡️', name: 'Apologetics 1', description: 'Completed: The Case for God\'s Existence' } }
   ]
 };
 
@@ -113,13 +115,15 @@ export const lesson2Data = {
   title: 'The Problem of Evil & Suffering',
   subtitle: 'Answering the toughest objection to faith',
   description: 'Address both logical and pastoral dimensions of evil and suffering.',
+  duration: "11 min",
   cards: [
     // Framing the problem
-    { type: 'content', title: "The skeptic's challenge", subtitle: 'A head-and-heart question', content: [
+    { type: 'content', title: "The skeptic's challenge", subtitle: '⏱️ About 11 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will be able to respond to the logical and evidential problems of evil with both intellectual rigor and pastoral sensitivity.',
       "David Hume's framing: If God is willing to prevent evil but not able, He is weak; if able but not willing, He is malevolent; if both able and willing, why is there evil?",
       'Evil is both an intellectual problem and a deeply personal pain.',
       'Apologetics must address the mind and honor the heart.'
-    ], highlight: 'Think rigorously. Care deeply.' },
+    ], highlight: '💭 Consider: How do you reconcile suffering with a loving God?', requireAcknowledgment: true },
 
     // Distinctions and definitions
     { type: 'content', title: 'Two forms: logical vs evidential', content: [
@@ -187,7 +191,7 @@ export const lesson2Data = {
       'How does the cross and resurrection shift how you face suffering today?'
     ] },
 
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'You addressed evil with both rigor and empathy.', badge: { icon: '🛡️', name: 'Apologetics 2', description: 'Completed: Evil & Suffering' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'You addressed evil with both rigor and empathy.', keyTakeaways: ['The logical problem of evil is solved by free will and greater goods', 'The evidential problem acknowledges we cannot know all of God\'s reasons from our limited perspective', 'Pastoral care must accompany intellectual answers when addressing suffering'], badge: { icon: '🛡️', name: 'Apologetics 2', description: 'Completed: Evil & Suffering' } }
   ]
 };
 
@@ -196,12 +200,14 @@ export const lesson3Data = {
   title: 'The Resurrection of Jesus',
   subtitle: "Historical evidence for Christianity's central claim",
   description: 'Examine minimal facts, early testimony, empty tomb, and transformed witnesses.',
+  duration: "10 min",
   cards: [
     // Core claim
-    { type: 'content', title: 'The central claim', content: [
+    { type: 'content', title: 'The central claim', subtitle: '⏱️ About 10 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will be able to present the historical evidence for the resurrection using the minimal facts approach.',
       "1 Corinthians 15:14: If Christ is not raised, faith is futile.",
       'If true, Jesus is Lord; if false, Christianity collapses. Apologetics stands or falls here.'
-    ], highlight: 'Everything hinges on the resurrection.' },
+    ], highlight: '💭 Foundational: Why is the resurrection central to Christianity?', requireAcknowledgment: true },
 
     // Minimal facts
     { type: 'content', title: 'Minimal facts approach', content: [
@@ -266,7 +272,7 @@ export const lesson3Data = {
       'Write your 3‑minute “minimal facts” explanation. Practice with a friend who asks honest questions.'
     ] },
 
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Historical bedrock examined with clarity.', badge: { icon: '🛡️', name: 'Apologetics 3', description: 'Completed: Resurrection' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Historical bedrock examined with clarity.', keyTakeaways: ['The minimal facts (crucifixion, post-mortem appearances, Paul and James conversions) are accepted by most scholars', 'Alternative explanations (hallucination, legend, swoon) fail to account for all the facts', 'The resurrection is the best explanation for the historical data'], badge: { icon: '🛡️', name: 'Apologetics 3', description: 'Completed: Resurrection' } }
   ]
 };
 
@@ -275,10 +281,12 @@ export const lesson4Data = {
   title: 'Science & Faith: Friends or Foes?',
   subtitle: "The Big Bang, fine-tuning, and God's cosmos",
   description: 'Modern science points toward a Creator more than many think.',
+  duration: "9 min",
   cards: [
-    { type: 'content', title: 'The conflict myth', content: [
+    { type: 'content', title: 'The conflict myth', subtitle: '⏱️ About 9 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will understand how modern science (Big Bang, fine-tuning, DNA) points toward an intelligent Creator.',
       "Most scientific pioneers (Newton, Kepler, Faraday, Maxwell) were Christians who saw science as thinking God's thoughts after Him."
-    ] },
+    ], highlight: '💭 Think: Are science and faith really at war?', requireAcknowledgment: true },
     { type: 'content', title: 'Quote: John Lennox', content: [
       '“Nonsense remains nonsense even when talked by world‑famous scientists.”',
       'The more we learn, the more a Creator hypothesis remains credible.'
@@ -303,7 +311,7 @@ export const lesson4Data = {
       'Evolution is a lie!',
       'Science has all the answers.'
     ], correctAnswer: 0, explanation: 'Evolution is about biological changes; origin, information, and physics still need explanation.' },
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Science and faith explored as complementary.', badge: { icon: '🛡️', name: 'Apologetics 4', description: 'Completed: Science & Faith' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Science and faith explored as complementary.', keyTakeaways: ['The Big Bang supports a beginning, consistent with "In the beginning God created"', 'Fine-tuning of physical constants suggests intentional design, not random chance', 'DNA\'s information content points to an intelligent source'], badge: { icon: '🛡️', name: 'Apologetics 4', description: 'Completed: Science & Faith' } }
   ]
 };
 
@@ -312,10 +320,12 @@ export const lesson5Data = {
   title: 'The Reliability of Scripture',
   subtitle: 'Can we trust the Bible?',
   description: 'Manuscripts, archaeology, fulfilled prophecy, and textual criticism.',
+  duration: "8 min",
   cards: [
-    { type: 'content', title: "The skeptic's attack", content: [
+    { type: 'content', title: "The skeptic's attack", subtitle: '⏱️ About 8 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will be able to defend the Bible\'s reliability using manuscript evidence, archaeology, and fulfilled prophecy.',
       "'Corrupted text!' 'Contradictions!' 'Myth!' Let's weigh the evidence."
-    ] },
+    ], highlight: '💭 Question: How do we know the Bible is trustworthy?', requireAcknowledgment: true },
     { type: 'content', title: 'Manuscript evidence', content: [
       '≈5,800 Greek NT manuscripts; 10,000+ Latin; thousands more. Earliest fragments within decades.'
     ], highlight: "No ancient work rivals the Bible's attestation." },
@@ -334,7 +344,7 @@ export const lesson5Data = {
     { type: 'content', title: 'Reflection', content: [
       'How does manuscript and archaeology evidence strengthen your confidence in Scripture?'
     ] },
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Scripture’s reliability considered on multiple fronts.', badge: { icon: '🛡️', name: 'Apologetics 5', description: 'Completed: Reliability of Scripture' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Scripture\'s reliability considered on multiple fronts.', keyTakeaways: ['The Bible has superior manuscript evidence compared to any other ancient text (5,800+ Greek NT manuscripts)', 'Archaeological discoveries have confirmed many biblical people, places, and events', 'Fulfilled prophecy (e.g., Isaiah 53, Psalm 22 predicting crucifixion details) demonstrates divine inspiration'], badge: { icon: '🛡️', name: 'Apologetics 5', description: 'Completed: Reliability of Scripture' } }
   ]
 };
 
@@ -343,10 +353,12 @@ export const lesson6Data = {
   title: 'The Moral Argument for God',
   subtitle: 'Where do right and wrong come from?',
   description: 'Objective morality points to a Moral Lawgiver.',
+  duration: "7 min",
   cards: [
-    { type: 'content', title: 'The universal moral sense', content: [
+    { type: 'content', title: 'The universal moral sense', subtitle: '⏱️ About 7 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will be able to present the moral argument for God and explain why objective morality requires a transcendent foundation.',
       "Across cultures: 'Is torturing babies for fun wrong?' Answer is 'yes.'"
-    ] },
+    ], highlight: '💭 Consider: Where does your sense of right and wrong come from?', requireAcknowledgment: true },
     { type: 'content', title: 'Formal argument', content: [
       "1) If God doesn't exist, objective moral values don't exist.",
       '2) Objective moral values do exist.',
@@ -364,7 +376,7 @@ export const lesson6Data = {
     { type: 'content', title: 'Evolution and morality', content: [
       'Evolution may explain instincts, not objective obligations — you can’t derive “ought” from “is.”'
     ] },
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Moral knowledge seen as a signpost to God.', badge: { icon: '🛡️', name: 'Apologetics 6', description: 'Completed: Moral Argument' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Moral knowledge seen as a signpost to God.', keyTakeaways: ['If objective moral values exist, they require a transcendent foundation (God)', 'Atheistic frameworks cannot ground objective morality—only subjective preferences', 'Our universal moral intuitions point to a Moral Lawgiver who defines good and evil'], badge: { icon: '🛡️', name: 'Apologetics 6', description: 'Completed: Moral Argument' } }
   ]
 };
 
@@ -373,10 +385,12 @@ export const lesson7Data = {
   title: 'Jesus: The Only Way?',
   subtitle: 'Addressing religious pluralism and exclusivity',
   description: 'Why Christian exclusivity is humble and true.',
+  duration: "6 min",
   cards: [
-    { type: 'content', title: 'The scandal of exclusivity', content: [
+    { type: 'content', title: 'The scandal of exclusivity', subtitle: '⏱️ About 6 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will be able to defend Christian exclusivity with both humility and conviction, using C.S. Lewis\'s trilemma.',
       'John 14:6 — Jesus claims uniqueness.'
-    ] },
+    ], highlight: '💭 Hard question: Can there be only one way to God?', requireAcknowledgment: true },
     { type: 'content', title: "Lewis's trilemma", content: [
       "Jesus is liar, lunatic, or Lord — 'great moral teacher' doesn’t fit the claims."
     ] },
@@ -388,7 +402,7 @@ export const lesson7Data = {
     { type: 'content', title: 'Responding with grace', content: [
       "Exclusivity isn't arrogance; it’s acknowledging we can’t save ourselves and pointing to Christ."
     ] },
-    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Exclusivity explained with humility.', badge: { icon: '🛡️', name: 'Apologetics 7', description: 'Completed: Jesus the Only Way' } }
+    { type: 'completion', title: 'Lesson Complete! 🎉', message: 'Exclusivity explained with humility.', keyTakeaways: ['Jesus claimed to be the only way to God (John 14:6)—not just a good teacher', 'C.S. Lewis\'s trilemma: Jesus is either liar, lunatic, or Lord—"great moral teacher" doesn\'t fit His claims', 'Christian exclusivity is based on Jesus\' own claims and the resurrection, not arrogance'], badge: { icon: '🛡️', name: 'Apologetics 7', description: 'Completed: Jesus the Only Way' } }
   ]
 };
 
@@ -397,10 +411,12 @@ export const lesson8Data = {
   title: 'Engaging Skeptics with Grace',
   subtitle: 'Your apologetics toolkit for real conversations',
   description: 'Practical conversations with truth and love.',
+  duration: "8 min",
   cards: [
-    { type: 'content', title: 'Goal of apologetics', content: [
+    { type: 'content', title: 'Goal of apologetics', subtitle: '⏱️ About 8 minutes', content: [
+      '**Learning Objective:** By the end of this lesson, you will have a complete apologetics toolkit and know how to engage skeptics with both truth and grace.',
       '1 Peter 3:15–16 — be ready, with gentleness and respect.'
-    ] },
+    ], highlight: '💭 Reflect: How can you defend your faith with both confidence and humility?', requireAcknowledgment: true },
     { type: 'content', title: 'Common objections & responses', content: [
       'Blind faith? — Faith is trust based on evidence (resurrection, arguments, science).',
       'Religion harms? — Humans misuse everything; judge Christianity by Jesus.'
@@ -421,6 +437,6 @@ export const lesson8Data = {
       '5) Scripture: manuscripts, archaeology.',
       '6) Exclusivity: Jesus’s unique claims.'
     ], highlight: 'Use truth with grace.' },
-    { type: 'completion', title: 'All lessons complete! 🎉', message: 'You now have a robust, gracious apologetics toolkit. Keep learning and sharing.', badge: { icon: '🛡️', name: 'Apologetics Mastery', description: 'Completed: Apologetics Study Guide' } }
+    { type: 'completion', title: 'All lessons complete! 🎉', message: 'You now have a robust, gracious apologetics toolkit. Keep learning and sharing.', keyTakeaways: ['Apologetics is about being ready to give reasons for hope with gentleness and respect (1 Peter 3:15)', 'Listen first, ask questions, and respond to the real objection—not a strawman', 'Truth and love must go together—apologetics without compassion drives people away'], badge: { icon: '🛡️', name: 'Apologetics Mastery', description: 'Completed: Apologetics Study Guide' } }
   ]
 };
