@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Award, Star, X, Trophy } from 'lucide-react';
+import { ChevronRight, Star, X, Trophy } from 'lucide-react';
 import { markReviewComplete } from './services/reviewService';
 
 // Helper function to parse markdown bold syntax

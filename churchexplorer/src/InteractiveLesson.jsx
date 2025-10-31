@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Award, Star, CheckCircle, X } from 'lucide-react';
-import { scheduleReviews } from './services/reviewService';
 
 // Helper function to parse markdown bold syntax
 const parseMarkdown = (text) => {

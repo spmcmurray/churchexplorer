@@ -224,7 +224,6 @@ const Pick = ({ label, active, onClick }) => (
 // Reviews Alert Component
 const ReviewsAlert = ({ onNavigate }) => {
   const [dueReviews, setDueReviews] = useState([]);
-  const [showReviewMode, setShowReviewMode] = useState(false);
 
   useEffect(() => {
     const reviews = getDueReviews();
