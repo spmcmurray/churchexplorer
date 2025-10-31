@@ -8,6 +8,101 @@ const ApologeticsGuide = ({ onNavigate }) => {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
 
+  // Adapt Apologetics lesson data (info/teaching/quote/scenario/reflection/action)
+  // to the InteractiveLesson schema (content/quiz/matching/fillblank/completion)
+  const adaptLessonForInteractive = (src) => {
+    if (!src || !Array.isArray(src.cards)) return src;
+
+    const cards = src.cards.map((c) => {
+      switch (c.type) {
+        case 'info':
+        case 'teaching': {
+          return {
+            type: 'content',
+            title: c.title || (c.type === 'info' ? 'Info' : 'Teaching'),
+            subtitle: c.subtitle || undefined,
+            content: Array.isArray(c.content) ? c.content : c.content ? [c.content] : [],
+            highlight: c.keyPoint || c.highlight || undefined,
+          };
+        }
+        case 'quote': {
+          const parts = [];
+          if (c.text) parts.push(`“${c.text}”`);
+          if (c.context) parts.push(`— ${c.context}`);
+          return {
+            type: 'content',
+            title: c.author ? `Quote: ${c.author}` : 'Quote',
+            content: parts.length ? parts : [],
+          };
+        }
+        case 'reflection': {
+          return {
+            type: 'content',
+            title: c.title || 'Reflection',
+            content: c.prompt ? [c.prompt] : [],
+            highlight: 'Take a moment to reflect and, if you can, jot down your thoughts.',
+          };
+        }
+        case 'action': {
+          return {
+            type: 'content',
+            title: c.title || 'Action',
+            content: c.task ? [c.task] : [],
+            highlight: 'Challenge: Put this into practice this week.',
+          };
+        }
+        case 'scenario': {
+          const options = (c.options || []).map(o => o.text);
+          const correctIndex = (c.options || []).findIndex(o => o.isCorrect);
+          const correctFeedback = correctIndex >= 0 && c.options[correctIndex].feedback
+            ? c.options[correctIndex].feedback
+            : 'Consider why the correct answer best captures the point of this scenario.';
+          return {
+            type: 'quiz',
+            question: c.question || c.title || 'Choose the best response to the scenario.',
+            options,
+            correctAnswer: Math.max(0, correctIndex),
+            explanation: correctFeedback,
+          };
+        }
+        case 'quiz': {
+          // Already compatible with InteractiveLesson
+          return {
+            type: 'quiz',
+            question: c.question,
+            options: c.options,
+            correctAnswer: c.correctAnswer,
+            explanation: c.explanation,
+          };
+        }
+        default:
+          return c;
+      }
+    });
+
+    // Ensure a completion card exists so users can finish and receive XP
+    const hasCompletion = cards.some(card => card.type === 'completion');
+    if (!hasCompletion) {
+      cards.push({
+        type: 'completion',
+        title: 'Lesson Complete! 🎉',
+        message: `Great work finishing "${src.title}". Keep going—you’re building a strong apologetics foundation.`,
+        badge: {
+          icon: '🛡️',
+          name: `Apologetics ${src.id}`,
+          description: `Completed: ${src.title}`,
+        },
+      });
+    }
+
+    return {
+      id: src.id,
+      title: src.title,
+      subtitle: src.subtitle,
+      cards,
+    };
+  };
+
   // Load saved lesson completion on mount
   useEffect(() => {
     const saved = localStorage.getItem('apologeticsProgress');
@@ -128,7 +223,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 1) {
     return (
       <InteractiveLesson
-        lessonData={lesson1Data}
+        lessonData={adaptLessonForInteractive(lesson1Data)}
         onComplete={(xp) => handleCompleteInteractive(1, xp)}
         onExit={handleExitInteractive}
       />
@@ -138,7 +233,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 2) {
     return (
       <InteractiveLesson
-        lessonData={lesson2Data}
+        lessonData={adaptLessonForInteractive(lesson2Data)}
         onComplete={(xp) => handleCompleteInteractive(2, xp)}
         onExit={handleExitInteractive}
       />
@@ -148,7 +243,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 3) {
     return (
       <InteractiveLesson
-        lessonData={lesson3Data}
+        lessonData={adaptLessonForInteractive(lesson3Data)}
         onComplete={(xp) => handleCompleteInteractive(3, xp)}
         onExit={handleExitInteractive}
       />
@@ -158,7 +253,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 4) {
     return (
       <InteractiveLesson
-        lessonData={lesson4Data}
+        lessonData={adaptLessonForInteractive(lesson4Data)}
         onComplete={(xp) => handleCompleteInteractive(4, xp)}
         onExit={handleExitInteractive}
       />
@@ -168,7 +263,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 5) {
     return (
       <InteractiveLesson
-        lessonData={lesson5Data}
+        lessonData={adaptLessonForInteractive(lesson5Data)}
         onComplete={(xp) => handleCompleteInteractive(5, xp)}
         onExit={handleExitInteractive}
       />
@@ -178,7 +273,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 6) {
     return (
       <InteractiveLesson
-        lessonData={lesson6Data}
+        lessonData={adaptLessonForInteractive(lesson6Data)}
         onComplete={(xp) => handleCompleteInteractive(6, xp)}
         onExit={handleExitInteractive}
       />
@@ -188,7 +283,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 7) {
     return (
       <InteractiveLesson
-        lessonData={lesson7Data}
+        lessonData={adaptLessonForInteractive(lesson7Data)}
         onComplete={(xp) => handleCompleteInteractive(7, xp)}
         onExit={handleExitInteractive}
       />
@@ -198,7 +293,7 @@ const ApologeticsGuide = ({ onNavigate }) => {
   if (interactiveMode === 8) {
     return (
       <InteractiveLesson
-        lessonData={lesson8Data}
+        lessonData={adaptLessonForInteractive(lesson8Data)}
         onComplete={(xp) => handleCompleteInteractive(8, xp)}
         onExit={handleExitInteractive}
       />
