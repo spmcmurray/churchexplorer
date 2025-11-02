@@ -1,16 +1,13 @@
 /**
  * AI-Assisted Lesson Creator Service
- * Uses OpenAI API to generate custom lessons based on existing lesson structure
+ * Uses OpenAI API to generate custom lessons via Vercel proxy
  */
 
-// Determine if we should use the proxy server (production) or direct API (development)
-const USE_PROXY = !process.env.REACT_APP_OPENAI_API_KEY || process.env.NODE_ENV === 'production';
+// Always use the proxy endpoint (Vercel) in production
+// The API key is stored securely on the Vercel backend
+const AI_API_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localhost:3001/api/ai';
 
-// API endpoints - use proxy in production for security
-const PROXY_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localhost:3001/api/ai';
-const DIRECT_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
-
-const AI_API_ENDPOINT = USE_PROXY ? PROXY_ENDPOINT : DIRECT_ENDPOINT;
+// For local development only (not used in production)
 const AI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
 /**
@@ -128,110 +125,32 @@ Do not include any text before or after the JSON object.`;
  */
 export const generateAILesson = async (topic, additionalContext = '') => {
   try {
-    // If using proxy server, use simplified request format
-    if (USE_PROXY) {
-      const response = await fetch(`${AI_API_ENDPOINT}/generate-lesson`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          topic,
-          additionalContext
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('AI API Error:', errorText);
-        throw new Error(`AI API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.lesson) {
-        throw new Error('Invalid response format from AI API');
-      }
-
-      // Validate the generated lesson structure
-      const validatedLesson = validateAndEnhanceLesson(data.lesson, topic);
-
-      return {
-        success: true,
-        lesson: validatedLesson,
-        usage: data.usage
-      };
-    }
-
-    // Direct OpenAI API call (for development with API key)
-    if (!AI_API_KEY) {
-      throw new Error('AI API key not configured. Please add REACT_APP_OPENAI_API_KEY to your environment variables or use the proxy server.');
-    }
-
-    const userPrompt = `Create a comprehensive Christian education lesson about: "${topic}"
-
-    ${additionalContext ? `Additional context: ${additionalContext}` : ''}
-
-    Please generate a complete lesson following the specified structure. Ensure the content is:
-    - Theologically accurate according to historic Christian orthodoxy
-    - Appropriate for adult learners with conservative Christian values
-    - Balanced and neutral when presenting different denominational views
-    - Respectful of traditional interpretations of Scripture
-    - Rich with relevant Scripture references
-    - Educational and objective, not advocating for progressive positions
-    - Practically applicable to modern Christian life
-
-    IMPORTANT: On any disputed theological topics (women in ministry, social issues, etc.), present all major views objectively without taking sides. Label which traditions hold which positions.
-
-    Return the lesson as a JSON object that matches the lesson template structure.`;
-
-    const response = await fetch(AI_API_ENDPOINT, {
+    // Always use the proxy server for security
+    const response = await fetch(`${AI_API_ENDPOINT}/generate-lesson`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_API_KEY}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: generateSystemPrompt()
-          },
-          {
-            role: 'user',
-            content: userPrompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000
+        topic,
+        additionalContext
       })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('AI API Error:', errorText);
-      throw new Error(`AI API error: ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(`AI API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
     
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    if (!data.lesson) {
       throw new Error('Invalid response format from AI API');
     }
 
-    let lessonContent;
-    try {
-      const responseText = data.choices[0].message.content.trim();
-      const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
-      lessonContent = JSON.parse(cleanedResponse);
-    } catch (parseError) {
-      console.error('JSON parsing error:', parseError);
-      console.error('Raw response:', data.choices[0].message.content);
-      throw new Error('Failed to parse AI response as JSON. Please try again.');
-    }
-
-    const validatedLesson = validateAndEnhanceLesson(lessonContent, topic);
+    // Validate the generated lesson structure
+    const validatedLesson = validateAndEnhanceLesson(data.lesson, topic);
 
     return {
       success: true,
