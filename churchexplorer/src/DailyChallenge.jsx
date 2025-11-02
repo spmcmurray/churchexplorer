@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, CheckCircle, X, Star, Trophy, Flame } from 'lucide-react';
 import { timelineChallenges, lessonChallenges } from './dailyChallenges';
+import { addPathXP } from './services/progressService';
 
 const DailyChallenge = ({ onNavigate }) => {
   const [challenge, setChallenge] = useState(null);
@@ -138,10 +139,9 @@ const DailyChallenge = ({ onNavigate }) => {
     }
   };
 
-  const awardXP = (xp) => {
-    // Award XP to all paths (could be refined later)
-    const currentBibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
-    localStorage.setItem('bibleHistoryTotalXP', (currentBibleXP + xp).toString());
+  const awardXP = async (xp) => {
+    // Award XP to bible path for daily challenge
+    await addPathXP('bible', xp);
   };
 
   const markCompleted = () => {

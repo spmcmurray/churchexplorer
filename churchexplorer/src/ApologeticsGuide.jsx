@@ -5,6 +5,7 @@ import ReviewSession from './ReviewSession';
 // Use the clean lesson data source
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './apologeticsLessonData.clean';
 import { scheduleReviews } from './services/reviewService';
+import { addPathXP } from './services/progressService';
 
 const ApologeticsGuide = ({ onNavigate, onGoBack }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
@@ -166,16 +167,14 @@ const ApologeticsGuide = ({ onNavigate, onGoBack }) => {
     }
   };
 
-  const handleCompleteInteractive = (lessonNum, xpEarned) => {
+  const handleCompleteInteractive = async (lessonNum, xpEarned) => {
     markLessonComplete(lessonNum);
 
     // Schedule spaced repetition reviews
     scheduleReviews('apologetics', lessonNum);
 
     if (xpEarned) {
-      const currentXP = getTotalXP();
-      const newTotalXP = currentXP + xpEarned;
-      localStorage.setItem('apologeticsTotalXP', newTotalXP.toString());
+      await addPathXP('apologetics', xpEarned);
     }
 
     setInteractiveMode(null);
@@ -263,10 +262,9 @@ const ApologeticsGuide = ({ onNavigate, onGoBack }) => {
           lessonData={adaptLessonForInteractive(lessonData)}
           path="apologetics"
           lessonNumber={reviewMode.lessonNumber}
-          onComplete={(xp) => {
+          onComplete={async (xp) => {
             // Award XP for review
-            const currentXP = getTotalXP();
-            localStorage.setItem('apologeticsTotalXP', (currentXP + xp).toString());
+            await addPathXP('apologetics', xp);
             setReviewMode(null);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}

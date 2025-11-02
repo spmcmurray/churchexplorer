@@ -4,6 +4,7 @@ import InteractiveLesson from './InteractiveLesson';
 import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
 import { scheduleReviews } from './services/reviewService';
+import { addPathXP } from './services/progressService';
 
 const BibleHistoryGuide = ({ onNavigate, onGoBack }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
@@ -134,17 +135,15 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack }) => {
     }
   };
 
-  const handleCompleteInteractive = (lessonNum, xpEarned) => {
+  const handleCompleteInteractive = async (lessonNum, xpEarned) => {
     markLessonComplete(lessonNum);
 
     // Schedule spaced repetition reviews
     scheduleReviews('bible', lessonNum);
 
-    // Save XP to localStorage
+    // Save XP to localStorage and sync to Firebase
     if (xpEarned) {
-      const currentXP = getTotalXP();
-      const newTotalXP = currentXP + xpEarned;
-      localStorage.setItem('bibleHistoryTotalXP', newTotalXP.toString());
+      await addPathXP('bible', xpEarned);
     }
 
     setInteractiveMode(null);
@@ -988,10 +987,9 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack }) => {
           lessonData={lessonData}
           path="bible"
           lessonNumber={reviewMode.lessonNumber}
-          onComplete={(xp) => {
+          onComplete={async (xp) => {
             // Award XP for review
-            const currentXP = getTotalXP();
-            localStorage.setItem('bibleHistoryTotalXP', (currentXP + xp).toString());
+            await addPathXP('bible', xp);
             setReviewMode(null);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}

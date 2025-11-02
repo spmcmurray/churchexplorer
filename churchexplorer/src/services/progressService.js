@@ -1,4 +1,6 @@
 // Unified progress and profile utilities across modules
+import { getCurrentUser } from '../firebase/authService';
+import { updateUserXP } from '../firebase/leaderboardService';
 
 const KEYS = {
   profile: 'userProfile',
@@ -68,6 +70,51 @@ export function getOverallProgress() {
   return { percentage, xp, paths: { bible, church, apologetics } };
 }
 
+/**
+ * Get total XP across all paths
+ */
+export function getTotalXP() {
+  const bible = readInt(KEYS.bibleXP);
+  const church = readInt(KEYS.churchXP);
+  const apologetics = readInt(KEYS.apologeticsXP);
+  return bible + church + apologetics;
+}
+
+/**
+ * Sync XP to Firebase if user is logged in
+ */
+async function syncXPToFirebase() {
+  try {
+    const user = getCurrentUser();
+    if (user) {
+      const totalXP = getTotalXP();
+      await updateUserXP(user.uid, totalXP);
+    }
+  } catch (error) {
+    console.error('Failed to sync XP to Firebase:', error);
+    // Don't throw - allow local progress to continue even if sync fails
+  }
+}
+
+/**
+ * Update XP for a specific path and sync to Firebase
+ */
+export async function updatePathXP(pathId, xp) {
+  const key = pathId === 'bible' ? KEYS.bibleXP : pathId === 'church' ? KEYS.churchXP : KEYS.apologeticsXP;
+  localStorage.setItem(key, xp.toString());
+  await syncXPToFirebase();
+}
+
+/**
+ * Add XP to a specific path and sync to Firebase
+ */
+export async function addPathXP(pathId, xpToAdd) {
+  const currentXP = readInt(pathId === 'bible' ? KEYS.bibleXP : pathId === 'church' ? KEYS.churchXP : KEYS.apologeticsXP);
+  const newXP = currentXP + xpToAdd;
+  await updatePathXP(pathId, newXP);
+  return newXP;
+}
+
 export function getNextLesson(pathId) {
   // Completed lessons are stored as an array of lesson numbers; find the smallest missing in 1..8
   const set = new Set(readArray(
@@ -111,4 +158,35 @@ export function recommendPathFromAnswers(answers) {
   // answers: { startingPoint: 'bible'|'church'|'apologetics', style?: 'read'|'interactive'|'mix' }
   const startingPoint = answers.startingPoint || 'bible';
   return { pathId: startingPoint, nextLesson: 1 };
+}
+
+/**
+ * Clear all user progress data from localStorage
+ * Used when signing out to reset to a fresh state
+ */
+export function clearAllProgress() {
+  // Clear all app-related localStorage keys
+  const allKeys = [
+    // Progress tracking
+    'userProfile',
+    'churchHistoryProgress',
+    'churchHistoryTotalXP',
+    'churchHistoryQuizResults',
+    'bibleHistoryProgress',
+    'bibleHistoryTotalXP',
+    'bibleHistoryQuizResults',
+    'apologeticsProgress',
+    'apologeticsTotalXP',
+    // Daily challenge
+    'dailyChallengeCompletion',
+    'dailyChallengeStreak',
+    // Review mode
+    'reviewMode',
+    // Spaced repetition (reviewService keys)
+    'reviewSchedule'
+  ];
+
+  allKeys.forEach(key => {
+    localStorage.removeItem(key);
+  });
 }
