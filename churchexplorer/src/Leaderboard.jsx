@@ -28,17 +28,24 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
         
         // Get current user's rank and profile if logged in
         if (currentUser) {
-          const userXP = getTotalXP();
-          const rankResult = await getUserRank(currentUser.uid, userXP);
-          if (rankResult.success) {
-            setUserRank(rankResult.rank);
-          }
-          
-          // Find user's profile in leaderboard
+          // Find user's profile in leaderboard first
           const profile = result.leaderboard.find(u => u.uid === currentUser.uid);
           if (profile) {
             console.log('Current user profile:', profile);
             setUserProfile(profile);
+            
+            // Get rank using Firestore XP data
+            const rankResult = await getUserRank(currentUser.uid, profile.totalXP);
+            if (rankResult.success) {
+              setUserRank(rankResult.rank);
+            }
+          } else {
+            // User not in top 100, still get their rank with local XP as fallback
+            const userXP = getTotalXP();
+            const rankResult = await getUserRank(currentUser.uid, userXP);
+            if (rankResult.success) {
+              setUserRank(rankResult.rank);
+            }
           }
         }
       } else {
@@ -144,7 +151,7 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
               </div>
               <div className="text-right">
                 <p className="text-blue-100 text-sm font-medium">Total XP</p>
-                <p className="text-3xl font-black">{getTotalXP()}</p>
+                <p className="text-3xl font-black">{userProfile?.totalXP || 0}</p>
               </div>
             </div>
           </div>
