@@ -3,15 +3,15 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 // Firebase configuration
-// IMPORTANT: Replace these with your actual Firebase project credentials
-// Get these from: Firebase Console > Project Settings > Your apps > SDK setup and configuration
+// NOTE: Firebase API keys are safe to expose in client-side code (they're restricted by domain)
+// See: https://firebase.google.com/docs/projects/api-keys
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "YOUR_API_KEY",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "YOUR_PROJECT_ID",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "YOUR_SENDER_ID",
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || "YOUR_APP_ID"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyDvYAi4EMGSfBTysKVsgIvw-dk26kpa4Us",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "church-explorer-20e5a.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "church-explorer-20e5a",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "church-explorer-20e5a.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "359510802923",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:359510802923:web:1c9e7c335f63d8ef3659ae"
 };
 
 // Initialize Firebase
