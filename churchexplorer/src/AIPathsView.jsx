@@ -35,6 +35,18 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
   const [recentTopics, setRecentTopics] = useState([]);
   const creatorSectionRef = React.useRef(null);
 
+  // Fallback topic pool when API suggestions are not available
+  const topicPool = [
+    'The Protestant Reformation',
+    'Early Church History',
+    'Biblical Theology Basics',
+    'The Armor of God',
+    'Fruits of the Spirit',
+    'Biblical Prayer',
+    'The Trinity Explained',
+    'Book of Revelation'
+  ];
+
   useEffect(() => {
     loadAIPaths();
     loadTopicSuggestions();
@@ -273,26 +285,24 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       
       if (result.success) {
         if (result.path.lessons && result.path.lessons.length > 0) {
-          result.path.lessons.forEach((lesson, index) => {
-            const lessonWithPath = {
-              ...lesson,
-              pathInfo: {
-                pathType: pathType,
-                pathTitle: pathOutline.pathTitle,
-                pathId: pathOutline.pathId,
-                lessonNumber: index + 1,
-                totalLessons: result.path.lessons.length
-              }
-            };
-            saveAILessonToLibrary(lessonWithPath);
-          });
-          
-          loadAILessons();
+          // Save the generated multi-lesson path as a single entity
+          const completePath = {
+            id: pathOutline.pathId,
+            title: pathOutline.pathTitle,
+            description: pathOutline.pathDescription || topic,
+            topic: topic,
+            pathType: pathType,
+            lessons: result.path.lessons,
+            createdAt: new Date().toISOString()
+          };
+
+          await saveAIPathToLibrary(completePath, currentUser);
+          await loadAIPaths();
           setTopic('');
           setAdditionalContext('');
           setPathOutline(null);
           setPathProgress(null);
-          // Scroll to top to show new lessons
+          // Scroll to top to show new path
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       } else {
