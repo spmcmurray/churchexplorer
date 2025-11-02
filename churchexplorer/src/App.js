@@ -17,6 +17,7 @@ import AIPathsView from './AIPathsView';
 import AIPathViewer from './AIPathViewer';
 import AILessonViewerPage from './AILessonViewerPage';
 import { onAuthChange, logOut, deleteAccount, getUserProfile } from './firebase/authService';
+import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
 import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement, saveProfile } from './services/progressService';
 import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
 
@@ -232,28 +233,48 @@ function AppContent() {
             if (profileResult && profileResult.success && profileResult.profile) {
               // Merge profile into local storage profile used by front-end
               saveProfile(profileResult.profile);
-              
-              // Also set totalXP from profile as backup (in case progress fetch fails)
-              if (profileResult.profile.totalXP) {
-                const profileXP = profileResult.profile.totalXP;
-                // Distribute XP across courses if not already set
-                const currentBibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
-                const currentChurchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
-                const currentApologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
-                
-                // If all course XP is 0 but profile has totalXP, distribute it
-                if (currentBibleXP === 0 && currentChurchXP === 0 && currentApologeticsXP === 0 && profileXP > 0) {
-                  // Use profile XP for display until we can fetch detailed progress
-                  localStorage.setItem('bibleHistoryTotalXP', String(Math.floor(profileXP / 3)));
-                  localStorage.setItem('churchHistoryTotalXP', String(Math.floor(profileXP / 3)));
-                  localStorage.setItem('apologeticsTotalXP', String(profileXP - 2 * Math.floor(profileXP / 3)));
-                }
-              }
             }
 
             // Fetch Firestore progress and persist it locally so Home shows the correct data
             const progressResult = await getUserProgress(user.uid);
-            if (progressResult && progressResult.success && progressResult.progress) {
+            
+            // Check if we need to migrate localStorage to Firestore
+            if (progressResult && (!progressResult.success || !progressResult.progress || progressResult.progress.totalXP === 0)) {
+              // Try to migrate local progress to Firestore
+              const localBibleProgress = JSON.parse(localStorage.getItem('bibleHistoryProgress') || '[]');
+              const localChurchProgress = JSON.parse(localStorage.getItem('churchHistoryProgress') || '[]');
+              const localApologeticsProgress = JSON.parse(localStorage.getItem('apologeticsProgress') || '[]');
+              const localBibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
+              const localChurchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
+              const localApologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
+              const localTotalXP = localBibleXP + localChurchXP + localApologeticsXP;
+              
+              // If we have local progress, migrate it to Firestore
+              if (localTotalXP > 0 || localBibleProgress.length > 0 || localChurchProgress.length > 0 || localApologeticsProgress.length > 0) {
+                console.log('Migrating localStorage progress to Firestore...');
+                const localProgress = {
+                  totalXP: localTotalXP,
+                  bibleProgress: localBibleProgress,
+                  bibleXP: localBibleXP,
+                  churchProgress: localChurchProgress,
+                  churchXP: localChurchXP,
+                  apologeticsProgress: localApologeticsProgress,
+                  apologeticsXP: localApologeticsXP
+                };
+                
+                const migrationResult = await migrateLocalProgressToFirestore(user.uid, localProgress);
+                if (migrationResult.success) {
+                  console.log('Successfully migrated progress to Firestore');
+                  // Fetch the newly migrated progress
+                  const newProgressResult = await getUserProgress(user.uid);
+                  if (newProgressResult.success) {
+                    // Progress is already in localStorage, just log success
+                    console.log('Progress synced from Firestore after migration');
+                  }
+                }
+              }
+            } else if (progressResult && progressResult.success && progressResult.progress) {
+              // Firestore has progress, sync it to localStorage
               const p = progressResult.progress;
               const localProgress = {
                 totalXP: p.totalXP || 0,
@@ -277,6 +298,7 @@ function AppContent() {
                 localStorage.setItem('apologeticsTotalXP', String(localProgress.apologeticsXP || 0));
 
                 saveProfile({ syncedFrom: 'firestore', totalXP: localProgress.totalXP });
+                console.log('Synced Firestore progress to localStorage');
               } catch (err) {
                 console.warn('Failed to persist Firestore progress to localStorage', err);
               }
