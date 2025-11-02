@@ -379,3 +379,101 @@ export const migrateLocalProgressToFirestore = async (uid, localProgress) => {
     return { success: false, error: error.message };
   }
 };
+
+/**
+ * Save AI-generated path to Firestore for a user
+ */
+export const saveAIPathToFirestore = async (uid, path) => {
+  try {
+    const pathRef = doc(db, 'users', uid, 'aiPaths', path.id);
+    await setDoc(pathRef, {
+      ...path,
+      savedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error saving AI path to Firestore:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get all AI paths for a user from Firestore
+ */
+export const getAIPathsFromFirestore = async (uid) => {
+  try {
+    const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
+    const pathsRef = collection(db, 'users', uid, 'aiPaths');
+    const q = query(pathsRef, orderBy('savedAt', 'desc'));
+    const snapshot = await getDocs(q);
+    
+    const paths = [];
+    snapshot.forEach((doc) => {
+      paths.push({
+        ...doc.data(),
+        id: doc.id
+      });
+    });
+    
+    return { success: true, paths };
+  } catch (error) {
+    console.error('Error loading AI paths from Firestore:', error);
+    return { success: false, error: error.message, paths: [] };
+  }
+};
+
+/**
+ * Delete AI path from Firestore
+ */
+export const deleteAIPathFromFirestore = async (uid, pathId) => {
+  try {
+    const { deleteDoc } = await import('firebase/firestore');
+    const pathRef = doc(db, 'users', uid, 'aiPaths', pathId);
+    await deleteDoc(pathRef);
+    
+    // Also delete progress
+    const progressRef = doc(db, 'users', uid, 'aiPathProgress', pathId);
+    await deleteDoc(progressRef);
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting AI path from Firestore:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Save AI path progress to Firestore
+ */
+export const saveAIPathProgressToFirestore = async (uid, pathId, completedLessons) => {
+  try {
+    const progressRef = doc(db, 'users', uid, 'aiPathProgress', pathId);
+    await setDoc(progressRef, {
+      completedLessons,
+      lastUpdated: serverTimestamp()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error saving AI path progress:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get AI path progress from Firestore
+ */
+export const getAIPathProgressFromFirestore = async (uid, pathId) => {
+  try {
+    const progressRef = doc(db, 'users', uid, 'aiPathProgress', pathId);
+    const progressDoc = await getDoc(progressRef);
+    
+    if (progressDoc.exists()) {
+      return { success: true, completedLessons: progressDoc.data().completedLessons || [] };
+    }
+    return { success: true, completedLessons: [] };
+  } catch (error) {
+    console.error('Error loading AI path progress:', error);
+    return { success: false, error: error.message, completedLessons: [] };
+  }
+};

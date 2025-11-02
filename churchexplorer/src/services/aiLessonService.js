@@ -7,40 +7,6 @@ const AI_API_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'https://api.op
 const AI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
 /**
- * Lesson structure template that AI will fill in
- */
-const LESSON_TEMPLATE = {
-  title: "",
-  subtitle: "",
-  introduction: "",
-  sections: [
-    {
-      title: "",
-      content: "",
-      keyPoints: []
-    }
-  ],
-  quiz: [
-    {
-      question: "",
-      options: ["", "", "", ""],
-      correct: 0,
-      explanation: ""
-    }
-  ],
-  practicalApplication: "",
-  memorizeVerse: {
-    reference: "",
-    text: ""
-  },
-  furtherReading: [],
-  reflection: {
-    question: "",
-    prompt: ""
-  }
-};
-
-/**
  * Generate a system prompt for the AI based on existing lesson examples
  */
 const generateSystemPrompt = () => {
@@ -56,12 +22,61 @@ LESSON STRUCTURE TO FOLLOW:
 7. Further Reading (3-4 recommended resources)
 8. Reflection (thoughtful question for personal consideration)
 
-REQUIREMENTS:
-- Content must be academically accurate and theologically sound
-- Present multiple perspectives when denominational differences exist
-- Include relevant Scripture references throughout
-- Make content accessible to average adult learners
-- Maintain respectful, educational tone
+THEOLOGICAL GUARDRAILS - CRITICAL:
+You MUST remain neutral and objective on theologically disputed topics. Your audience includes Orthodox, Catholic, and Protestant Christians with conservative beliefs.
+
+REQUIRED NEUTRALITY on these topics:
+- Women in ministry/ordination (present all views objectively without advocacy)
+- Creation vs. evolution (respect literal interpretations)
+- End times theology (present views without favoring one)
+- Sacramental theology (respect differences between traditions)
+- Church governance structures (episcopal, presbyterian, congregational)
+- Charismatic gifts (tongues, prophecy, healing)
+- Mary and the saints (Catholic vs. Protestant views)
+- Salvation theology (faith alone, faith plus works, perseverance of saints)
+- Biblical interpretation methods (literal vs. allegorical)
+- Social and cultural issues (present traditional Christian perspectives)
+
+REQUIRED POSITIONS - NO DEVIATION:
+- Marriage and sexuality: Present only the historic Christian teaching that marriage is between one man and one woman
+- Sexual ethics: Present only traditional Christian sexual ethics (celibacy outside of heterosexual marriage)
+- Gender and identity: Present only the biblical teaching that God created humans male and female
+- NEVER advocate for or normalize LGBT behavior, relationships, or identity
+- Church leadership and gender roles: Present only historic Christian teaching on male headship and biblical gender roles
+  * Orthodox, Catholic, and most Protestant traditions teach male-only ordination/eldership
+  * Do NOT advocate for "gender equality" in church leadership
+  * Do NOT promote women pastors, elders, or priests as normative
+  * When discussing women in ministry, present only complementarian and traditional views
+  * You may mention egalitarian views exist, but do not advocate for them
+  * Focus on biblical teaching about distinct male and female roles
+- When these topics arise, present the consistent historic Christian position held by Orthodox, Catholic, and traditional Protestant churches
+- Do not present progressive Christian views on these topics as valid alternatives
+- Focus on God's design for sexuality, marriage, and church order as taught in Scripture
+
+BANNED TOPICS AND PHRASES:
+- DO NOT generate lessons titled or focused on "gender equality in church leadership"
+- DO NOT advocate for women's ordination or women as senior pastors/priests
+- DO NOT use phrases like "breaking barriers" or "empowering women in ministry" in an advocacy context
+- DO NOT frame complementarian theology as oppressive or outdated
+- DO NOT suggest the church needs to "progress" on gender roles
+- When discussing denominations that ordain women, present it factually without endorsement
+
+APPROACH FOR DISPUTED TOPICS:
+- State: "Christians hold different views on this topic"
+- Present multiple perspectives fairly and objectively
+- Cite which traditions hold which views (e.g., "Catholic teaching...", "Many Protestant denominations...", "Orthodox tradition...")
+- Do NOT advocate for progressive or liberal theological positions
+- Focus on historical orthodox Christian teaching as the baseline
+- Respect traditional interpretations of Scripture
+- When discussing denominations, present their official teachings accurately
+
+CONTENT REQUIREMENTS:
+- Theologically accurate according to historic Christian orthodoxy
+- Appropriate for adult learners with conservative Christian values
+- Rich with relevant Scripture references (use traditional translations)
+- Present denominational differences objectively and respectfully
+- Maintain an educational, not activist, tone
+- Respect the authority of Scripture as held by all major traditions
 - Each section should be 200-400 words
 - Quiz questions should test understanding, not memorization
 - Include both historical context and modern relevance
@@ -115,11 +130,15 @@ export const generateAILesson = async (topic, additionalContext = '') => {
     ${additionalContext ? `Additional context: ${additionalContext}` : ''}
 
     Please generate a complete lesson following the specified structure. Ensure the content is:
-    - Theologically accurate and well-researched
-    - Appropriate for adult learners
-    - Balanced when presenting different denominational views
+    - Theologically accurate according to historic Christian orthodoxy
+    - Appropriate for adult learners with conservative Christian values
+    - Balanced and neutral when presenting different denominational views
+    - Respectful of traditional interpretations of Scripture
     - Rich with relevant Scripture references
+    - Educational and objective, not advocating for progressive positions
     - Practically applicable to modern Christian life
+
+    IMPORTANT: On any disputed theological topics (women in ministry, social issues, etc.), present all major views objectively without taking sides. Label which traditions hold which positions.
 
     Return the lesson as a JSON object that matches the lesson template structure.`;
 
@@ -330,6 +349,424 @@ export const generateTopicSuggestions = async (userInterests = []) => {
 };
 
 /**
+ * Generate a learning path outline (lesson titles and descriptions)
+ */
+export const generateLearningPathOutline = async (topic, pathType, additionalContext = '') => {
+  try {
+    if (!AI_API_KEY) {
+      throw new Error('AI API key not configured.');
+    }
+
+    const lessonCounts = {
+      'quick': 1,
+      'deep-dive': 3,
+      'complete': 8
+    };
+
+    const lessonCount = lessonCounts[pathType] || 1;
+
+    const userPrompt = `Create a structured learning path outline about: "${topic}"
+
+    ${additionalContext ? `Additional context: ${additionalContext}` : ''}
+
+    Generate ${lessonCount} lesson(s) that progressively build understanding of this topic.
+    ${lessonCount > 1 ? `
+    - Start with foundational concepts
+    - Build complexity gradually
+    - End with practical application or advanced topics
+    - Ensure each lesson connects to the next
+    ` : ''}
+
+    For EACH lesson, provide:
+    1. A clear, descriptive title
+    2. A 2-3 sentence description of what the lesson covers
+    3. Key learning objectives (3-4 bullet points)
+
+    Return as a JSON object with this structure:
+    {
+      "pathTitle": "Overall path title",
+      "pathDescription": "Brief description of the complete learning path",
+      "totalLessons": ${lessonCount},
+      "estimatedTime": "X-Y minutes per lesson",
+      "lessons": [
+        {
+          "lessonNumber": 1,
+          "title": "Lesson title",
+          "description": "What this lesson covers",
+          "objectives": ["objective 1", "objective 2", "objective 3"]
+        }
+      ]
+    }`;
+
+    const response = await fetch(AI_API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert curriculum designer for Christian education. Create well-structured, progressive learning paths that respect historic Christian orthodoxy and present denominational differences objectively. Maintain neutrality on disputed theological topics.'
+          },
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`AI API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    const responseText = data.choices[0].message.content.trim();
+    const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
+    const outline = JSON.parse(cleanedResponse);
+
+    return {
+      success: true,
+      outline: {
+        ...outline,
+        pathId: `path_${Date.now()}`,
+        originalTopic: topic,
+        pathType: pathType,
+        createdAt: new Date().toISOString()
+      },
+      usage: data.usage
+    };
+
+  } catch (error) {
+    console.error('Path outline generation error:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Generate full content for a specific lesson in a learning path
+ */
+export const generatePathLesson = async (pathOutline, lessonNumber) => {
+  try {
+    if (!AI_API_KEY) {
+      throw new Error('AI API key not configured.');
+    }
+
+    const lessonInfo = pathOutline.lessons[lessonNumber - 1];
+    if (!lessonInfo) {
+      throw new Error('Invalid lesson number');
+    }
+
+    // Build context from previous lessons
+    const previousLessons = pathOutline.lessons.slice(0, lessonNumber - 1);
+    const contextText = previousLessons.length > 0
+      ? `This is lesson ${lessonNumber} of ${pathOutline.totalLessons} in the path "${pathOutline.pathTitle}".
+         Previous lessons covered: ${previousLessons.map(l => l.title).join(', ')}.
+         Build upon this foundation while covering: ${lessonInfo.description}`
+      : `This is the first lesson in the path "${pathOutline.pathTitle}".`;
+
+    const userPrompt = `Create a comprehensive lesson for: "${lessonInfo.title}"
+
+    Context: ${contextText}
+
+    Learning Objectives:
+    ${lessonInfo.objectives.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}
+
+    Please generate a complete lesson following the specified structure. Ensure the content:
+    - Achieves the stated learning objectives
+    - Is theologically accurate according to historic Christian orthodoxy
+    - Appropriate for adult learners with conservative Christian values
+    - Rich with relevant Scripture references
+    - Neutral and objective on disputed theological topics
+    - Respectful of traditional Scripture interpretations
+    ${lessonNumber > 1 ? '- Builds on concepts from previous lessons' : '- Establishes foundational understanding'}
+    ${lessonNumber < pathOutline.totalLessons ? '- Prepares for upcoming lessons' : '- Provides comprehensive conclusion and application'}
+
+    IMPORTANT: Present denominational differences objectively. On disputed topics, state multiple views without advocacy.
+
+    Return the lesson as a JSON object that matches the lesson template structure.`;
+
+    const response = await fetch(AI_API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${AI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: generateSystemPrompt()
+          },
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 2000
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`AI API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    const responseText = data.choices[0].message.content.trim();
+    const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
+    const lessonContent = JSON.parse(cleanedResponse);
+
+    const validatedLesson = validateAndEnhanceLesson(lessonContent, lessonInfo.title);
+    
+    // Add path metadata
+    validatedLesson.pathId = pathOutline.pathId;
+    validatedLesson.pathTitle = pathOutline.pathTitle;
+    validatedLesson.lessonNumber = lessonNumber;
+    validatedLesson.totalLessonsInPath = pathOutline.totalLessons;
+
+    return {
+      success: true,
+      lesson: validatedLesson,
+      usage: data.usage
+    };
+
+  } catch (error) {
+    console.error('Path lesson generation error:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Generate all lessons in a learning path sequentially
+ */
+export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate) => {
+  const lessons = [];
+  let totalUsage = { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
+
+  try {
+    for (let i = 1; i <= pathOutline.totalLessons; i++) {
+      if (onProgressUpdate) {
+        onProgressUpdate({
+          current: i,
+          total: pathOutline.totalLessons,
+          status: 'generating',
+          lessonTitle: pathOutline.lessons[i - 1].title
+        });
+      }
+
+      const result = await generatePathLesson(pathOutline, i);
+      
+      if (!result.success) {
+        throw new Error(`Failed to generate lesson ${i}: ${result.error}`);
+      }
+
+      lessons.push(result.lesson);
+      
+      if (result.usage) {
+        totalUsage.prompt_tokens += result.usage.prompt_tokens || 0;
+        totalUsage.completion_tokens += result.usage.completion_tokens || 0;
+        totalUsage.total_tokens += result.usage.total_tokens || 0;
+      }
+
+      // Small delay to avoid rate limiting
+      if (i < pathOutline.totalLessons) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    if (onProgressUpdate) {
+      onProgressUpdate({
+        current: pathOutline.totalLessons,
+        total: pathOutline.totalLessons,
+        status: 'complete'
+      });
+    }
+
+    return {
+      success: true,
+      path: {
+        ...pathOutline,
+        lessons: lessons,
+        completedAt: new Date().toISOString(),
+        usage: totalUsage
+      }
+    };
+
+  } catch (error) {
+    console.error('Complete path generation error:', error);
+    return {
+      success: false,
+      error: error.message,
+      partialLessons: lessons
+    };
+  }
+};
+
+/**
+ * Save AI-generated learning path to localStorage and Firestore (if user logged in)
+ * Paths are stored separately from individual lessons
+ */
+export const saveAIPathToLibrary = async (path, currentUser = null) => {
+  try {
+    // Save to localStorage (always)
+    const savedPaths = getSavedAIPaths();
+    
+    // Check if path already exists (by ID)
+    const existingIndex = savedPaths.findIndex(p => p.id === path.id);
+    if (existingIndex >= 0) {
+      // Update existing path
+      savedPaths[existingIndex] = {
+        ...path,
+        updatedAt: new Date().toISOString()
+      };
+    } else {
+      // Add new path
+      savedPaths.push({
+        ...path,
+        savedAt: new Date().toISOString()
+      });
+    }
+    
+    localStorage.setItem('aiGeneratedPaths', JSON.stringify(savedPaths));
+    
+    // Also save to Firestore if user is logged in
+    if (currentUser?.uid) {
+      const { saveAIPathToFirestore } = await import('../firebase/progressService');
+      await saveAIPathToFirestore(currentUser.uid, path);
+    }
+    
+    return { success: true, path };
+  } catch (error) {
+    console.error('Error saving AI path:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get all saved AI paths from localStorage and Firestore (if user logged in)
+ */
+export const getSavedAIPaths = async (currentUser = null) => {
+  try {
+    // If user is logged in, try Firestore first
+    if (currentUser?.uid) {
+      const { getAIPathsFromFirestore } = await import('../firebase/progressService');
+      const result = await getAIPathsFromFirestore(currentUser.uid);
+      if (result.success && result.paths.length > 0) {
+        // Sync Firestore data to localStorage as backup
+        localStorage.setItem('aiGeneratedPaths', JSON.stringify(result.paths));
+        return result.paths;
+      }
+    }
+    
+    // Fallback to localStorage
+    const saved = localStorage.getItem('aiGeneratedPaths');
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error('Error loading AI paths:', error);
+    return [];
+  }
+};
+
+/**
+ * Delete an AI path from the library
+ */
+export const deleteAIPath = async (pathId, currentUser = null) => {
+  try {
+    const savedPaths = await getSavedAIPaths();
+    const filtered = savedPaths.filter(p => p.id !== pathId);
+    localStorage.setItem('aiGeneratedPaths', JSON.stringify(filtered));
+    // Also clean up progress for this path
+    localStorage.removeItem(`aiPathProgress_${pathId}`);
+    
+    // Also delete from Firestore if user is logged in
+    if (currentUser?.uid) {
+      const { deleteAIPathFromFirestore } = await import('../firebase/progressService');
+      await deleteAIPathFromFirestore(currentUser.uid, pathId);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting AI path:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Save AI-generated lesson to localStorage for user's personal library
+ * DEPRECATED: Use saveAIPathToLibrary instead for multi-lesson paths
+ */
+export const saveAILessonToLibrary = (lesson) => {
+  try {
+    const savedLessons = getSavedAILessons();
+    
+    // Check if lesson already exists (by ID)
+    const existingIndex = savedLessons.findIndex(l => l.id === lesson.id);
+    if (existingIndex >= 0) {
+      // Update existing lesson
+      savedLessons[existingIndex] = {
+        ...lesson,
+        updatedAt: new Date().toISOString()
+      };
+    } else {
+      // Add new lesson
+      savedLessons.push({
+        ...lesson,
+        savedAt: new Date().toISOString()
+      });
+    }
+    
+    localStorage.setItem('aiGeneratedLessons', JSON.stringify(savedLessons));
+    return { success: true, lesson };
+  } catch (error) {
+    console.error('Error saving AI lesson:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get all saved AI lessons from localStorage
+ */
+export const getSavedAILessons = () => {
+  try {
+    const saved = localStorage.getItem('aiGeneratedLessons');
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error('Error loading AI lessons:', error);
+    return [];
+  }
+};
+
+/**
+ * Delete an AI lesson from the library
+ */
+export const deleteAILesson = (lessonId) => {
+  try {
+    const savedLessons = getSavedAILessons();
+    const filtered = savedLessons.filter(l => l.id !== lessonId);
+    localStorage.setItem('aiGeneratedLessons', JSON.stringify(filtered));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting AI lesson:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Save AI-generated lesson for potential sharing with other users
  */
 export const saveAILessonForReview = async (lesson, userRating, userFeedback) => {
@@ -349,8 +786,19 @@ export const saveAILessonForReview = async (lesson, userRating, userFeedback) =>
   }
 };
 
-export default {
+const aiLessonService = {
   generateAILesson,
   generateTopicSuggestions,
-  saveAILessonForReview
+  generateLearningPathOutline,
+  generatePathLesson,
+  generateCompleteLearningPath,
+  saveAILessonForReview,
+  saveAILessonToLibrary,
+  getSavedAILessons,
+  deleteAILesson,
+  saveAIPathToLibrary,
+  getSavedAIPaths,
+  deleteAIPath
 };
+
+export default aiLessonService;

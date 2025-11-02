@@ -4,103 +4,200 @@ import {
   BookOpen, 
   Award, 
   ArrowLeft, 
-  ArrowRight, 
+  ChevronRight,
+  ChevronLeft,
   CheckCircle,
-  Clock,
+  X,
   Lightbulb,
   Quote,
   Star,
-  Share2
+  Trophy
 } from 'lucide-react';
-import { completeCourseLesson } from '../firebase/progressService';
+import { completeCourseLesson } from './firebase/progressService';
+
+// Helper function to parse and format text content
+const parseContent = (text) => {
+  if (!text) return null;
+  
+  // Split by newlines first
+  const lines = text.split('\n').filter(line => line.trim());
+  
+  return lines.map((line, idx) => {
+    const trimmed = line.trim();
+    
+    // Check for bullet points (-, *, •, or numbered lists)
+    const bulletMatch = trimmed.match(/^[-*•]\s+(.+)$/);
+    const numberMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+    
+    if (bulletMatch) {
+      return (
+        <li key={idx} className="ml-6 mb-2 text-gray-700 text-lg leading-relaxed">
+          {bulletMatch[1]}
+        </li>
+      );
+    } else if (numberMatch) {
+      return (
+        <li key={idx} className="ml-6 mb-2 text-gray-700 text-lg leading-relaxed list-decimal">
+          {numberMatch[1]}
+        </li>
+      );
+    } else {
+      return (
+        <p key={idx} className="text-gray-700 text-lg leading-relaxed mb-4">
+          {trimmed}
+        </p>
+      );
+    }
+  });
+};
 
 const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack }) => {
-  const [currentSection, setCurrentSection] = useState(0);
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [currentCard, setCurrentCard] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState({});
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [score, setScore] = useState(0);
+  const [showFeedback, setShowFeedback] = useState({});
   const [lessonCompleted, setLessonCompleted] = useState(false);
-  const [startTime] = useState(Date.now());
+  const [xp, setXp] = useState(0);
 
-  const totalSections = lesson.sections?.length || 0;
-  const progress = ((currentSection + 1) / (totalSections + 1)) * 100;
+  // Scroll to top when card changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentCard]);
 
-  const handleNextSection = () => {
-    if (currentSection < totalSections - 1) {
-      setCurrentSection(prev => prev + 1);
-    } else {
-      setShowQuiz(true);
+  // Build card structure from lesson
+  const cards = [];
+  
+  // Introduction card
+  cards.push({
+    type: 'content',
+    title: lesson.title,
+    subtitle: lesson.subtitle,
+    content: [lesson.introduction]
+  });
+
+  // Section cards
+  lesson.sections?.forEach((section, idx) => {
+    cards.push({
+      type: 'content',
+      title: section.title,
+      subtitle: `Section ${idx + 1}`,
+      content: section.content.split('\n\n'),
+      highlight: section.keyPoints?.length > 0 ? section.keyPoints.join(' • ') : null
+    });
+  });
+
+  // Quiz cards
+  lesson.quiz?.forEach((question, idx) => {
+    cards.push({
+      type: 'quiz',
+      question: question.question,
+      options: question.options,
+      correctAnswer: question.correct,
+      explanation: question.explanation || 'Great job!'
+    });
+  });
+
+  // Memory verse card
+  if (lesson.memorizeVerse) {
+    cards.push({
+      type: 'content',
+      title: 'Memory Verse',
+      subtitle: lesson.memorizeVerse.reference,
+      content: [lesson.memorizeVerse.text],
+      highlight: `Memorize this verse: ${lesson.memorizeVerse.reference}`
+    });
+  }
+
+  // Reflection card
+  if (lesson.reflection) {
+    cards.push({
+      type: 'reflection',
+      title: 'Reflection',
+      question: lesson.reflection.question,
+      prompt: lesson.reflection.prompt
+    });
+  }
+
+  // Completion card
+  cards.push({
+    type: 'completion',
+    title: 'Lesson Complete!',
+    message: `Congratulations! You've finished the AI-generated lesson on "${lesson.originalTopic}".`
+  });
+
+  const totalCards = cards.length;
+  const progress = ((currentCard + 1) / totalCards) * 100;
+
+  const handleNext = () => {
+    if (currentCard < totalCards - 1) {
+      setCurrentCard(prev => prev + 1);
     }
   };
 
-  const handlePrevSection = () => {
-    if (currentSection > 0) {
-      setCurrentSection(prev => prev - 1);
+  const handlePrevious = () => {
+    if (currentCard > 0) {
+      setCurrentCard(prev => prev - 1);
     }
   };
 
-  const handleQuizAnswer = (questionIndex, answerIndex) => {
+  const handleAnswer = (cardIndex, answerIndex, isCorrect) => {
     setQuizAnswers(prev => ({
       ...prev,
-      [questionIndex]: answerIndex
+      [cardIndex]: answerIndex
     }));
-  };
 
-  const handleCompleteQuiz = async () => {
-    if (!lesson.quiz) return;
+    setShowFeedback(prev => ({
+      ...prev,
+      [cardIndex]: true
+    }));
 
-    // Calculate score
-    let correct = 0;
-    lesson.quiz.forEach((question, index) => {
-      if (quizAnswers[index] === question.correct) {
-        correct++;
-      }
-    });
-
-    const percentage = Math.round((correct / lesson.quiz.length) * 100);
-    setScore(percentage);
-    setQuizCompleted(true);
-
-    // If quiz passed (70%+), complete the lesson
-    if (percentage >= 70) {
-      await completeLessonWithXP();
+    if (isCorrect) {
+      setXp(prev => prev + 10);
     }
   };
 
-  const completeLessonWithXP = async () => {
-    if (!currentUser || lessonCompleted) return;
+  const handleComplete = async () => {
+    if (lessonCompleted) return;
 
     try {
-      const studyTime = Math.round((Date.now() - startTime) / 1000 / 60); // minutes
+      const totalXp = xp + (lesson.xpReward || 50);
       
-      // Record completion in Firestore for AI lessons
-      const result = await completeCourseLesson(
-        currentUser.uid, 
-        'ai_generated', 
-        lesson.id, 
-        lesson.xpReward || 50
-      );
-
-      if (result.success) {
-        setLessonCompleted(true);
-        if (onComplete) {
-          onComplete({
-            xpEarned: lesson.xpReward || 50,
-            studyTime,
-            score,
-            topic: lesson.originalTopic
-          });
+      // Mark lesson as completed in localStorage
+      const completedKey = `aiLesson_${lesson.id}_completed`;
+      localStorage.setItem(completedKey, 'true');
+      
+      // If user is logged in, also save to Firestore
+      if (currentUser) {
+        const result = await completeCourseLesson(
+          currentUser.uid, 
+          'ai_generated', 
+          lesson.id, 
+          totalXp
+        );
+        
+        if (result.success) {
+          setLessonCompleted(true);
         }
+      } else {
+        setLessonCompleted(true);
+      }
+      
+      if (onComplete) {
+        onComplete({
+          xpEarned: totalXp,
+          topic: lesson.originalTopic
+        });
       }
     } catch (error) {
       console.error('Error completing AI lesson:', error);
     }
+    
+    // Always go back after 1.5 seconds
+    setTimeout(() => {
+      if (onGoBack) onGoBack();
+    }, 1500);
   };
 
-  const getCurrentSection = () => {
-    return lesson.sections[currentSection] || {};
-  };
+  const card = cards[currentCard] || {};
 
   if (!lesson) {
     return (
@@ -111,273 +208,276 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 pb-20">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          {onGoBack && (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      {/* Sticky Header with Progress */}
+      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-md py-4 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-3">
             <button
               onClick={onGoBack}
-              className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-purple-200 rounded-xl hover:border-purple-500 hover:text-purple-600 transition mb-6 font-semibold"
+              className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:text-purple-600 transition font-semibold"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Creator
+              <X className="w-5 h-5" />
             </button>
-          )}
 
-          {/* AI Badge */}
-          <div className="flex items-center gap-2 mb-4">
+            {/* XP Counter */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl shadow-lg">
+              <Star className="w-5 h-5 text-white fill-white" />
+              <span className="font-black text-white text-lg">{xp} XP</span>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-full transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <span className="text-sm font-bold text-gray-600 min-w-[60px] text-right">
+              {currentCard + 1} / {totalCards}
+            </span>
+          </div>
+
+          {/* AI Generated Badge */}
+          <div className="flex items-center gap-2 mt-3">
             <div className="bg-gradient-to-r from-purple-500 to-blue-600 px-3 py-1 rounded-full">
-              <div className="flex items-center gap-2 text-white text-sm font-semibold">
-                <Brain className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-white text-xs font-semibold">
+                <Brain className="w-3 h-3" />
                 AI Generated
               </div>
             </div>
-            <span className="text-gray-500 text-sm">
-              Created for: {lesson.originalTopic}
+            <span className="text-gray-500 text-xs">
+              {lesson.originalTopic}
             </span>
-          </div>
-
-          <h1 className="text-4xl font-black text-gray-900 mb-2">{lesson.title}</h1>
-          <p className="text-xl text-gray-600 mb-6">{lesson.subtitle}</p>
-
-          {/* Progress Bar */}
-          <div className="bg-gray-200 rounded-full h-3 mb-6">
-            <div 
-              className="bg-gradient-to-r from-purple-500 to-blue-600 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>
-              {showQuiz ? 'Quiz' : `Section ${currentSection + 1} of ${totalSections}`}
-            </span>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                <span>{Math.round((Date.now() - startTime) / 1000 / 60)} min</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-500" />
-                <span>{lesson.xpReward || 50} XP</span>
-              </div>
-            </div>
           </div>
         </div>
-
-        {!showQuiz ? (
-          /* Lesson Content */
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-            {currentSection === 0 && (
-              /* Introduction */
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <BookOpen className="w-6 h-6 text-purple-600" />
-                  <h2 className="text-2xl font-bold text-gray-900">Introduction</h2>
-                </div>
-                <div className="prose prose-lg max-w-none">
-                  <p className="text-gray-700 leading-relaxed">{lesson.introduction}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Current Section */}
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-gradient-to-r from-purple-500 to-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold">
-                  {currentSection + 1}
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">{getCurrentSection().title}</h2>
-              </div>
-
-              <div className="prose prose-lg max-w-none mb-8">
-                <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {getCurrentSection().content}
-                </div>
-              </div>
-
-              {/* Key Points */}
-              {getCurrentSection().keyPoints && getCurrentSection().keyPoints.length > 0 && (
-                <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 mb-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Lightbulb className="w-5 h-5 text-purple-600" />
-                    <h3 className="font-bold text-gray-900">Key Points</h3>
-                  </div>
-                  <ul className="space-y-2">
-                    {getCurrentSection().keyPoints.map((point, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
-                        <span className="text-gray-700">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Navigation */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200">
-              <button
-                onClick={handlePrevSection}
-                disabled={currentSection === 0}
-                className="flex items-center gap-2 px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Previous
-              </button>
-
-              <button
-                onClick={handleNextSection}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-blue-700 transition"
-              >
-                {currentSection === totalSections - 1 ? 'Take Quiz' : 'Next'}
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ) : (
-          /* Quiz Section */
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-            <div className="flex items-center gap-3 mb-6">
-              <Award className="w-6 h-6 text-purple-600" />
-              <h2 className="text-2xl font-bold text-gray-900">Knowledge Check</h2>
-            </div>
-
-            {!quizCompleted ? (
-              <div className="space-y-6">
-                {lesson.quiz?.map((question, qIndex) => (
-                  <div key={qIndex} className="border-2 border-gray-200 rounded-xl p-6">
-                    <h3 className="font-bold text-gray-900 mb-4">
-                      {qIndex + 1}. {question.question}
-                    </h3>
-                    <div className="space-y-2">
-                      {question.options?.map((option, oIndex) => (
-                        <button
-                          key={oIndex}
-                          onClick={() => handleQuizAnswer(qIndex, oIndex)}
-                          className={`w-full text-left p-3 rounded-lg border-2 transition ${
-                            quizAnswers[qIndex] === oIndex
-                              ? 'border-purple-500 bg-purple-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-
-                <button
-                  onClick={handleCompleteQuiz}
-                  disabled={Object.keys(quizAnswers).length < lesson.quiz?.length}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Complete Quiz
-                </button>
-              </div>
-            ) : (
-              /* Quiz Results */
-              <div className="text-center">
-                <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${
-                  score >= 70 ? 'bg-green-100' : 'bg-red-100'
-                }`}>
-                  <span className={`text-3xl font-bold ${score >= 70 ? 'text-green-600' : 'text-red-600'}`}>
-                    {score}%
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {score >= 70 ? 'Congratulations!' : 'Keep Learning!'}
-                </h3>
-                
-                <p className="text-gray-600 mb-6">
-                  {score >= 70 
-                    ? `You've successfully completed this AI-generated lesson and earned ${lesson.xpReward || 50} XP!`
-                    : 'You can review the lesson content and retake the quiz to improve your score.'
-                  }
-                </p>
-
-                {score >= 70 && (
-                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-6">
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                      <Trophy className="w-6 h-6 text-green-600" />
-                      <span className="font-bold text-green-600">Lesson Completed!</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div className="text-center">
-                        <p className="font-semibold text-gray-900">XP Earned</p>
-                        <p className="text-green-600 font-bold">{lesson.xpReward || 50}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-gray-900">Final Score</p>
-                        <p className="text-green-600 font-bold">{score}%</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex gap-4 justify-center">
-                  {score < 70 && (
-                    <button
-                      onClick={() => {
-                        setShowQuiz(false);
-                        setCurrentSection(0);
-                        setQuizCompleted(false);
-                        setQuizAnswers({});
-                      }}
-                      className="px-6 py-3 border-2 border-purple-500 text-purple-600 font-semibold rounded-xl hover:bg-purple-50 transition"
-                    >
-                      Review Lesson
-                    </button>
-                  )}
-                  
-                  <button
-                    onClick={onGoBack}
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-blue-700 transition"
-                  >
-                    Create Another Lesson
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Memory Verse & Reflection (shown after quiz completion) */}
-        {quizCompleted && score >= 70 && (
-          <div className="space-y-6">
-            {/* Memory Verse */}
-            {lesson.memorizeVerse && (
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <Quote className="w-6 h-6 text-yellow-600" />
-                  <h3 className="text-xl font-bold text-gray-900">Memory Verse</h3>
-                </div>
-                <blockquote className="text-lg text-gray-800 italic mb-2">
-                  "{lesson.memorizeVerse.text}"
-                </blockquote>
-                <cite className="text-yellow-700 font-semibold">
-                  — {lesson.memorizeVerse.reference}
-                </cite>
-              </div>
-            )}
-
-            {/* Reflection */}
-            {lesson.reflection && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <Lightbulb className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-xl font-bold text-gray-900">Reflection</h3>
-                </div>
-                <p className="text-gray-800 mb-4 font-medium">{lesson.reflection.question}</p>
-                <p className="text-gray-600">{lesson.reflection.prompt}</p>
-              </div>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Card Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[500px]">
+          {card.type === 'content' && (
+            <ContentCard card={card} />
+          )}
+
+          {card.type === 'quiz' && (
+            <QuizCard
+              card={card}
+              cardIndex={currentCard}
+              answer={quizAnswers[currentCard]}
+              showFeedback={showFeedback[currentCard]}
+              onAnswer={handleAnswer}
+            />
+          )}
+
+          {card.type === 'reflection' && (
+            <ReflectionCard card={card} />
+          )}
+
+          {card.type === 'completion' && (
+            <CompletionCard
+              card={card}
+              xp={xp + (lesson.xpReward || 50)}
+              onComplete={handleComplete}
+            />
+          )}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8">
+          <button
+            onClick={handlePrevious}
+            disabled={currentCard === 0}
+            className={`flex items-center gap-2 px-6 py-4 rounded-2xl font-bold transition text-lg ${
+              currentCard === 0
+                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-blue-500 hover:text-blue-600 shadow-md hover:shadow-lg'
+            }`}
+          >
+            <ChevronLeft className="w-5 h-5" />
+            Back
+          </button>
+
+          {currentCard < totalCards - 1 ? (
+            <button
+              onClick={handleNext}
+              className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl font-bold hover:from-blue-600 hover:to-purple-700 transition shadow-lg hover:shadow-xl text-lg"
+            >
+              Continue
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Content Card Component
+const ContentCard = ({ card }) => (
+  <div className="p-10">
+    <h2 className="text-4xl font-black text-gray-900 mb-3">{card.title}</h2>
+    {card.subtitle && (
+      <p className="text-xl text-purple-600 font-semibold mb-8">{card.subtitle}</p>
+    )}
+    <div className="prose prose-lg max-w-none">
+      {card.content?.map((paragraph, idx) => (
+        <div key={idx} className="mb-3">
+          {parseContent(paragraph)}
+        </div>
+      ))}
+    </div>
+    {card.highlight && (
+      <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-l-4 border-purple-500 p-5 rounded-xl">
+        <p className="text-purple-900 font-semibold text-lg">{card.highlight}</p>
+      </div>
+    )}
+  </div>
+);
+
+// Quiz Card Component
+const QuizCard = ({ card, cardIndex, answer, showFeedback, onAnswer }) => {
+  const [selected, setSelected] = useState(answer);
+
+  const handleSelect = (optionIndex) => {
+    setSelected(optionIndex);
+    const isCorrect = optionIndex === card.correctAnswer;
+    onAnswer(cardIndex, optionIndex, isCorrect);
+  };
+
+  return (
+    <div className="p-10">
+      <h3 className="text-3xl font-black text-gray-900 mb-2">Knowledge Check</h3>
+      <p className="text-gray-600 text-lg mb-8">Test your understanding of what you just learned!</p>
+
+      <div className="mb-8">
+        <p className="text-xl font-bold text-gray-800 mb-6">{card.question}</p>
+
+        <div className="space-y-3">
+          {card.options?.map((option, idx) => {
+            const isSelected = selected === idx;
+            const isCorrect = idx === card.correctAnswer;
+
+            let buttonClass = 'w-full text-left p-5 rounded-xl border-2 transition font-medium text-gray-800 shadow-sm ';
+            if (showFeedback) {
+              if (isCorrect) {
+                buttonClass += 'border-green-500 bg-green-50 text-green-900';
+              } else if (isSelected && !isCorrect) {
+                buttonClass += 'border-red-500 bg-red-50 text-red-900';
+              } else {
+                buttonClass += 'border-gray-200 bg-gray-50';
+              }
+            } else {
+              buttonClass += isSelected
+                ? 'border-purple-500 bg-purple-50 shadow-md'
+                : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 hover:shadow-md';
+            }
+
+            return (
+              <button
+                key={idx}
+                onClick={() => !showFeedback && handleSelect(idx)}
+                disabled={showFeedback}
+                className={buttonClass}
+              >
+                <span className="font-bold mr-3 text-gray-600">
+                  {String.fromCharCode(65 + idx)}.
+                </span>
+                {option}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {showFeedback && (
+        <div className={`p-5 rounded-xl border-l-4 ${
+          selected === card.correctAnswer
+            ? 'bg-green-50 border-green-500'
+            : 'bg-blue-50 border-blue-500'
+        }`}>
+          <p className="font-bold text-lg mb-2">
+            {selected === card.correctAnswer ? '✓ Correct! +10 XP' : 'Explanation:'}
+          </p>
+          <p className="text-gray-800 text-lg leading-relaxed">{card.explanation}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Reflection Card Component
+const ReflectionCard = ({ card }) => (
+  <div className="p-10">
+    <div className="text-center mb-8">
+      <Lightbulb className="w-20 h-20 text-purple-500 mx-auto mb-4" />
+      <h2 className="text-4xl font-black text-gray-900 mb-3">{card.title}</h2>
+    </div>
+    
+    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-6">
+      <h3 className="text-2xl font-bold text-gray-900 mb-4">{card.question}</h3>
+      <p className="text-gray-700 text-lg leading-relaxed">{card.prompt}</p>
+    </div>
+
+    <div className="bg-white border-2 border-purple-200 rounded-xl p-6">
+      <p className="text-gray-600 mb-4 font-semibold">Take a moment to reflect:</p>
+      <textarea
+        className="w-full h-32 p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none resize-none"
+        placeholder="Write your thoughts here..."
+      />
+    </div>
+  </div>
+);
+
+// Completion Card Component
+const CompletionCard = ({ card, xp, onComplete }) => {
+  const [celebrating, setCelebrating] = useState(false);
+
+  const handleComplete = async () => {
+    setCelebrating(true);
+    await onComplete();
+  };
+
+  return (
+    <div className="p-10 text-center">
+      {!celebrating ? (
+        <>
+          <div className="mb-8">
+            <Award className="w-28 h-28 text-yellow-500 mx-auto mb-6" />
+            <h2 className="text-4xl font-black text-gray-900 mb-4">{card.title}</h2>
+            <p className="text-xl text-gray-600 leading-relaxed">{card.message}</p>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-2xl p-8 mb-8 border-2 border-yellow-200 shadow-lg">
+            <p className="text-2xl font-bold text-gray-800 mb-3">Total XP Earned</p>
+            <p className="text-6xl font-black text-yellow-600">{xp}</p>
+          </div>
+
+          {/* AI Generated Badge */}
+          <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 mb-8 border-2 border-purple-200 shadow-lg">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <Brain className="w-8 h-8 text-purple-600" />
+            </div>
+            <p className="text-2xl font-black text-purple-700">AI-Generated Lesson</p>
+            <p className="text-base text-gray-600 mt-2">You've completed a custom AI lesson!</p>
+          </div>
+
+          <button
+            onClick={handleComplete}
+            className="px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl rounded-2xl font-black hover:from-blue-600 hover:to-purple-700 transition shadow-xl hover:shadow-2xl"
+          >
+            Complete Lesson! 🎉
+          </button>
+        </>
+      ) : (
+        <div className="py-12">
+          <Trophy className="w-32 h-32 text-yellow-500 mx-auto mb-6 animate-bounce" />
+          <h2 className="text-5xl font-black text-gray-900 mb-4">Awesome! 🎉</h2>
+          <p className="text-2xl text-gray-600">Returning to AI Creator...</p>
+        </div>
+      )}
     </div>
   );
 };

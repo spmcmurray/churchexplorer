@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Flame, PlayCircle, Sparkles, BookOpen, Calendar } from 'lucide-react';
+import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile, saveProfile } from './services/progressService';
 import DailyChallenge from './DailyChallenge';
 import { getDueReviews, getMasteryInfo } from './services/reviewService';
@@ -12,6 +12,8 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
 
   const firstTime = useMemo(() => !existingProfile && overall.percentage === 0, [existingProfile, overall.percentage]);
   const [startingPoint, setStartingPoint] = useState('');
+  const [showReviews, setShowReviews] = useState(false);
+  const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   const canCreate = !!startingPoint;
 
   // Scroll to top when component mounts
@@ -142,7 +144,7 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
               </div>
             </>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             <PathProgressCard
               title="Bible History"
               color="blue"
@@ -167,16 +169,28 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
               onClick={() => onNavigate('apologetics')}
               recommended={firstTime && startingPoint === 'apologetics'}
             />
+            {overall.paths.ai.total > 0 && (
+              <PathProgressCard
+                title="AI Lessons"
+                color="purple"
+                completed={overall.paths.ai.completedCount}
+                total={overall.paths.ai.total}
+                onClick={() => onNavigate('ai-paths')}
+                isAI={true}
+              />
+            )}
           </div>
         </div>
 
-        {/* Reviews Section */}
-        {!firstTime && <ReviewsAlert onNavigate={onNavigate} />}
+        {/* Reviews Section - Collapsible */}
+        {!firstTime && <ReviewsAlert onNavigate={onNavigate} showReviews={showReviews} setShowReviews={setShowReviews} />}
 
-        {/* Daily Challenge */}
-        <div className="mt-6">
-          <DailyChallenge onNavigate={onNavigate} />
-        </div>
+        {/* Daily Challenge - Collapsible */}
+        {!firstTime && (
+          <div className="mt-6">
+            <DailyChallengeCollapsible onNavigate={onNavigate} showDailyChallenge={showDailyChallenge} setShowDailyChallenge={setShowDailyChallenge} />
+          </div>
+        )}
       </div>
 
       {/* Bottom CTA removed per request */}
@@ -184,17 +198,19 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
   );
 };
 
-const PathProgressCard = ({ title, color, completed, total, onClick, recommended }) => {
+const PathProgressCard = ({ title, color, completed, total, onClick, recommended, isAI = false }) => {
   const pct = total ? Math.round((completed / total) * 100) : 0;
   const colorMap = {
     blue: 'from-blue-500 to-indigo-500',
     amber: 'from-amber-500 to-orange-500',
     indigo: 'from-indigo-500 to-purple-500',
+    purple: 'from-purple-500 to-pink-500',
   };
   return (
     <button onClick={onClick} className={`text-left bg-white rounded-xl border-2 p-5 hover:shadow transition ${recommended ? 'border-blue-400 ring-2 ring-blue-200' : 'border-slate-200'}`}>
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-slate-800 flex items-center gap-2">
+          {isAI && <Brain className="w-4 h-4 text-purple-600" />}
           {title}
           {recommended && (
             <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded-full">Recommended</span>
@@ -224,8 +240,41 @@ const Pick = ({ label, active, onClick }) => (
   </button>
 );
 
+// Collapsible wrapper for Daily Challenge
+const DailyChallengeCollapsible = ({ onNavigate, showDailyChallenge, setShowDailyChallenge }) => {
+  return (
+    <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-sm overflow-hidden">
+      <button
+        onClick={() => setShowDailyChallenge(!showDailyChallenge)}
+        className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition"
+      >
+        <div className="flex items-center gap-3">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-2 rounded-lg">
+            <Flame className="w-5 h-5 text-white" />
+          </div>
+          <div className="text-left">
+            <h3 className="font-bold text-slate-900">Daily Challenge</h3>
+            <p className="text-sm text-slate-600">Complete today's challenge for bonus XP</p>
+          </div>
+        </div>
+        {showDailyChallenge ? (
+          <ChevronUp className="w-5 h-5 text-slate-400" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-slate-400" />
+        )}
+      </button>
+      
+      {showDailyChallenge && (
+        <div className="border-t border-slate-200">
+          <DailyChallenge onNavigate={onNavigate} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Reviews Alert Component
-const ReviewsAlert = ({ onNavigate }) => {
+const ReviewsAlert = ({ onNavigate, showReviews, setShowReviews }) => {
   const [dueReviews, setDueReviews] = useState([]);
 
   useEffect(() => {
@@ -293,56 +342,74 @@ const ReviewsAlert = ({ onNavigate }) => {
   };
 
   return (
-    <div className="mt-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white shadow-lg">
-      <div className="flex items-center justify-between mb-4">
+    <div className="mt-6 bg-white rounded-2xl border-2 border-slate-200 shadow-sm overflow-hidden">
+      <button
+        onClick={() => setShowReviews(!showReviews)}
+        className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition"
+      >
         <div className="flex items-center gap-3">
           <BookOpen className="w-6 h-6" />
-          <span className="font-bold text-lg">
-            {dueReviews.length === 1 ? '1 Review Due' : `${dueReviews.length} Reviews Due`}
-          </span>
+          <div className="text-left">
+            <h3 className="font-bold text-lg">
+              {dueReviews.length === 1 ? '1 Review Due' : `${dueReviews.length} Reviews Due`}
+            </h3>
+            <p className="text-sm text-white/90">Keep your knowledge fresh</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full">
-          <Calendar className="w-4 h-4" />
-          <span className="text-sm font-bold">Today</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-full">
+            <Calendar className="w-4 h-4" />
+            <span className="text-sm font-bold">Today</span>
+          </div>
+          {showReviews ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
-      </div>
+      </button>
 
-      <p className="text-white/90 mb-4">
-        Keep your knowledge fresh! Review these lessons to strengthen your long-term retention.
-      </p>
+      {showReviews && (
+        <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
+          <p className="text-slate-700 mb-4">
+            Review these lessons to strengthen your long-term retention.
+          </p>
 
-      <div className="space-y-2 mb-4">
-        {dueReviews.slice(0, 3).map((review) => {
-          const mastery = getMasteryInfo(review.path, review.lessonNumber);
-          return (
-            <button
-              key={review.lessonKey}
-              onClick={() => handleStartReview(review)}
-              className="w-full text-left bg-white/10 backdrop-blur border border-white/20 rounded-xl p-4 hover:bg-white/20 transition"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-bold text-white flex items-center gap-2">
-                    <span>{mastery.icon}</span>
-                    {getPathName(review.path)}: {getLessonTitle(review.path, review.lessonNumber)}
+          <div className="space-y-2 mb-4">
+            {dueReviews.slice(0, 3).map((review) => {
+              const mastery = getMasteryInfo(review.path, review.lessonNumber);
+              return (
+                <button
+                  key={review.lessonKey}
+                  onClick={() => handleStartReview(review)}
+                  className="w-full text-left bg-white border-2 border-slate-200 rounded-xl p-4 hover:border-purple-300 hover:shadow transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-900 flex items-center gap-2">
+                        <span>{mastery.icon}</span>
+                        {getPathName(review.path)}: {getLessonTitle(review.path, review.lessonNumber)}
+                      </div>
+                      <div className="text-sm text-slate-600 mt-1">
+                        Review #{review.reviewNumber} • {mastery.label}
+                        {review.isOverdue && <span className="ml-2 text-orange-600">⚠️ Overdue</span>}
+                      </div>
+                    </div>
+                    <div className="text-purple-600 font-bold">→</div>
                   </div>
-                  <div className="text-sm text-white/80 mt-1">
-                    Review #{review.reviewNumber} • {mastery.label}
-                    {review.isOverdue && <span className="ml-2 text-yellow-300">⚠️ Overdue</span>}
-                  </div>
-                </div>
-                <div className="text-white/60">→</div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+                </button>
+              );
+            })}
+          </div>
 
-      {dueReviews.length > 3 && (
-        <p className="text-white/70 text-sm text-center">
-          +{dueReviews.length - 3} more {dueReviews.length - 3 === 1 ? 'review' : 'reviews'} available
-        </p>
+          {dueReviews.length > 3 && (
+            <p className="text-slate-600 text-sm text-center">
+              +{dueReviews.length - 3} more {dueReviews.length - 3 === 1 ? 'review' : 'reviews'} available
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
 };
+

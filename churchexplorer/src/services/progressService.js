@@ -57,7 +57,7 @@ function readInt(key) {
 }
 
 export function getPathProgress(pathId) {
-  // pathId: 'bible' | 'church' | 'apologetics'
+  // pathId: 'bible' | 'church' | 'apologetics' | 'ai'
   if (pathId === 'bible') {
     const completed = readArray(KEYS.bibleProgress);
     return { completedCount: completed.length, total: 8, xp: readInt(KEYS.bibleXP) };
@@ -70,18 +70,50 @@ export function getPathProgress(pathId) {
     const completed = readArray(KEYS.apologeticsProgress);
     return { completedCount: completed.length, total: 8, xp: readInt(KEYS.apologeticsXP) };
   }
+  if (pathId === 'ai') {
+    return getAIPathProgress();
+  }
   return { completedCount: 0, total: 0, xp: 0 };
+}
+
+/**
+ * Get AI-generated lessons progress
+ */
+export function getAIPathProgress() {
+  try {
+    const savedLessons = localStorage.getItem('aiGeneratedLessons');
+    const lessons = savedLessons ? JSON.parse(savedLessons) : [];
+    const total = lessons.length;
+    
+    // Count completed lessons
+    let completed = 0;
+    let xp = 0;
+    
+    lessons.forEach(lesson => {
+      const completedKey = `aiLesson_${lesson.id}_completed`;
+      if (localStorage.getItem(completedKey) === 'true') {
+        completed++;
+        xp += lesson.xpReward || 50;
+      }
+    });
+    
+    return { completedCount: completed, total, xp };
+  } catch (error) {
+    console.error('Error getting AI path progress:', error);
+    return { completedCount: 0, total: 0, xp: 0 };
+  }
 }
 
 export function getOverallProgress() {
   const bible = getPathProgress('bible');
   const church = getPathProgress('church');
   const apologetics = getPathProgress('apologetics');
-  const totalCompleted = bible.completedCount + church.completedCount + apologetics.completedCount;
-  const totalLessons = bible.total + church.total + apologetics.total;
-  const xp = bible.xp + church.xp + apologetics.xp;
+  const ai = getPathProgress('ai');
+  const totalCompleted = bible.completedCount + church.completedCount + apologetics.completedCount + ai.completedCount;
+  const totalLessons = bible.total + church.total + apologetics.total + ai.total;
+  const xp = bible.xp + church.xp + apologetics.xp + ai.xp;
   const percentage = totalLessons ? Math.round((totalCompleted / totalLessons) * 100) : 0;
-  return { percentage, xp, paths: { bible, church, apologetics } };
+  return { percentage, xp, paths: { bible, church, apologetics, ai } };
 }
 
 /**
