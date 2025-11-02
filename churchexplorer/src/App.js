@@ -382,13 +382,6 @@ function AppContent() {
               console.log('✅ Firestore has course data, syncing to localStorage');
               const p = progressResult.progress;
               
-              // Use profile totalXP as source of truth (leaderboard uses this)
-              // Override progress totalXP with profile totalXP
-              if (profileResult?.profile?.totalXP !== undefined) {
-                p.totalXP = profileResult.profile.totalXP;
-                console.log(`� Using profile totalXP: ${p.totalXP} (source of truth for leaderboard)`);
-              }
-              
               // Load AI paths from Firestore
               const { getAIPathsFromFirestore } = await import('./firebase/progressService');
               const aiPathsResult = await getAIPathsFromFirestore(user.uid);
@@ -400,8 +393,25 @@ function AppContent() {
                 console.warn('Failed to load AI paths:', aiPathsResult.error);
               }
               
-              // Update React state with Firestore progress (including AI paths and profile totalXP)
+              // Update React state with Firestore progress (including AI paths)
               setUserProgress(p);
+              
+              // Sync profile totalXP with progress totalXP (progress is source of truth)
+              if (profileResult?.profile?.totalXP !== p.totalXP) {
+                console.log(`⚠️ XP mismatch detected - Profile: ${profileResult?.profile?.totalXP}, Progress: ${p.totalXP}`);
+                console.log('🔄 Syncing profile totalXP to match progress document...');
+                const { updateDoc, doc } = await import('firebase/firestore');
+                const { db } = await import('./firebase/config');
+                const userRef = doc(db, 'users', user.uid);
+                try {
+                  await updateDoc(userRef, {
+                    totalXP: p.totalXP || 0
+                  });
+                  console.log(`✅ Profile totalXP synced to ${p.totalXP}`);
+                } catch (syncError) {
+                  console.error('❌ Failed to sync profile totalXP:', syncError);
+                }
+              }
               
               const localProgress = {
                 totalXP: p.totalXP || 0,
