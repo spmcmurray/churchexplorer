@@ -7,6 +7,7 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [userRank, setUserRank] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [userXP, setUserXP] = useState(0); // Store XP from progress document
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -29,13 +30,19 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
         // Get current user's rank and profile if logged in
         if (currentUser) {
           try {
-            // Get user's profile from Firestore
+            // Get user's profile and progress from Firestore
             const profileResult = await getUserProfile(currentUser.uid);
             if (profileResult.success) {
               setUserProfile(profileResult.profile);
               
-              // Get user's rank using Firestore XP
-              const firestoreXP = profileResult.profile.totalXP || 0;
+              // Get user's XP from progress document (source of truth)
+              const { getUserProgress } = await import('./firebase/progressService');
+              const progressResult = await getUserProgress(currentUser.uid);
+              const firestoreXP = progressResult.success && progressResult.progress ? 
+                (progressResult.progress.totalXP || 0) : 0;
+              
+              setUserXP(firestoreXP); // Store XP for display
+              
               const rankResult = await getUserRank(currentUser.uid, firestoreXP);
               if (rankResult.success) {
                 setUserRank(rankResult.rank);
@@ -148,7 +155,7 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
               </div>
               <div className="text-right">
                 <p className="text-blue-100 text-sm font-medium">Total XP</p>
-                <p className="text-3xl font-black">{userProfile?.totalXP || 0}</p>
+                <p className="text-3xl font-black">{userXP}</p>
               </div>
             </div>
           </div>

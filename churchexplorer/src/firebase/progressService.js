@@ -105,7 +105,6 @@ export const getUserProgress = async (uid) => {
 export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarded) => {
   try {
     const progressRef = doc(db, 'users', uid, 'progress', 'main');
-    const userRef = doc(db, 'users', uid);
     
     // Get current progress to check if lesson already completed
     const progressDoc = await getDoc(progressRef);
@@ -122,16 +121,11 @@ export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarde
     }
     
     // Update progress
+    // Update progress - progress.totalXP is the single source of truth
     await updateDoc(progressRef, {
       [`courses.${courseId}.completedLessons`]: arrayUnion(lessonNumber),
       [`courses.${courseId}.totalXP`]: increment(xpAwarded),
       [`courses.${courseId}.lastCompleted`]: serverTimestamp(),
-      totalXP: increment(xpAwarded),
-      lastUpdated: serverTimestamp()
-    });
-    
-    // Update user's total XP in main profile
-    await updateDoc(userRef, {
       totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
     });
@@ -149,7 +143,6 @@ export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarde
 export const completeDailyChallenge = async (uid, date, xpAwarded) => {
   try {
     const progressRef = doc(db, 'users', uid, 'progress', 'main');
-    const userRef = doc(db, 'users', uid);
     
     // Ensure progress document exists
     const progressDoc = await getDoc(progressRef);
@@ -186,12 +179,6 @@ export const completeDailyChallenge = async (uid, date, xpAwarded) => {
       lastUpdated: serverTimestamp()
     });
     
-    // Update user's total XP
-    await updateDoc(userRef, {
-      totalXP: increment(xpAwarded),
-      lastUpdated: serverTimestamp()
-    });
-    
     return { success: true, xpAwarded, streak: newStreak, message: 'Daily challenge completed' };
   } catch (error) {
     console.error('Complete daily challenge error:', error);
@@ -205,7 +192,6 @@ export const completeDailyChallenge = async (uid, date, xpAwarded) => {
 export const completeReviewSession = async (uid, questionsCorrect, totalQuestions, xpAwarded) => {
   try {
     const progressRef = doc(db, 'users', uid, 'progress', 'main');
-    const userRef = doc(db, 'users', uid);
     
     // Ensure progress document exists
     const progressDoc = await getDoc(progressRef);
@@ -226,12 +212,6 @@ export const completeReviewSession = async (uid, questionsCorrect, totalQuestion
       'reviews.totalCompleted': increment(1),
       'reviews.totalXP': increment(xpAwarded),
       'reviews.sessions': arrayUnion(reviewSession),
-      totalXP: increment(xpAwarded),
-      lastUpdated: serverTimestamp()
-    });
-    
-    // Update user's total XP
-    await updateDoc(userRef, {
       totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
     });

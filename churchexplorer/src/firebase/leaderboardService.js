@@ -1,4 +1,4 @@
-import { doc, updateDoc, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from './config';
 
 /**
@@ -24,24 +24,38 @@ export const updateUserXP = async (uid, totalXP) => {
  */
 export const getLeaderboard = async (topN = 100) => {
   try {
+    // Get all users first
     const usersRef = collection(db, 'users');
-    const q = query(usersRef, orderBy('totalXP', 'desc'), limit(topN));
-    const querySnapshot = await getDocs(q);
+    const usersSnapshot = await getDocs(usersRef);
     
     const leaderboard = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
+    
+    // For each user, get their progress document
+    for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data();
+      const uid = userDoc.id;
+      
+      // Get user's progress document
+      const progressRef = doc(db, 'users', uid, 'progress', 'main');
+      const progressDoc = await getDoc(progressRef);
+      
+      const totalXP = progressDoc.exists() ? (progressDoc.data().totalXP || 0) : 0;
+      
       leaderboard.push({
-        uid: data.uid,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        name: data.name, // Keep for backward compatibility
-        country: data.country,
-        totalXP: data.totalXP || 0
+        uid: userData.uid || uid,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        name: userData.name, // Keep for backward compatibility
+        country: userData.country,
+        totalXP: totalXP
       });
-    });
+    }
+    
+    // Sort by totalXP descending and limit
+    leaderboard.sort((a, b) => b.totalXP - a.totalXP);
+    const topLeaderboard = leaderboard.slice(0, topN);
 
-    return { success: true, leaderboard };
+    return { success: true, leaderboard: topLeaderboard };
   } catch (error) {
     console.error('Get leaderboard error:', error);
     return { success: false, error: error.message };
