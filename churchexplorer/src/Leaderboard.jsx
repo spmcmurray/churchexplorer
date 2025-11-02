@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, TrendingUp, ArrowLeft } from 'lucide-react';
 import { getLeaderboard, getUserRank } from './firebase/leaderboardService';
+import { getUserProfile } from './firebase/authService';
 import { getTotalXP } from './services/progressService';
 
 const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
@@ -28,19 +29,19 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
         
         // Get current user's rank and profile if logged in
         if (currentUser) {
-          // Find user's profile in leaderboard first
-          const profile = result.leaderboard.find(u => u.uid === currentUser.uid);
-          if (profile) {
-            console.log('Current user profile:', profile);
-            setUserProfile(profile);
+          // Always fetch user's profile from Firestore to get accurate XP
+          const profileResult = await getUserProfile(currentUser.uid);
+          if (profileResult.success) {
+            setUserProfile(profileResult.profile);
             
             // Get rank using Firestore XP data
-            const rankResult = await getUserRank(currentUser.uid, profile.totalXP);
+            const rankResult = await getUserRank(currentUser.uid, profileResult.profile.totalXP);
             if (rankResult.success) {
               setUserRank(rankResult.rank);
             }
           } else {
-            // User not in top 100, still get their rank with local XP as fallback
+            // Fallback to local storage if Firestore profile not found
+            console.warn('Could not fetch user profile from Firestore, using local storage as fallback');
             const userXP = getTotalXP();
             const rankResult = await getUserRank(currentUser.uid, userXP);
             if (rankResult.success) {
