@@ -13,8 +13,12 @@ import DenominationExplorer from './DenominationExplorer';
 import Leaderboard from './Leaderboard';
 import Auth from './Auth';
 import SignUpPrompt from './SignUpPrompt';
-import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
-import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement } from './services/progressService';
+import AIPathsView from './AIPathsView';
+import AIPathViewer from './AIPathViewer';
+import AILessonViewerPage from './AILessonViewerPage';
+import { onAuthChange, logOut, deleteAccount, getUserProfile } from './firebase/authService';
+import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement, saveProfile } from './services/progressService';
+import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
   const navigate = useNavigate();
@@ -48,6 +52,13 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
               >
                 <Globe className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">Explore</span>
+              </Link>
+              <Link
+                to="/ai-paths"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Scroll className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">AI Paths</span>
               </Link>
               <Link
                 to="/leaderboard"
@@ -211,6 +222,53 @@ function AppContent() {
       if (user && showAuth) {
         setShowAuth(false);
       }
+
+      // When a user signs in, load their Firestore profile and progress
+      (async () => {
+        try {
+          if (user) {
+            // Fetch and persist profile locally so UI like Home reads it from localStorage
+            const profileResult = await getUserProfile(user.uid);
+            if (profileResult && profileResult.success && profileResult.profile) {
+              // Merge profile into local storage profile used by front-end
+              saveProfile(profileResult.profile);
+            }
+
+            // Fetch Firestore progress and persist it locally so Home shows the correct data
+            const progressResult = await getUserProgress(user.uid);
+            if (progressResult && progressResult.success && progressResult.progress) {
+              const p = progressResult.progress;
+              const localProgress = {
+                totalXP: p.totalXP || 0,
+                bibleProgress: p.courses?.bible?.completedLessons || [],
+                bibleXP: p.courses?.bible?.totalXP || 0,
+                churchProgress: p.courses?.church?.completedLessons || [],
+                churchXP: p.courses?.church?.totalXP || 0,
+                apologeticsProgress: p.courses?.apologetics?.completedLessons || [],
+                apologeticsXP: p.courses?.apologetics?.totalXP || 0,
+                dailyChallengeStreak: p.dailyChallenges?.streak || 0,
+                dailyChallengeXP: p.dailyChallenges?.totalXP || 0
+              };
+
+              try {
+                localStorage.setItem('bibleHistoryProgress', JSON.stringify(localProgress.bibleProgress || []));
+                localStorage.setItem('churchHistoryProgress', JSON.stringify(localProgress.churchProgress || []));
+                localStorage.setItem('apologeticsProgress', JSON.stringify(localProgress.apologeticsProgress || []));
+
+                localStorage.setItem('bibleHistoryTotalXP', String(localProgress.bibleXP || 0));
+                localStorage.setItem('churchHistoryTotalXP', String(localProgress.churchXP || 0));
+                localStorage.setItem('apologeticsTotalXP', String(localProgress.apologeticsXP || 0));
+
+                saveProfile({ syncedFrom: 'firestore', totalXP: localProgress.totalXP });
+              } catch (err) {
+                console.warn('Failed to persist Firestore progress to localStorage', err);
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error loading user profile/progress on auth change:', err);
+        }
+      })();
     });
     return () => unsubscribe();
   }, [showAuth]);
@@ -295,6 +353,9 @@ function AppContent() {
           <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
           <Route path="/onboarding" element={<OnboardingWrapper />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
+          <Route path="/ai-paths" element={<AIPathsView currentUser={currentUser} />} />
+          <Route path="/ai-path/:pathId" element={<AIPathViewer currentUser={currentUser} />} />
+          <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage />} />
         </Routes>
       </div>
 
