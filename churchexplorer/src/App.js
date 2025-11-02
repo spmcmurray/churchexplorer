@@ -4,7 +4,9 @@ import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import ApologeticsGuide from "./ApologeticsGuide";
-import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2 } from 'lucide-react';
+import AILessonCreator from "./AILessonCreator";
+import AILessonViewer from "./AILessonViewer";
+import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Brain } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
 import Onboarding from './Onboarding';
@@ -55,6 +57,14 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
               >
                 <Trophy className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">Leaderboard</span>
+              </Link>
+              <Link
+                to="/ai-creator"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg"
+                title="Create custom lessons with AI"
+              >
+                <Brain className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">AI Creator</span>
               </Link>
             </div>
           </div>
@@ -166,7 +176,7 @@ function ExploreDenominationsWrapper() {
 
 function OnboardingWrapper() {
   const navigate = useNavigate();
-  return <Onboarding onComplete={({ view }) => navigate(`/${view}`)} />;
+  return <Onboarding onComplete={() => navigate('/')} />;
 }
 
 function AppContent() {
@@ -179,6 +189,33 @@ function AppContent() {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [appKey, setAppKey] = useState(0); // Key to force rerender when data is cleared
+  const [currentAILesson, setCurrentAILesson] = useState(null); // Store the current AI-generated lesson
+
+  // AI Lesson Creator wrapper
+  const AICreatorWrapper = () => {
+    return <AILessonCreator 
+      currentUser={currentUser}
+      onStartLesson={(lesson) => {
+        setCurrentAILesson(lesson);
+        navigate('/ai-lesson');
+      }}
+      onGoBack={() => navigate(-1)}
+    />;
+  };
+
+  // AI Lesson Viewer wrapper  
+  const AILessonWrapper = () => {
+    return <AILessonViewer 
+      lesson={currentAILesson}
+      currentUser={currentUser}
+      onComplete={(result) => {
+        // Handle lesson completion - could show completion message
+        console.log('AI Lesson completed:', result);
+        navigate('/ai-creator');
+      }}
+      onGoBack={() => navigate('/ai-creator')}
+    />;
+  };
 
   // Listen for achievement events and check if we should show sign-up prompt
   useEffect(() => {
@@ -295,6 +332,8 @@ function AppContent() {
           <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
           <Route path="/onboarding" element={<OnboardingWrapper />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
+          <Route path="/ai-creator" element={<AICreatorWrapper />} />
+          <Route path="/ai-lesson" element={<AILessonWrapper />} />
         </Routes>
       </div>
 
