@@ -29,7 +29,7 @@ export const lesson1Data = {
         'Professional memorizers and storytellers trained for years to preserve sacred texts with remarkable accuracy. Jewish rabbis could recite the entire Torah from memory.',
         'Early Christian communities passed down Jesus\'s teachings orally for decades before they were written down. This oral period wasn\'t a weakness—it was a feature of ancient culture where memorization was prized.'
       ],
-      highlight: '💡 Fun Fact: Professional memorizers could recall thousands of lines with 99%+ accuracy!'
+      highlight: '💡 Fun Fact: Professional memorizers could recall thousands of lines with 99%+ accuracy.'
     },
 
     // Card 3: Mini Quiz on Oral Tradition
@@ -122,7 +122,7 @@ export const lesson1Data = {
         '📌 **The major variants** (like the ending of Mark or the woman caught in adultery in John 8) are clearly marked in modern Bibles.',
         '✨ **No core Christian doctrine depends on a disputed text.**'
       ],
-      highlight: '💪 Strength, not weakness: The abundance of manuscripts actually makes it EASIER to reconstruct the original!'
+      highlight: '💪 Strength, not weakness: The abundance of manuscripts actually makes it easier to reconstruct the original.'
     },
 
     // Card 9: Final Quiz
@@ -200,8 +200,8 @@ export const lesson2Data = {
         'Here\'s a surprising fact: Not a single original biblical manuscript exists today. Why?',
         '📜 **Papyrus and parchment decay over time**, especially in humid climates.',
         '🙏 Once a manuscript became worn from use, it was **reverently buried or destroyed** (to prevent misuse of God\'s name) and replaced with a fresh copy.',
-        'But don\'t worry! The earliest New Testament fragment we have (John 18:31-33) dates to around **125 AD**—just 30-40 years after John wrote his Gospel.',
-        '🏆 That\'s incredibly close compared to other ancient texts. Most classical works have 1,000+ year gaps between composition and earliest copies!'
+        'The earliest New Testament fragment we have (John 18:31-33) dates to around **125 AD**—just 30-40 years after John wrote his Gospel.',
+        '🏆 That\'s incredibly close compared to other ancient texts. Most classical works have 1,000+ year gaps between composition and earliest copies.'
       ]
     },
 
@@ -284,10 +284,10 @@ export const lesson2Data = {
         '🎯 **Why This Matters**:',
         'Before this, our earliest complete Hebrew Old Testament dated to **1008 AD**. The Dead Sea Scrolls pushed that back to **200 BC** for some books.',
         '✨ **The Shocking Result**:',
-        'The text had been preserved with **remarkable accuracy**. Isaiah scrolls from 125 BC match medieval manuscripts almost perfectly!',
+        'The text had been preserved with **remarkable accuracy**. Isaiah scrolls from 125 BC match medieval manuscripts almost perfectly.',
         '🙌 This discovery silenced critics who claimed the Old Testament had been corrupted over centuries.'
       ],
-      highlight: '🏆 The Dead Sea Scrolls proved the Bible was copied with incredible accuracy for over 1,000 years!'
+      highlight: '🏆 The Dead Sea Scrolls proved the Bible was copied with incredible accuracy for over 1,000 years.'
     },
 
     // Card 8: Fill in the Blank
@@ -309,7 +309,7 @@ export const lesson2Data = {
         'Modern Bibles include these passages but bracket them with notes.',
         '✨ This isn\'t hiding anything—**it\'s being honest about the textual evidence**.'
       ],
-      highlight: '💪 Transparency increases trust! Modern Bibles show you where scholars have questions.'
+      highlight: '💪 Transparency increases trust. Modern Bibles show you where scholars have questions.'
     },
 
     // Card 10: Final Quiz
@@ -592,7 +592,7 @@ export const lesson4Data = {
         '📦 He smuggled printed copies into England (1526) hidden in **bales of cloth and wine barrels**.',
         '🔥 Church authorities burned the Bibles publicly.',
         '💀 In **1536**, Tyndale was betrayed, strangled, and burned at the stake. His last words: **"Lord, open the King of England\'s eyes!"**',
-        '✨ Within a year, King Henry VIII authorized an English Bible. **83% of the KJV New Testament comes directly from Tyndale\'s work**!'
+        '✨ Within a year, King Henry VIII authorized an English Bible. **83% of the KJV New Testament comes directly from Tyndale\'s work**.'
       ]
     },
 
@@ -633,7 +633,7 @@ export const lesson4Data = {
         '• "Thee/thy"',
         '• "Go the extra mile"',
         '• "The powers that be"',
-        'It dominated for **350 years**!'
+        'It dominated for **350 years**.'
       ],
       highlight: '💡 The KJV shaped English literature and culture more than any other book except Shakespeare'
     },

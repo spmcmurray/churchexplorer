@@ -9,13 +9,13 @@ export const lesson1Data = {
     // Welcome Card
     {
       type: 'content',
-      title: 'Welcome to Church History!',
+      title: 'Welcome to Church History',
       subtitle: '⏱️ About 8 minutes',
       content: [
         '**Learning Objective:** By the end of this lesson, you will understand how Christianity began after Jesus\'s resurrection and grew from a small Jewish sect into the Roman Empire\'s official religion.',
-        'Welcome to your journey through church history! This lesson explores how Christianity began and grew in its first few centuries.',
+        'Welcome to your journey through church history. This lesson explores how Christianity began and grew in its first few centuries.',
         'We\'ll discover how Jesus\'s disciples became the apostles, how Christianity spread across the Roman Empire despite persecution, and how early Christians established the foundations of faith we still follow today.',
-        'Don\'t worry if you\'re new to this - we\'ll start with the basics and build from there!'
+        'If you\'re new to this topic, we\'ll start with the basics and build from there.'
       ],
       highlight: '💭 Curious: What do you already know about early Christianity?',
       requireAcknowledgment: true
@@ -68,7 +68,7 @@ export const lesson1Data = {
       content: [
         'Christianity was illegal in the Roman Empire and faced periodic persecution. Romans viewed Christians with suspicion because they refused to worship the emperor or Roman gods.',
         'Despite this, Christianity grew rapidly among slaves, women, and the urban poor. Christians met secretly in homes and catacombs.',
-        'Martyrs like Polycarp and Perpetua inspired others through their faithful deaths. By 300 AD, an estimated 10% of the Roman Empire was Christian!'
+        'Martyrs like Polycarp and Perpetua inspired others through their faithful deaths. By 300 AD, an estimated 10% of the Roman Empire was Christian.'
       ],
       highlight: '💡 Key Insight: Persecution didn\'t stop Christianity - it actually helped it grow as people were inspired by believers\' courage.'
     },
@@ -181,7 +181,7 @@ export const lesson1Data = {
         '• The **creeds** (like the Nicene Creed) we still recite',
         '• The **New Testament** books chosen by early church councils',
         '• The tradition of **martyrdom** as ultimate witness to faith',
-        'Next time you recite the Apostles\' Creed or Nicene Creed, remember you\'re speaking words that unite you with Christians across 2,000 years!'
+        'When you recite the Apostles\' Creed or Nicene Creed, you\'re speaking words that unite you with Christians across 2,000 years.'
       ],
       highlight: '💭 Reflection: What surprises you most about how Christianity began?'
     },
@@ -388,7 +388,7 @@ export const lesson3Data = {
       subtitle: '⏱️ About 9 minutes',
       content: [
         '**Learning Objective:** By the end of this lesson, you will understand how Martin Luther sparked the Protestant Reformation and what the "Five Solas" mean.',
-        'Get ready for one of history\'s most dramatic religious movements!',
+        'This lesson covers one of history\'s most dramatic religious movements.',
         'In 1517, a German monk named Martin Luther challenged the Catholic Church\'s practices and sparked a revolution that would reshape Christianity forever.',
         'You\'ll discover why it happened, what changed, and how the Protestant Reformation split Western Christianity permanently.'
       ],
@@ -431,7 +431,7 @@ export const lesson3Data = {
         '4. **Solus Christus** (Christ Alone) - Jesus is the only mediator, no need for saints or priests',
         '5. **Soli Deo Gloria** (Glory to God Alone) - all praise goes to God, not the church'
       ],
-      highlight: '💡 These principles became the foundation for ALL Protestant theology!'
+      highlight: '💡 These principles became the foundation for all Protestant theology.'
     },
 
     {
@@ -776,11 +776,11 @@ export const lesson5Data = {
   cards: [
     {
       type: 'content',
-      title: 'Welcome to Lesson 5!',
+      title: 'Welcome to Lesson 5',
       subtitle: '⏱️ About 7 minutes',
       content: [
         '**Learning Objective:** By the end of this lesson, you will understand believer\'s baptism, Anabaptist principles, and how these radical reformers shaped religious freedom.',
-        'Some reformers thought Luther and others didn\'t go far enough!',
+        'Some reformers believed Luther and others didn\'t go far enough in their reforms.',
         'This lesson explores traditions that took more radical stances on baptism, church-state separation, and religious freedom.',
         'These groups were often persecuted, but their ideas eventually shaped modern concepts of religious liberty.'
       ],
@@ -948,7 +948,7 @@ export const lesson5Data = {
         '✓ Separation of church and state',
         '✓ Religious freedom for all',
         '✓ Individual interpretation of Scripture',
-        'The First Amendment\'s guarantee of religious freedom owes much to Baptist advocacy!'
+        'The First Amendment\'s guarantee of religious freedom owes much to Baptist advocacy.'
       ],
       highlight: '💭 Reflection: Why do you think baptism became such a divisive issue?'
     },
@@ -979,13 +979,13 @@ export const lesson6Data = {
   cards: [
     {
       type: 'content',
-      title: 'Welcome to Lesson 6!',
+      title: 'Welcome to Lesson 6',
       subtitle: '⏱️ About 8 minutes',
       content: [
         '**Learning Objective:** By the end of this lesson, you will understand the Holiness movement\'s emphasis on sanctification and Pentecostalism\'s focus on spiritual gifts.',
         'In the late 1800s and early 1900s, powerful revival movements swept across America and beyond.',
         'These movements emphasized emotional worship, spiritual gifts, and complete personal transformation.',
-        'You\'ll learn about the Holiness movement and the explosive birth of Pentecostalism!'
+        'You\'ll learn about the Holiness movement and the rapid growth of Pentecostalism.'
       ],
       highlight: '💭 Reflect: What role do emotions play in your worship?',
       requireAcknowledgment: true
@@ -1107,14 +1107,14 @@ export const lesson6Data = {
       type: 'content',
       title: 'Global Pentecostal Explosion',
       content: [
-        'Pentecostalism became Christianity\'s most explosive growth story!',
+        'Pentecostalism became Christianity\'s fastest-growing movement.',
         'Starting from nothing in 1900, Pentecostals and Charismatics now number **over 600 million worldwide** - about a quarter of all Christians.',
         'Growth has been spectacular in Latin America, sub-Saharan Africa, and Asia.',
         '• In Brazil, Pentecostals grow by 15,000 per day',
         '• South Korea\'s Yoido Full Gospel Church has over 800,000 members',
         'Why such growth? Pentecostalism offers direct personal experience of God\'s power, healing, deliverance, hope for the poor, and opportunities for lay leadership.'
       ],
-      highlight: '💡 In the Global South, Pentecostalism is often Christianity!'
+      highlight: '💡 In the Global South, Pentecostalism represents a major portion of Christianity.'
     },
 
     {
@@ -1298,7 +1298,7 @@ export const lesson7Data = {
         'Famous examples: Willow Creek (Chicago), Saddleback (California), North Point (Atlanta).',
         'Critics worry about lack of accountability and theological depth. Supporters celebrate freedom and relevance.'
       ],
-      highlight: '💡 About 1 in 5 American evangelicals now attend non-denominational churches!'
+      highlight: '💡 About 1 in 5 American evangelicals now attend non-denominational churches.'
     },
 
     {
