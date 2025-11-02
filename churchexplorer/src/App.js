@@ -130,9 +130,9 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
 }
 
 // Wrapper components to convert Router navigation to onNavigate props
-function HomeWrapper() {
+function HomeWrapper({ userProgress }) {
   const navigate = useNavigate();
-  return <Home onNavigate={(view) => navigate(`/${view}`)} onStartOnboarding={() => navigate('/onboarding')} />;
+  return <Home userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onStartOnboarding={() => navigate('/onboarding')} />;
 }
 
 function PathsWrapper() {
@@ -183,6 +183,7 @@ function OnboardingWrapper() {
 function AppContent() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
+  const [userProgress, setUserProgress] = useState(null); // Store Firestore progress in state
   const [showAuth, setShowAuth] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -244,7 +245,9 @@ function AppContent() {
                   localStorage.setItem('bibleHistoryTotalXP', String(Math.floor(profileXP / 3)));
                   localStorage.setItem('churchHistoryTotalXP', String(Math.floor(profileXP / 3)));
                   localStorage.setItem('apologeticsTotalXP', String(profileXP - 2 * Math.floor(profileXP / 3)));
-                  console.log('Distributed profile totalXP to per-course localStorage for display');
+                  console.log('✅ Distributed profile totalXP to per-course localStorage for display:', profileXP);
+                  // Force re-render of Home component to show updated XP
+                  setAppKey(prev => prev + 1);
                 }
               } catch (e) {
                 console.warn('Failed to distribute profile totalXP to localStorage', e);
@@ -330,6 +333,10 @@ function AppContent() {
               // Firestore has progress with course data, sync it to localStorage
               console.log('✅ Firestore has course data, syncing to localStorage');
               const p = progressResult.progress;
+              
+              // Update React state with Firestore progress
+              setUserProgress(p);
+              
               const localProgress = {
                 totalXP: p.totalXP || 0,
                 bibleProgress: p.courses?.bible?.completedLessons || [],
@@ -435,7 +442,7 @@ function AppContent() {
       {/* Main Content with Routes */}
       <div key={appKey}>
         <Routes>
-          <Route path="/" element={<HomeWrapper />} />
+          <Route path="/" element={<HomeWrapper userProgress={userProgress} />} />
           <Route path="/learn" element={<PathsWrapper />} />
           <Route path="/explorer" element={<ExplorerWrapper />} />
           <Route path="/study-guide" element={<StudyGuideWrapper />} />

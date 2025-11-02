@@ -4,7 +4,7 @@ import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile,
 import DailyChallenge from './DailyChallenge';
 import { getDueReviews, getMasteryInfo } from './services/reviewService';
 
-const Home = ({ onNavigate, onStartOnboarding }) => {
+const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
   const overall = getOverallProgress();
   const existingProfile = getProfile();
   const rec = getContinueRecommendation();
@@ -20,6 +20,11 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
   }, []);
 
   const getTotalXP = () => {
+    // If we have Firestore progress from props, use that as source of truth
+    if (userProgress) {
+      return userProgress.totalXP || 0;
+    }
+    // Fallback to localStorage for offline/unauthenticated users
     const bibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
     const churchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
     const apologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
