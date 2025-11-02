@@ -249,6 +249,14 @@ function AppContent() {
                 (progressResult.progress.courses?.apologetics?.completedLessons?.length > 0)
               );
             
+            console.log('Firestore course data check:', {
+              hasData: hasFirestoreCourseData,
+              bibleLessons: progressResult?.progress?.courses?.bible?.completedLessons?.length || 0,
+              churchLessons: progressResult?.progress?.courses?.church?.completedLessons?.length || 0,
+              apologeticsLessons: progressResult?.progress?.courses?.apologetics?.completedLessons?.length || 0,
+              firestoreTotalXP: progressResult?.progress?.totalXP || 0
+            });
+            
             if (!hasFirestoreCourseData) {
               // Check if we have localStorage data to migrate
               const localBibleProgress = JSON.parse(localStorage.getItem('bibleHistoryProgress') || '[]');
