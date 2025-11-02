@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
@@ -14,9 +15,161 @@ import Auth from './Auth';
 import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
 import { clearAllProgress } from './services/progressService';
 
-function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home','learn','explorer','study-guide','bible-history','apologetics','onboarding','leaderboard'
-  const [navigationHistory, setNavigationHistory] = useState(['home']); // Track navigation history
+function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
+  const navigate = useNavigate();
+
+  return (
+    <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center space-x-8">
+            <h1 className="text-xl font-bold">Church Explorer</h1>
+            
+            {/* Navigation Buttons */}
+            <div className="flex space-x-2">
+              <Link
+                to="/"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <HomeIcon className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Home</span>
+              </Link>
+              <Link
+                to="/learn"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Scroll className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Learn</span>
+              </Link>
+              <Link
+                to="/explorer"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Globe className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Explore</span>
+              </Link>
+              <Link
+                to="/leaderboard"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Trophy className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Leaderboard</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* User Account Section */}
+          <div className="relative">
+            {currentUser ? (
+              <div>
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="hidden sm:inline">{currentUser.displayName || 'User'}</span>
+                  <ChevronDown className="w-4 h-4 hidden sm:inline" />
+                </button>
+                
+                {/* Dropdown Menu */}
+                {showProfileMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
+                      <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDeleteConfirm(true);
+                        setShowProfileMenu(false);
+                        setDeletePassword('');
+                        setDeleteError('');
+                      }}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete Account</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuth(true)}
+                className="flex items-center px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition whitespace-nowrap"
+                title="Sign in or create a new account"
+              >
+                <User className="w-5 h-5 sm:mr-2" />
+                <span className="hidden sm:inline">Sign In / Sign Up</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+// Wrapper components to convert Router navigation to onNavigate props
+function HomeWrapper() {
+  const navigate = useNavigate();
+  return <Home onNavigate={(view) => navigate(`/${view}`)} onStartOnboarding={() => navigate('/onboarding')} />;
+}
+
+function PathsWrapper() {
+  const navigate = useNavigate();
+  return <Paths onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+}
+
+function ExplorerWrapper() {
+  const navigate = useNavigate();
+  return <ExploreLanding onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+}
+
+function StudyGuideWrapper() {
+  const navigate = useNavigate();
+  return <ChurchHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+}
+
+function BibleHistoryWrapper() {
+  const navigate = useNavigate();
+  return <BibleHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+}
+
+function ApologeticsWrapper() {
+  const navigate = useNavigate();
+  return <ApologeticsGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+}
+
+function ExploreChurchWrapper() {
+  const navigate = useNavigate();
+  return <DenominationVisualizer initialView="church" onNavigate={(view) => navigate(`/${view}`)} />;
+}
+
+function ExploreBibleWrapper() {
+  const navigate = useNavigate();
+  return <DenominationVisualizer initialView="bible" onNavigate={(view) => navigate(`/${view}`)} />;
+}
+
+function ExploreDenominationsWrapper() {
+  const navigate = useNavigate();
+  return <DenominationExplorer onNavigate={(view) => navigate(`/${view}`)} />;
+}
+
+function OnboardingWrapper() {
+  const navigate = useNavigate();
+  return <Onboarding onComplete={({ view }) => navigate(`/${view}`)} />;
+}
+
+function AppContent() {
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -47,34 +200,13 @@ function App() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showProfileMenu]);
 
-  const navigate = (view /*, optional payload */) => {
-    setCurrentView(view);
-    setNavigationHistory(prev => [...prev, view]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const goBack = () => {
-    if (navigationHistory.length > 1) {
-      // Remove current view and go to previous
-      const newHistory = [...navigationHistory];
-      newHistory.pop(); // Remove current
-      const previousView = newHistory[newHistory.length - 1];
-      setNavigationHistory(newHistory);
-      setCurrentView(previousView);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      // Default to home if no history
-      navigate('home');
-    }
-  };
-
   const handleSignOut = async () => {
     await logOut();
     clearAllProgress(); // Clear all localStorage data
     setCurrentUser(null);
     setShowProfileMenu(false);
     setAppKey(prev => prev + 1); // Force rerender to show fresh state
-    navigate('home');
+    navigate('/');
   };
 
   const handleDeleteAccount = async () => {
@@ -94,8 +226,7 @@ function App() {
       setDeletePassword('');
       setDeleteError('');
       setAppKey(prev => prev + 1); // Force rerender to show fresh state
-      navigate('home');
-      // Optionally show a success message
+      navigate('/');
     } else {
       setDeleteError(result.error);
     }
@@ -103,154 +234,32 @@ function App() {
 
   return (
     <div className="min-h-screen">
-      {/* Navigation Bar */}
-      <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-xl font-bold">Church Explorer</h1>
-              
-              {/* Navigation Buttons */}
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => navigate('home')}
-                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
-                    currentView === 'home'
-                      ? 'bg-white text-blue-600 shadow-md'
-                      : 'bg-blue-700 hover:bg-blue-800'
-                  }`}
-                >
-                  <HomeIcon className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Home</span>
-                </button>
-                <button
-                  onClick={() => navigate('learn')}
-                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
-                    currentView === 'learn'
-                      ? 'bg-white text-blue-600 shadow-md'
-                      : 'bg-blue-700 hover:bg-blue-800'
-                  }`}
-                >
-                  <Scroll className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Learn</span>
-                </button>
-                <button
-                  onClick={() => navigate('explorer')}
-                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
-                    currentView === 'explorer'
-                      ? 'bg-white text-blue-600 shadow-md'
-                      : 'bg-blue-700 hover:bg-blue-800'
-                  }`}
-                >
-                  <Globe className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Explore</span>
-                </button>
-                <button
-                  onClick={() => navigate('leaderboard')}
-                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg transition ${
-                    currentView === 'leaderboard'
-                      ? 'bg-white text-blue-600 shadow-md'
-                      : 'bg-blue-700 hover:bg-blue-800'
-                  }`}
-                >
-                  <Trophy className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Leaderboard</span>
-                </button>
-              </div>
-            </div>
+      <Navigation 
+        currentUser={currentUser}
+        showProfileMenu={showProfileMenu}
+        setShowProfileMenu={setShowProfileMenu}
+        setShowAuth={setShowAuth}
+        handleSignOut={handleSignOut}
+        setShowDeleteConfirm={setShowDeleteConfirm}
+        setDeletePassword={setDeletePassword}
+        setDeleteError={setDeleteError}
+      />
 
-            {/* User Account Section */}
-            <div className="relative">
-              {currentUser ? (
-                <div>
-                  <button
-                    onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="hidden sm:inline">{currentUser.displayName || 'User'}</span>
-                    <ChevronDown className="w-4 h-4 hidden sm:inline" />
-                  </button>
-                  
-                  {/* Dropdown Menu */}
-                  {showProfileMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
-                        <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
-                      </div>
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowDeleteConfirm(true);
-                          setShowProfileMenu(false);
-                          setDeletePassword('');
-                          setDeleteError('');
-                        }}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Delete Account</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowAuth(true)}
-                  className="flex items-center px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition whitespace-nowrap"
-                  title="Sign in or create a new account"
-                >
-                  <User className="w-5 h-5 sm:mr-2" />
-                  <span className="hidden sm:inline">Sign In / Sign Up</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
+      {/* Main Content with Routes */}
       <div key={appKey}>
-        {currentView === 'home' && (
-          <Home onNavigate={navigate} onStartOnboarding={() => navigate('onboarding')} />
-        )}
-        {currentView === 'learn' && (
-          <Paths onNavigate={navigate} onGoBack={goBack} />
-        )}
-        {currentView === 'explorer' && (
-          <ExploreLanding onNavigate={navigate} onGoBack={goBack} />
-        )}
-        {currentView === 'study-guide' && (
-          <ChurchHistoryGuide onNavigate={navigate} onGoBack={goBack} />
-        )}
-        {currentView === 'bible-history' && (
-          <BibleHistoryGuide onNavigate={navigate} onGoBack={goBack} />
-        )}
-        {currentView === 'apologetics' && (
-          <ApologeticsGuide onNavigate={navigate} onGoBack={goBack} />
-        )}
-        {currentView === 'explore-church' && (
-          <DenominationVisualizer initialView="church" onNavigate={navigate} />
-        )}
-        {currentView === 'explore-bible' && (
-          <DenominationVisualizer initialView="bible" onNavigate={navigate} />
-        )}
-        {currentView === 'explore-denominations' && (
-          <DenominationExplorer onNavigate={navigate} />
-        )}
-        {currentView === 'onboarding' && (
-          <Onboarding onComplete={({ view }) => navigate(view)} />
-        )}
-        {currentView === 'leaderboard' && (
-          <Leaderboard currentUser={currentUser} />
-        )}
+        <Routes>
+          <Route path="/" element={<HomeWrapper />} />
+          <Route path="/learn" element={<PathsWrapper />} />
+          <Route path="/explorer" element={<ExplorerWrapper />} />
+          <Route path="/study-guide" element={<StudyGuideWrapper />} />
+          <Route path="/bible-history" element={<BibleHistoryWrapper />} />
+          <Route path="/apologetics" element={<ApologeticsWrapper />} />
+          <Route path="/explore-church" element={<ExploreChurchWrapper />} />
+          <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
+          <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
+          <Route path="/onboarding" element={<OnboardingWrapper />} />
+          <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
+        </Routes>
       </div>
 
       {/* Auth Modal */}
@@ -324,6 +333,14 @@ function App() {
         </div>
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
