@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Scroll, Lock, Trophy, Star, ArrowLeft } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import InteractiveLesson from './InteractiveLesson';
 import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './churchHistoryLessonData';
@@ -9,6 +10,7 @@ import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 
 const ChurchHistoryGuide = ({ onNavigate, onGoBack }) => {
+  const location = useLocation();
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [quizAnswers, setQuizAnswers] = useState({});
@@ -16,17 +18,12 @@ const ChurchHistoryGuide = ({ onNavigate, onGoBack }) => {
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
   const [reviewMode, setReviewMode] = useState(null); // null or { path, lessonNumber }
 
-  // Check for review mode on mount
+  // Check for review mode from navigation state (no localStorage)
   useEffect(() => {
-    const savedReviewMode = localStorage.getItem('reviewMode');
-    if (savedReviewMode) {
-      const review = JSON.parse(savedReviewMode);
-      if (review.path === 'church') {
-        setReviewMode(review);
-        localStorage.removeItem('reviewMode'); // Clear after reading
-      }
+    if (location.state?.reviewMode && location.state.reviewMode.path === 'church') {
+      setReviewMode(location.state.reviewMode);
     }
-  }, []);
+  }, [location.state]);
 
   // Scroll to top when component mounts
   useEffect(() => {

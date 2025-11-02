@@ -180,7 +180,7 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
 // Wrapper components to convert Router navigation to onNavigate props
 function HomeWrapper({ userProgress }) {
   const navigate = useNavigate();
-  return <Home userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onStartOnboarding={() => navigate('/onboarding')} />;
+  return <Home userProgress={userProgress} onNavigate={(view, options) => navigate(`/${view}`, options)} onStartOnboarding={() => navigate('/onboarding')} />;
 }
 
 function PathsWrapper() {

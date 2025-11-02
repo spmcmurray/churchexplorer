@@ -20,54 +20,26 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
   }, []);
 
   const getTotalXP = () => {
-    // If we have Firestore progress from props, use that as source of truth
+    // Use Firestore progress from props as single source of truth
     if (userProgress) {
       return userProgress.totalXP || 0;
     }
-    // Fallback to localStorage for offline/unauthenticated users
-    const bibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
-    const churchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
-    const apologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
-    return bibleXP + churchXP + apologeticsXP;
+    // No localStorage fallback - require authentication for progress tracking
+    return 0;
   };
 
   const getAIPathsProgress = () => {
-    try {
-      const savedPaths = localStorage.getItem('aiGeneratedPaths');
-      if (!savedPaths) return { completed: 0, total: 0 };
-      
-      const paths = JSON.parse(savedPaths);
-      let totalLessons = 0;
-      let completedLessons = 0;
-      
-      paths.forEach(path => {
-        if (path.lessons && Array.isArray(path.lessons)) {
-          totalLessons += path.lessons.length;
-          
-          // Check progress for this path
-          const progressKey = `aiPathProgress_${path.id || path.pathId}`;
-          const progress = localStorage.getItem(progressKey);
-          if (progress) {
-            const completed = JSON.parse(progress);
-            if (Array.isArray(completed)) {
-              completedLessons += completed.length;
-            }
-          }
-        }
-      });
-      
-      return { completed: completedLessons, total: totalLessons };
-    } catch (error) {
-      console.error('Error getting AI paths progress:', error);
-      return { completed: 0, total: 0 };
-    }
+    // TODO: Get AI paths progress from Firestore via userProgress prop
+    // For now, return 0 since we're removing localStorage
+    return { completed: 0, total: 0 };
   };
 
   const getStreak = () => {
-    const streakData = localStorage.getItem('dailyChallengeStreak');
-    if (!streakData) return 0;
-    const { count } = JSON.parse(streakData);
-    return count;
+    // Use Firestore progress from props
+    if (userProgress?.dailyChallenges) {
+      return userProgress.dailyChallenges.streak || 0;
+    }
+    return 0;
   };
 
   const handleQuickStart = () => {
@@ -333,12 +305,11 @@ const ReviewsAlert = ({ onNavigate }) => {
   };
 
   const handleStartReview = (review) => {
-    // Navigate to the appropriate path with review mode
-    localStorage.setItem('reviewMode', JSON.stringify(review));
-    
-    if (review.path === 'bible') onNavigate('bible-history');
-    else if (review.path === 'church') onNavigate('study-guide');
-    else if (review.path === 'apologetics') onNavigate('apologetics');
+    // Navigate to the appropriate path with review mode passed via state
+    // No localStorage - review data passed directly via navigation
+    if (review.path === 'bible') onNavigate('bible-history', { state: { reviewMode: review } });
+    else if (review.path === 'church') onNavigate('study-guide', { state: { reviewMode: review } });
+    else if (review.path === 'apologetics') onNavigate('apologetics', { state: { reviewMode: review } });
   };
 
   return (

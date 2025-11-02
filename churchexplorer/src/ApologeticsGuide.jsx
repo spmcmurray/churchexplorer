@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Lock, Trophy, Star, Shield, ArrowLeft } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import InteractiveLesson from './InteractiveLesson';
 import ReviewSession from './ReviewSession';
 // Use the clean lesson data source
@@ -10,22 +11,18 @@ import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 
 const ApologeticsGuide = ({ onNavigate, onGoBack }) => {
+  const location = useLocation();
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [interactiveMode, setInteractiveMode] = useState(null); // null or lessonNumber
   const [reviewMode, setReviewMode] = useState(null); // null or { path, lessonNumber }
 
-  // Check for review mode on mount
+  // Check for review mode from navigation state (no localStorage)
   useEffect(() => {
-    const savedReviewMode = localStorage.getItem('reviewMode');
-    if (savedReviewMode) {
-      const review = JSON.parse(savedReviewMode);
-      if (review.path === 'apologetics') {
-        setReviewMode(review);
-        localStorage.removeItem('reviewMode'); // Clear after reading
-      }
+    if (location.state?.reviewMode && location.state.reviewMode.path === 'apologetics') {
+      setReviewMode(location.state.reviewMode);
     }
-  }, []);
+  }, [location.state]);
 
   // Scroll to top when component mounts
   useEffect(() => {
