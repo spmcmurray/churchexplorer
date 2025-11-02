@@ -5,6 +5,8 @@ import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './churchHistoryLessonData';
 import { scheduleReviews } from './services/reviewService';
 import { addPathXP } from './services/progressService';
+import { completeCourseLesson } from './firebase/progressService';
+import { getCurrentUser } from './firebase/authService';
 
 const ChurchHistoryGuide = ({ onNavigate, onGoBack }) => {
   const [expandedLesson, setExpandedLesson] = useState(null);
@@ -142,6 +144,12 @@ const ChurchHistoryGuide = ({ onNavigate, onGoBack }) => {
 
     if (xpEarned) {
       await addPathXP('church', xpEarned);
+      
+      // Also sync this specific lesson completion to Firestore
+      const user = getCurrentUser();
+      if (user) {
+        await completeCourseLesson(user.uid, 'church', lessonNum, xpEarned);
+      }
     }
 
     setInteractiveMode(null);
