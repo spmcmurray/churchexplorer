@@ -3,7 +3,14 @@
  * Uses OpenAI API to generate custom lessons based on existing lesson structure
  */
 
-const AI_API_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'https://api.openai.com/v1/chat/completions';
+// Determine if we should use the proxy server (production) or direct API (development)
+const USE_PROXY = !process.env.REACT_APP_OPENAI_API_KEY || process.env.NODE_ENV === 'production';
+
+// API endpoints - use proxy in production for security
+const PROXY_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localhost:3001/api/ai';
+const DIRECT_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+
+const AI_API_ENDPOINT = USE_PROXY ? PROXY_ENDPOINT : DIRECT_ENDPOINT;
 const AI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
 /**
@@ -121,8 +128,44 @@ Do not include any text before or after the JSON object.`;
  */
 export const generateAILesson = async (topic, additionalContext = '') => {
   try {
+    // If using proxy server, use simplified request format
+    if (USE_PROXY) {
+      const response = await fetch(`${AI_API_ENDPOINT}/generate-lesson`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          topic,
+          additionalContext
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API Error:', errorText);
+        throw new Error(`AI API error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.lesson) {
+        throw new Error('Invalid response format from AI API');
+      }
+
+      // Validate the generated lesson structure
+      const validatedLesson = validateAndEnhanceLesson(data.lesson, topic);
+
+      return {
+        success: true,
+        lesson: validatedLesson,
+        usage: data.usage
+      };
+    }
+
+    // Direct OpenAI API call (for development with API key)
     if (!AI_API_KEY) {
-      throw new Error('AI API key not configured. Please add REACT_APP_OPENAI_API_KEY to your environment variables.');
+      throw new Error('AI API key not configured. Please add REACT_APP_OPENAI_API_KEY to your environment variables or use the proxy server.');
     }
 
     const userPrompt = `Create a comprehensive Christian education lesson about: "${topic}"
@@ -149,7 +192,7 @@ export const generateAILesson = async (topic, additionalContext = '') => {
         'Authorization': `Bearer ${AI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Using 3.5-turbo instead of gpt-4 (more widely available)
+        model: 'gpt-3.5-turbo',
         messages: [
           {
             role: 'system',
@@ -161,8 +204,7 @@ export const generateAILesson = async (topic, additionalContext = '') => {
           }
         ],
         temperature: 0.7,
-        max_tokens: 2000 // Reduced from 4000 to avoid limits
-        // Removed response_format as it might not be supported
+        max_tokens: 2000
       })
     });
 
@@ -181,7 +223,6 @@ export const generateAILesson = async (topic, additionalContext = '') => {
     let lessonContent;
     try {
       const responseText = data.choices[0].message.content.trim();
-      // Remove any markdown code blocks if present
       const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
       lessonContent = JSON.parse(cleanedResponse);
     } catch (parseError) {
@@ -190,7 +231,6 @@ export const generateAILesson = async (topic, additionalContext = '') => {
       throw new Error('Failed to parse AI response as JSON. Please try again.');
     }
 
-    // Validate the generated lesson structure
     const validatedLesson = validateAndEnhanceLesson(lessonContent, topic);
 
     return {
