@@ -48,9 +48,9 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
         <div className="max-w-5xl mx-auto">
           {!firstTime ? (
             <>
-              <h1 className="text-4xl md:text-5xl font-black mb-4">Understand Christianity with clarity</h1>
+              <h1 className="text-4xl md:text-5xl font-black mb-4">Understand the Roots of Your Faith</h1>
               <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
-                Church story, Bible story, and the reasons behind it—all in one guided experience.
+                Explore where Christianity came from, how the Bible was formed, and why it matters—all in one guided journey.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <button

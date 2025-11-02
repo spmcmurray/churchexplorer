@@ -13,8 +13,9 @@ import { auth, db } from './config';
 
 /**
  * Sign up a new user with email, password, first name, last name, and country
+ * Optionally accepts initialXP to migrate localStorage XP to the new account
  */
-export const signUp = async (email, password, firstName, lastName, country) => {
+export const signUp = async (email, password, firstName, lastName, country, initialXP = 0) => {
   try {
     // Create user account
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -24,14 +25,14 @@ export const signUp = async (email, password, firstName, lastName, country) => {
     const fullName = `${firstName} ${lastName}`;
     await updateProfile(user, { displayName: fullName });
 
-    // Create user document in Firestore
+    // Create user document in Firestore with migrated XP
     await setDoc(doc(db, 'users', user.uid), {
       uid: user.uid,
       email: email,
       firstName: firstName,
       lastName: lastName,
       country: country,
-      totalXP: 0,
+      totalXP: initialXP, // Start with localStorage XP if provided
       createdAt: new Date().toISOString(),
       lastUpdated: new Date().toISOString()
     });

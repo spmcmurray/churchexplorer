@@ -20,11 +20,11 @@ const Onboarding = ({ onComplete }) => {
 
         <div className="space-y-8">
           <Question
-            title="What’s your starting point?"
+            title="What's your starting point?"
             options={[
-              { value: 'bible', label: 'New to the Bible' },
-              { value: 'church', label: 'Curious about Church History' },
-              { value: 'apologetics', label: 'I have questions/objections' },
+              { value: 'bible', label: 'Bible History' },
+              { value: 'church', label: 'Church History' },
+              { value: 'apologetics', label: 'Defending Your Faith' },
             ]}
             value={answers.startingPoint}
             onChange={(v) => setAnswers(a => ({ ...a, startingPoint: v }))}

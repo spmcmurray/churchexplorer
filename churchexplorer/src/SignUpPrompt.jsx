@@ -24,6 +24,12 @@ const SignUpPrompt = ({ onSignUp, onDismiss, xp }) => {
           You've earned <span className="font-bold text-amber-600">{xp} XP</span>! Create an account to save your progress and compete on the global leaderboard.
         </p>
 
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
+          <p className="text-sm text-amber-900 text-center">
+            <span className="font-bold">Your {xp} XP will be saved</span> when you sign up! 🎯
+          </p>
+        </div>
+
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
           <div className="flex items-start gap-3 mb-3">
             <Sparkles className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
