@@ -168,6 +168,18 @@ export const generateAILesson = async (topic, additionalContext = '') => {
 };
 
 /**
+ * Clean text content by replacing escaped newlines with actual newlines
+ */
+const cleanText = (text) => {
+  if (typeof text !== 'string') return text;
+  return text
+    .replace(/\\n/g, '\n')  // Convert \n to actual newlines
+    .replace(/\\t/g, '\t')  // Convert \t to actual tabs
+    .replace(/\\"/g, '"')   // Convert \" to quotes
+    .trim();
+};
+
+/**
  * Validate and enhance the AI-generated lesson
  */
 const validateAndEnhanceLesson = (lesson, originalTopic) => {
@@ -177,18 +189,26 @@ const validateAndEnhanceLesson = (lesson, originalTopic) => {
     type: 'ai_generated',
     originalTopic: originalTopic,
     generatedAt: new Date().toISOString(),
-    title: lesson.title || `Learning About: ${originalTopic}`,
-    subtitle: lesson.subtitle || 'AI-Generated Lesson',
-    introduction: lesson.introduction || 'This lesson was generated to help you learn about this topic.',
+    title: cleanText(lesson.title) || `Learning About: ${originalTopic}`,
+    subtitle: cleanText(lesson.subtitle) || 'AI-Generated Lesson',
+    introduction: cleanText(lesson.introduction) || 'This lesson was generated to help you learn about this topic.',
     sections: [],
     quiz: [],
-    practicalApplication: lesson.practicalApplication || 'Consider how this knowledge applies to your faith journey.',
-    memorizeVerse: lesson.memorizeVerse || {
+    practicalApplication: cleanText(lesson.practicalApplication) || 'Consider how this knowledge applies to your faith journey.',
+    memorizeVerse: lesson.memorizeVerse ? {
+      reference: cleanText(lesson.memorizeVerse.reference) || 'John 8:32',
+      text: cleanText(lesson.memorizeVerse.text) || 'Then you will know the truth, and the truth will set you free.'
+    } : {
       reference: 'John 8:32',
       text: 'Then you will know the truth, and the truth will set you free.'
     },
-    furtherReading: lesson.furtherReading || [],
-    reflection: lesson.reflection || {
+    furtherReading: Array.isArray(lesson.furtherReading) 
+      ? lesson.furtherReading.map(item => cleanText(item))
+      : [],
+    reflection: lesson.reflection ? {
+      question: cleanText(lesson.reflection.question) || 'How does this lesson deepen your understanding of Christian faith?',
+      prompt: cleanText(lesson.reflection.prompt) || 'Take a moment to reflect on what you\'ve learned and how it applies to your life.'
+    } : {
       question: 'How does this lesson deepen your understanding of Christian faith?',
       prompt: 'Take a moment to reflect on what you\'ve learned and how it applies to your life.'
     },
@@ -198,23 +218,25 @@ const validateAndEnhanceLesson = (lesson, originalTopic) => {
   // Validate sections
   if (lesson.sections && Array.isArray(lesson.sections)) {
     enhancedLesson.sections = lesson.sections.map((section, index) => ({
-      title: section.title || `Section ${index + 1}`,
-      content: section.content || '',
-      keyPoints: Array.isArray(section.keyPoints) ? section.keyPoints : []
+      title: cleanText(section.title) || `Section ${index + 1}`,
+      content: cleanText(section.content) || '',
+      keyPoints: Array.isArray(section.keyPoints) 
+        ? section.keyPoints.map(point => cleanText(point))
+        : []
     }));
   }
 
   // Validate quiz questions
   if (lesson.quiz && Array.isArray(lesson.quiz)) {
     enhancedLesson.quiz = lesson.quiz.map((question, index) => ({
-      question: question.question || `Question ${index + 1}`,
+      question: cleanText(question.question) || `Question ${index + 1}`,
       options: Array.isArray(question.options) && question.options.length === 4 
-        ? question.options 
+        ? question.options.map(opt => cleanText(opt))
         : ['Option A', 'Option B', 'Option C', 'Option D'],
       correct: typeof question.correct === 'number' && question.correct >= 0 && question.correct <= 3 
         ? question.correct 
         : 0,
-      explanation: question.explanation || 'This is the correct answer.'
+      explanation: cleanText(question.explanation) || 'This is the correct answer.'
     }));
   }
 
