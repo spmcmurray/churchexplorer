@@ -4,7 +4,7 @@ import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import ApologeticsGuide from "./ApologeticsGuide";
-import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2 } from 'lucide-react';
+import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Menu, X } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
 import Onboarding from './Onboarding';
@@ -21,107 +21,155 @@ import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/pro
 import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement, saveProfile } from './services/progressService';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
-  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <h1 className="text-xl font-bold">Church Explorer</h1>
-            
-            {/* Navigation Buttons */}
-            <div className="flex space-x-2">
-              <Link
-                to="/"
-                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
-              >
-                <HomeIcon className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Home</span>
-              </Link>
-              <Link
-                to="/learn"
-                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
-              >
-                <Scroll className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Learn</span>
-              </Link>
-              <Link
-                to="/explorer"
-                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
-              >
-                <Globe className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Explore</span>
-              </Link>
-              <Link
-                to="/ai-paths"
-                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
-              >
-                <Scroll className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">AI Paths</span>
-              </Link>
-              <Link
-                to="/leaderboard"
-                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
-              >
-                <Trophy className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Leaderboard</span>
-              </Link>
+          <h1 className="text-xl font-bold">Church Explorer</h1>
+
+          {/* Right Side: Hamburger Menu + Profile */}
+          <div className="flex items-center space-x-3">
+            {/* Hamburger Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
+              aria-label="Open menu"
+            >
+              <Menu className="w-6 h-6 text-white" />
+            </button>
+
+            {/* User Account Section */}
+            <div className="relative">
+              {currentUser ? (
+                <div>
+                  <button
+                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                    className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="hidden sm:inline">{currentUser.displayName || 'User'}</span>
+                    <ChevronDown className="w-4 h-4 hidden sm:inline" />
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  {showProfileMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
+                        <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
+                      </div>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowDeleteConfirm(true);
+                          setShowProfileMenu(false);
+                          setDeletePassword('');
+                          setDeleteError('');
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Delete Account</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowAuth(true)}
+                  className="flex items-center px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition whitespace-nowrap"
+                  title="Sign in or create a new account"
+                >
+                  <User className="w-5 h-5 sm:mr-2" />
+                  <span className="hidden sm:inline">Sign In / Sign Up</span>
+                </button>
+              )}
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* User Account Section */}
-          <div className="relative">
-            {currentUser ? (
-              <div>
-                <button
-                  onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition"
-                >
-                  <User className="w-5 h-5" />
-                  <span className="hidden sm:inline">{currentUser.displayName || 'User'}</span>
-                  <ChevronDown className="w-4 h-4 hidden sm:inline" />
-                </button>
-                
-                {/* Dropdown Menu */}
-                {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
-                      <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
-                    </div>
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowDeleteConfirm(true);
-                        setShowProfileMenu(false);
-                        setDeletePassword('');
-                        setDeleteError('');
-                      }}
-                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Delete Account</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
+      {/* Slide-out Glassmorphism Menu */}
+      <div
+        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+          mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setMobileMenuOpen(false)}
+      >
+        <div
+          className={`fixed top-0 right-0 h-full w-64 bg-white/10 backdrop-blur-xl shadow-2xl border-l border-white/20 transform transition-transform duration-300 ${
+            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="p-6">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl font-bold text-white">Menu</h2>
               <button
-                onClick={() => setShowAuth(true)}
-                className="flex items-center px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition whitespace-nowrap"
-                title="Sign in or create a new account"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
+                aria-label="Close menu"
               >
-                <User className="w-5 h-5 sm:mr-2" />
-                <span className="hidden sm:inline">Sign In / Sign Up</span>
+                <X className="w-5 h-5 text-white" />
               </button>
-            )}
+            </div>
+
+            {/* Menu Items */}
+            <div className="space-y-3">
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <HomeIcon className="w-5 h-5 mr-3" />
+                <span>Home</span>
+              </Link>
+
+              <Link
+                to="/learn"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <Scroll className="w-5 h-5 mr-3" />
+                <span>Learn</span>
+              </Link>
+
+              <Link
+                to="/explorer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <Globe className="w-5 h-5 mr-3" />
+                <span>Explore</span>
+              </Link>
+
+              <Link
+                to="/ai-paths"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <Scroll className="w-5 h-5 mr-3" />
+                <span>AI Paths</span>
+              </Link>
+
+              <Link
+                to="/leaderboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <Trophy className="w-5 h-5 mr-3" />
+                <span>Leaderboard</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
