@@ -226,37 +226,14 @@ const validateAndEnhanceLesson = (lesson, originalTopic) => {
  */
 export const generateTopicSuggestions = async (userInterests = []) => {
   try {
-    const prompt = `Based on these areas of Christian interest: ${userInterests.join(', ')}, 
-    suggest 10 specific lesson topics that would be valuable for Christian education. 
-    
-    Format as a JSON array of objects with 'title' and 'description' fields.
-    
-    Focus on topics like:
-    - Denominational differences and beliefs
-    - Church history periods and events
-    - Theological concepts and doctrines
-    - Biblical interpretation methods
-    - Christian practices and traditions
-    - Contemporary Christian issues
-    
-    Make suggestions specific and engaging.`;
-
-    const response = await fetch(AI_API_ENDPOINT, {
+    // Use the proxy server
+    const response = await fetch(`${AI_API_ENDPOINT}/suggest-topics`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_API_KEY}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.8,
-        max_tokens: 1000
+        userInterests: userInterests.join(', ')
       })
     });
 
@@ -265,30 +242,10 @@ export const generateTopicSuggestions = async (userInterests = []) => {
     }
 
     const data = await response.json();
-    let suggestions;
-    try {
-      const responseText = data.choices[0].message.content.trim();
-      const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
-      suggestions = JSON.parse(cleanedResponse);
-    } catch (parseError) {
-      console.error('Failed to parse suggestions:', parseError);
-      // Return fallback suggestions if parsing fails
-      return {
-        success: false,
-        error: 'Failed to generate suggestions',
-        fallbackSuggestions: [
-          { title: 'Catholic Church Beliefs', description: 'Explore the core doctrines and practices of Catholicism' },
-          { title: 'Protestant Reformation', description: 'Learn about the key events and figures of the Reformation' },
-          { title: 'Eastern Orthodox Theology', description: 'Understand the distinctive beliefs of Eastern Christianity' },
-          { title: 'Baptist Traditions', description: 'Discover the history and practices of Baptist churches' },
-          { title: 'Pentecostal Movement', description: 'Learn about the modern Pentecostal and Charismatic movements' }
-        ]
-      };
-    }
-
+    
     return {
       success: true,
-      suggestions: suggestions.topics || suggestions
+      suggestions: data.suggestions || data.topics || []
     };
 
   } catch (error) {
@@ -312,10 +269,6 @@ export const generateTopicSuggestions = async (userInterests = []) => {
  */
 export const generateLearningPathOutline = async (topic, pathType, additionalContext = '') => {
   try {
-    if (!AI_API_KEY) {
-      throw new Error('AI API key not configured.');
-    }
-
     const lessonCounts = {
       'quick': 1,
       'deep-dive': 3,
@@ -324,59 +277,17 @@ export const generateLearningPathOutline = async (topic, pathType, additionalCon
 
     const lessonCount = lessonCounts[pathType] || 1;
 
-    const userPrompt = `Create a structured learning path outline about: "${topic}"
-
-    ${additionalContext ? `Additional context: ${additionalContext}` : ''}
-
-    Generate ${lessonCount} lesson(s) that progressively build understanding of this topic.
-    ${lessonCount > 1 ? `
-    - Start with foundational concepts
-    - Build complexity gradually
-    - End with practical application or advanced topics
-    - Ensure each lesson connects to the next
-    ` : ''}
-
-    For EACH lesson, provide:
-    1. A clear, descriptive title
-    2. A 2-3 sentence description of what the lesson covers
-    3. Key learning objectives (3-4 bullet points)
-
-    Return as a JSON object with this structure:
-    {
-      "pathTitle": "Overall path title",
-      "pathDescription": "Brief description of the complete learning path",
-      "totalLessons": ${lessonCount},
-      "estimatedTime": "X-Y minutes per lesson",
-      "lessons": [
-        {
-          "lessonNumber": 1,
-          "title": "Lesson title",
-          "description": "What this lesson covers",
-          "objectives": ["objective 1", "objective 2", "objective 3"]
-        }
-      ]
-    }`;
-
-    const response = await fetch(AI_API_ENDPOINT, {
+    // Use the proxy server
+    const response = await fetch(`${AI_API_ENDPOINT}/generate-path-outline`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_API_KEY}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert curriculum designer for Christian education. Create well-structured, progressive learning paths that respect historic Christian orthodoxy and present denominational differences objectively. Maintain neutrality on disputed theological topics.'
-          },
-          {
-            role: 'user',
-            content: userPrompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 1500
+        topic,
+        pathType,
+        lessonCount,
+        additionalContext
       })
     });
 
@@ -386,9 +297,7 @@ export const generateLearningPathOutline = async (topic, pathType, additionalCon
     }
 
     const data = await response.json();
-    const responseText = data.choices[0].message.content.trim();
-    const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
-    const outline = JSON.parse(cleanedResponse);
+    const outline = data.outline || data;
 
     return {
       success: true,
@@ -416,10 +325,6 @@ export const generateLearningPathOutline = async (topic, pathType, additionalCon
  */
 export const generatePathLesson = async (pathOutline, lessonNumber) => {
   try {
-    if (!AI_API_KEY) {
-      throw new Error('AI API key not configured.');
-    }
-
     const lessonInfo = pathOutline.lessons[lessonNumber - 1];
     if (!lessonInfo) {
       throw new Error('Invalid lesson number');
@@ -430,75 +335,35 @@ export const generatePathLesson = async (pathOutline, lessonNumber) => {
     const contextText = previousLessons.length > 0
       ? `This is lesson ${lessonNumber} of ${pathOutline.totalLessons} in the path "${pathOutline.pathTitle}".
          Previous lessons covered: ${previousLessons.map(l => l.title).join(', ')}.
-         Build upon this foundation while covering: ${lessonInfo.description}`
+         Build upon this foundation.`
       : `This is the first lesson in the path "${pathOutline.pathTitle}".`;
 
-    const userPrompt = `Create a comprehensive lesson for: "${lessonInfo.title}"
+    const additionalContext = `${contextText}
 
-    Context: ${contextText}
+Learning Objectives:
+${lessonInfo.objectives.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}
 
-    Learning Objectives:
-    ${lessonInfo.objectives.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}
+${lessonNumber > 1 ? 'Build on concepts from previous lessons.' : 'Establish foundational understanding.'}
+${lessonNumber < pathOutline.totalLessons ? 'Prepare for upcoming lessons.' : 'Provide comprehensive conclusion and application.'}`;
 
-    Please generate a complete lesson following the specified structure. Ensure the content:
-    - Achieves the stated learning objectives
-    - Is theologically accurate according to historic Christian orthodoxy
-    - Appropriate for adult learners with conservative Christian values
-    - Rich with relevant Scripture references
-    - Neutral and objective on disputed theological topics
-    - Respectful of traditional Scripture interpretations
-    ${lessonNumber > 1 ? '- Builds on concepts from previous lessons' : '- Establishes foundational understanding'}
-    ${lessonNumber < pathOutline.totalLessons ? '- Prepares for upcoming lessons' : '- Provides comprehensive conclusion and application'}
-
-    IMPORTANT: Present denominational differences objectively. On disputed topics, state multiple views without advocacy.
-
-    Return the lesson as a JSON object that matches the lesson template structure.`;
-
-    const response = await fetch(AI_API_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: generateSystemPrompt()
-          },
-          {
-            role: 'user',
-            content: userPrompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`AI API error: ${response.status} - ${errorText}`);
+    // Use the existing generate-lesson endpoint
+    const result = await generateAILesson(lessonInfo.title, additionalContext);
+    
+    if (!result.success) {
+      throw new Error(result.error);
     }
 
-    const data = await response.json();
-    const responseText = data.choices[0].message.content.trim();
-    const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
-    const lessonContent = JSON.parse(cleanedResponse);
-
-    const validatedLesson = validateAndEnhanceLesson(lessonContent, lessonInfo.title);
-    
     // Add path metadata
-    validatedLesson.pathId = pathOutline.pathId;
-    validatedLesson.pathTitle = pathOutline.pathTitle;
-    validatedLesson.lessonNumber = lessonNumber;
-    validatedLesson.totalLessonsInPath = pathOutline.totalLessons;
+    const lesson = result.lesson;
+    lesson.pathId = pathOutline.pathId;
+    lesson.pathTitle = pathOutline.pathTitle;
+    lesson.lessonNumber = lessonNumber;
+    lesson.totalLessonsInPath = pathOutline.totalLessons;
 
     return {
       success: true,
-      lesson: validatedLesson,
-      usage: data.usage
+      lesson: lesson,
+      usage: result.usage
     };
 
   } catch (error) {
