@@ -135,12 +135,21 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
               </Link>
 
               <Link
-                to="/learn"
+                to="/paths"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
               >
                 <Scroll className="w-5 h-5 mr-3" />
-                <span>Learn</span>
+                <span>Curated Learning</span>
+              </Link>
+
+              <Link
+                to="/ai-paths"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <Sparkles className="w-5 h-5 mr-3" />
+                <span>AI Learning</span>
               </Link>
 
               <Link
@@ -150,15 +159,6 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
               >
                 <Globe className="w-5 h-5 mr-3" />
                 <span>Explore</span>
-              </Link>
-
-              <Link
-                to="/ai-paths"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
-              >
-                <Scroll className="w-5 h-5 mr-3" />
-                <span>AI Paths</span>
               </Link>
 
               <Link
