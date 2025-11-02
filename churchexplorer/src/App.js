@@ -178,9 +178,9 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
 }
 
 // Wrapper components to convert Router navigation to onNavigate props
-function HomeWrapper({ userProgress }) {
+function HomeWrapper({ userProgress, onShowAuth }) {
   const navigate = useNavigate();
-  return <Home userProgress={userProgress} onNavigate={(view, options) => navigate(`/${view}`, options)} onStartOnboarding={() => navigate('/onboarding')} />;
+  return <Home userProgress={userProgress} onNavigate={(view, options) => navigate(`/${view}`, options)} onStartOnboarding={() => navigate('/onboarding')} onShowAuth={onShowAuth} />;
 }
 
 function PathsWrapper() {
@@ -382,7 +382,18 @@ function AppContent() {
               console.log('✅ Firestore has course data, syncing to localStorage');
               const p = progressResult.progress;
               
-              // Update React state with Firestore progress
+              // Load AI paths from Firestore
+              const { getAIPathsFromFirestore } = await import('./firebase/progressService');
+              const aiPathsResult = await getAIPathsFromFirestore(user.uid);
+              if (aiPathsResult.success) {
+                p.aiPaths = aiPathsResult.paths || [];
+                console.log('✅ Loaded AI paths from Firestore:', p.aiPaths.length);
+              } else {
+                p.aiPaths = [];
+                console.warn('Failed to load AI paths:', aiPathsResult.error);
+              }
+              
+              // Update React state with Firestore progress (including AI paths)
               setUserProgress(p);
               
               const localProgress = {
@@ -490,7 +501,7 @@ function AppContent() {
       {/* Main Content with Routes */}
       <div key={appKey}>
         <Routes>
-          <Route path="/" element={<HomeWrapper userProgress={userProgress} />} />
+          <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} />} />
           <Route path="/learn" element={<PathsWrapper />} />
           <Route path="/explorer" element={<ExplorerWrapper />} />
           <Route path="/study-guide" element={<StudyGuideWrapper />} />

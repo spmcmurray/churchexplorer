@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Flame, PlayCircle, Sparkles, BookOpen, Calendar } from 'lucide-react';
+import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, UserPlus } from 'lucide-react';
 import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile, saveProfile } from './services/progressService';
 import DailyChallenge from './DailyChallenge';
 import { getDueReviews, getMasteryInfo } from './services/reviewService';
 
-const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
+const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth }) => {
   const overall = getOverallProgress();
   const existingProfile = getProfile();
   const rec = getContinueRecommendation();
@@ -29,8 +29,18 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
   };
 
   const getAIPathsProgress = () => {
-    // TODO: Get AI paths progress from Firestore via userProgress prop
-    // For now, return 0 since we're removing localStorage
+    // Get AI paths from Firestore via userProgress prop
+    if (userProgress?.aiPaths && Array.isArray(userProgress.aiPaths)) {
+      const total = userProgress.aiPaths.length;
+      // Count completed paths (paths where all lessons are completed)
+      const completed = userProgress.aiPaths.filter(path => {
+        if (!path.lessons || !Array.isArray(path.lessons)) return false;
+        // For now, consider a path completed if it has completion data
+        // TODO: Track actual lesson completion in aiPathProgress subcollection
+        return path.completed === true;
+      }).length;
+      return { completed, total };
+    }
     return { completed: 0, total: 0 };
   };
 
@@ -117,10 +127,35 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
         </div>
       </div>
 
+      {/* Authentication prompt for unauthenticated users */}
+      {!userProgress && (
+        <div className="max-w-5xl mx-auto px-4 py-6">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-100 rounded-full p-3">
+                  <UserPlus className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-800">Sign up to track your progress</h3>
+                  <p className="text-sm text-slate-600">Create a free account to earn XP, save your progress, and compete on the leaderboard!</p>
+                </div>
+              </div>
+              <button
+                onClick={onShowAuth}
+                className="whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition"
+              >
+                Sign Up Free
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Paths snapshot + progress */}
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="bg-white rounded-2xl border-2 border-slate-200 shadow p-6">
-          {!firstTime && (
+          {!firstTime && userProgress && (
             <>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2 text-slate-700 font-bold">
