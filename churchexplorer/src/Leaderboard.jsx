@@ -2,15 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Award, TrendingUp, ArrowLeft, RefreshCw } from 'lucide-react';
 import { getLeaderboard, getUserRank, updateUserXP } from './firebase/leaderboardService';
 import { getUserProfile } from './firebase/authService';
+import { getUserProgress } from './firebase/progressService';
+import { checkAndMigrateProgress } from './utils/migrationUtils';
 import { getTotalXP } from './services/progressService';
 
 const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [userRank, setUserRank] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [userProgress, setUserProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [syncing, setSyncing] = useState(false);
+  const [migrationStatus, setMigrationStatus] = useState('');
 
   const syncLocalXPToFirestore = async () => {
     if (!currentUser) return;
@@ -33,6 +37,15 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
     }
   };
 
+  const getCurrentUserXP = () => {
+    // Return the highest XP value from all available sources
+    const localXP = getTotalXP();
+    const firestoreXP = userProgress?.totalXP || 0;
+    const profileXP = userProfile?.totalXP || 0;
+    
+    return Math.max(localXP, firestoreXP, profileXP);
+  };
+
   const loadLeaderboard = async () => {
     setLoading(true);
     setError('');
@@ -51,24 +64,40 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
         
         // Get current user's rank and profile if logged in
         if (currentUser) {
-          // Always fetch user's profile from Firestore to get accurate XP
-          const profileResult = await getUserProfile(currentUser.uid);
-          if (profileResult.success) {
-            setUserProfile(profileResult.profile);
+          try {
+            // Step 1: Check and migrate progress if needed
+            setMigrationStatus('Checking for data migration...');
+            const migrationResult = await checkAndMigrateProgress();
+            if (migrationResult.success) {
+              console.log('Migration check completed:', migrationResult.message);
+            }
             
-            // Get rank using Firestore XP data
-            const rankResult = await getUserRank(currentUser.uid, profileResult.profile.totalXP);
+            // Step 2: Get user's profile from auth service
+            setMigrationStatus('Loading user profile...');
+            const profileResult = await getUserProfile(currentUser.uid);
+            if (profileResult.success) {
+              setUserProfile(profileResult.profile);
+            }
+            
+            // Step 3: Get detailed progress from Firestore
+            setMigrationStatus('Loading progress data...');
+            const progressResult = await getUserProgress(currentUser.uid);
+            if (progressResult.success) {
+              setUserProgress(progressResult.progress);
+            }
+            
+            // Step 4: Get user's rank using the most current XP
+            setMigrationStatus('Calculating rank...');
+            const currentXP = getCurrentUserXP();
+            const rankResult = await getUserRank(currentUser.uid, currentXP);
             if (rankResult.success) {
               setUserRank(rankResult.rank);
             }
-          } else {
-            // Fallback to local storage if Firestore profile not found
-            console.warn('Could not fetch user profile from Firestore, using local storage as fallback');
-            const userXP = getTotalXP();
-            const rankResult = await getUserRank(currentUser.uid, userXP);
-            if (rankResult.success) {
-              setUserRank(rankResult.rank);
-            }
+            
+            setMigrationStatus('');
+          } catch (error) {
+            console.error('Error loading user data:', error);
+            setMigrationStatus('');
           }
         }
       } else {
@@ -175,17 +204,22 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
               <div className="text-right">
                 <p className="text-blue-100 text-sm font-medium">Total XP</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-3xl font-black">{userProfile?.totalXP || 0}</p>
+                  <p className="text-3xl font-black">{getCurrentUserXP()}</p>
                   <button
                     onClick={syncLocalXPToFirestore}
                     disabled={syncing}
                     className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition disabled:opacity-50"
-                    title="Sync local XP to Firestore"
+                    title="Force sync local XP to Firestore"
                   >
                     <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
                   </button>
                 </div>
-                <p className="text-xs text-blue-200">Local: {getTotalXP()} XP</p>
+                <div className="text-xs text-blue-200 space-y-1">
+                  <p>Local: {getTotalXP()} | Cloud: {userProgress?.totalXP || 0}</p>
+                  {migrationStatus && (
+                    <p className="text-blue-100 animate-pulse">{migrationStatus}</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
