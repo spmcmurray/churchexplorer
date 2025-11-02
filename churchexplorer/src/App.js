@@ -232,6 +232,23 @@ function AppContent() {
             if (profileResult && profileResult.success && profileResult.profile) {
               // Merge profile into local storage profile used by front-end
               saveProfile(profileResult.profile);
+              // If profile has a totalXP but per-course XP in localStorage is zero,
+              // distribute the total across courses for display purposes until
+              // detailed course progress is available in Firestore.
+              try {
+                const profileXP = profileResult.profile.totalXP || 0;
+                const currentBibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
+                const currentChurchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
+                const currentApologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
+                if (profileXP > 0 && currentBibleXP === 0 && currentChurchXP === 0 && currentApologeticsXP === 0) {
+                  localStorage.setItem('bibleHistoryTotalXP', String(Math.floor(profileXP / 3)));
+                  localStorage.setItem('churchHistoryTotalXP', String(Math.floor(profileXP / 3)));
+                  localStorage.setItem('apologeticsTotalXP', String(profileXP - 2 * Math.floor(profileXP / 3)));
+                  console.log('Distributed profile totalXP to per-course localStorage for display');
+                }
+              } catch (e) {
+                console.warn('Failed to distribute profile totalXP to localStorage', e);
+              }
             }
 
             // Fetch Firestore progress and persist it locally so Home shows the correct data
