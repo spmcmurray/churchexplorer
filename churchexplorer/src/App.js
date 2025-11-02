@@ -135,7 +135,7 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
               </Link>
 
               <Link
-                to="/paths"
+                to="/learn"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
               >
