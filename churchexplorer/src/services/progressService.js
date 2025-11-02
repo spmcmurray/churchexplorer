@@ -2,6 +2,20 @@
 import { getCurrentUser } from '../firebase/authService';
 import { updateUserXP } from '../firebase/leaderboardService';
 
+// Achievement event listeners
+let achievementListeners = [];
+
+export function onAchievement(callback) {
+  achievementListeners.push(callback);
+  return () => {
+    achievementListeners = achievementListeners.filter(cb => cb !== callback);
+  };
+}
+
+function notifyAchievement() {
+  achievementListeners.forEach(callback => callback());
+}
+
 const KEYS = {
   profile: 'userProfile',
   churchProgress: 'churchHistoryProgress',
@@ -112,6 +126,10 @@ export async function addPathXP(pathId, xpToAdd) {
   const currentXP = readInt(pathId === 'bible' ? KEYS.bibleXP : pathId === 'church' ? KEYS.churchXP : KEYS.apologeticsXP);
   const newXP = currentXP + xpToAdd;
   await updatePathXP(pathId, newXP);
+  
+  // Notify achievement listeners (for sign-up prompt)
+  notifyAchievement();
+  
   return newXP;
 }
 
@@ -183,10 +201,55 @@ export function clearAllProgress() {
     // Review mode
     'reviewMode',
     // Spaced repetition (reviewService keys)
-    'reviewSchedule'
+    'reviewSchedule',
+    // Sign-up prompt tracking
+    'hasSeenSignUpPrompt',
+    'firstAchievementTime'
   ];
 
   allKeys.forEach(key => {
     localStorage.removeItem(key);
   });
+}
+
+/**
+ * Track that user has completed their first achievement (lesson or quiz)
+ * Returns true if this should trigger the sign-up prompt
+ */
+export function trackFirstAchievement() {
+  const user = getCurrentUser();
+  if (user) return false; // Already signed in, no prompt needed
+  
+  const hasSeenPrompt = localStorage.getItem('hasSeenSignUpPrompt');
+  if (hasSeenPrompt) return false; // Already shown the prompt
+  
+  const firstAchievement = localStorage.getItem('firstAchievementTime');
+  if (!firstAchievement) {
+    // This is their first achievement!
+    localStorage.setItem('firstAchievementTime', new Date().toISOString());
+    return true; // Show prompt after first achievement
+  }
+  
+  return false; // Had a previous achievement, don't prompt again
+}
+
+/**
+ * Mark that user has seen the sign-up prompt
+ */
+export function markSignUpPromptSeen() {
+  localStorage.setItem('hasSeenSignUpPrompt', 'true');
+}
+
+/**
+ * Check if user should see sign-up prompt (has achievements but not signed in)
+ */
+export function shouldShowSignUpPrompt() {
+  const user = getCurrentUser();
+  if (user) return false; // Already signed in
+  
+  const hasSeenPrompt = localStorage.getItem('hasSeenSignUpPrompt');
+  if (hasSeenPrompt) return false; // Already dismissed
+  
+  const totalXP = getTotalXP();
+  return totalXP > 0; // Has earned XP but not signed in
 }

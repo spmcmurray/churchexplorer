@@ -12,8 +12,9 @@ import ExploreLanding from './ExploreLanding';
 import DenominationExplorer from './DenominationExplorer';
 import Leaderboard from './Leaderboard';
 import Auth from './Auth';
+import SignUpPrompt from './SignUpPrompt';
 import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
-import { clearAllProgress } from './services/progressService';
+import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement } from './services/progressService';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
   const navigate = useNavigate();
@@ -174,9 +175,34 @@ function AppContent() {
   const [showAuth, setShowAuth] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [appKey, setAppKey] = useState(0); // Key to force rerender when data is cleared
+
+  // Listen for achievement events and check if we should show sign-up prompt
+  useEffect(() => {
+    const unsubscribe = onAchievement(() => {
+      if (trackFirstAchievement()) {
+        // Small delay to let user see their achievement first
+        setTimeout(() => setShowSignUpPrompt(true), 1500);
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  // Check if we should show sign-up prompt on mount and when route changes
+  useEffect(() => {
+    const checkSignUpPrompt = () => {
+      if (shouldShowSignUpPrompt()) {
+        setShowSignUpPrompt(true);
+      }
+    };
+    
+    // Small delay to let user see their achievement first
+    const timer = setTimeout(checkSignUpPrompt, 1500);
+    return () => clearTimeout(timer);
+  }, [currentUser]);
 
   // Listen for auth state changes
   useEffect(() => {
@@ -232,6 +258,16 @@ function AppContent() {
     }
   };
 
+  const handleSignUpFromPrompt = () => {
+    setShowSignUpPrompt(false);
+    setShowAuth(true);
+  };
+
+  const handleDismissSignUpPrompt = () => {
+    markSignUpPromptSeen();
+    setShowSignUpPrompt(false);
+  };
+
   return (
     <div className="min-h-screen">
       <Navigation 
@@ -270,6 +306,15 @@ function AppContent() {
             setShowAuth(false);
           }}
           onClose={() => setShowAuth(false)}
+        />
+      )}
+
+      {/* Sign Up Prompt */}
+      {showSignUpPrompt && (
+        <SignUpPrompt
+          onSignUp={handleSignUpFromPrompt}
+          onDismiss={handleDismissSignUpPrompt}
+          xp={getTotalXP()}
         />
       )}
 
