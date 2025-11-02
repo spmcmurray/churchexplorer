@@ -4,8 +4,7 @@ import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import ApologeticsGuide from "./ApologeticsGuide";
-import AIPathsView from "./AIPathsView";
-import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Brain, BookMarked, Menu, X } from 'lucide-react';
+import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2 } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
 import Onboarding from './Onboarding';
@@ -19,157 +18,101 @@ import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptS
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
   const navigate = useNavigate();
-  const [showMobileMenu, setShowMobileMenu] = React.useState(false);
-  const mobileMenuButtonRef = React.useRef(null);
-  const mobileMenuDropdownRef = React.useRef(null);
-
-  // Close mobile menu when clicking outside
-  React.useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        showMobileMenu && 
-        mobileMenuButtonRef.current && 
-        mobileMenuDropdownRef.current &&
-        !mobileMenuButtonRef.current.contains(event.target) &&
-        !mobileMenuDropdownRef.current.contains(event.target)
-      ) {
-        setShowMobileMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMobileMenu]);
-
-  const navLinks = [
-    { to: '/', icon: HomeIcon, label: 'Home', title: 'Home' },
-    { to: '/learn', icon: Scroll, label: 'Curated Lessons', title: 'Curated Learning Paths' },
-    { to: '/ai-paths', icon: Brain, label: 'AI Lessons', title: 'AI Lessons & Creator', highlight: true },
-    { to: '/explorer', icon: Globe, label: 'Explore', title: 'Explore Denominations' },
-    { to: '/leaderboard', icon: Trophy, label: 'Leaderboard', title: 'Leaderboard' },
-  ];
 
   return (
     <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <h1 className="text-lg sm:text-xl font-bold">Church Explorer</h1>
+          <div className="flex items-center space-x-8">
+            <h1 className="text-xl font-bold">Church Explorer</h1>
             
-            {/* Desktop Navigation - Hidden on mobile */}
-            <div className="hidden lg:flex gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`flex items-center px-4 py-2 rounded-lg transition ${
-                    link.highlight
-                      ? 'bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg'
-                      : 'bg-blue-700 hover:bg-blue-800'
-                  }`}
-                  title={link.title}
-                >
-                  <link.icon className="w-4 h-4 mr-2" />
-                  <span>{link.label}</span>
-                </Link>
-              ))}
+            {/* Navigation Buttons */}
+            <div className="flex space-x-2">
+              <Link
+                to="/"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <HomeIcon className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Home</span>
+              </Link>
+              <Link
+                to="/learn"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Scroll className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Learn</span>
+              </Link>
+              <Link
+                to="/explorer"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Globe className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Explore</span>
+              </Link>
+              <Link
+                to="/leaderboard"
+                className="flex items-center px-3 sm:px-4 py-2 rounded-lg transition bg-blue-700 hover:bg-blue-800"
+              >
+                <Trophy className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Leaderboard</span>
+              </Link>
             </div>
           </div>
 
-          {/* User Account Section + Mobile Menu */}
-          <div className="flex items-center gap-2">
-            {/* Mobile Menu Button */}
-            <button
-              ref={mobileMenuButtonRef}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMobileMenu(!showMobileMenu);
-              }}
-              className="lg:hidden flex items-center px-3 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition"
-              title="Menu"
-            >
-              {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-
-            {/* User Profile Button */}
-            <div className="relative">
-              {currentUser ? (
-                <div>
-                  <button
-                    onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center space-x-2 px-2 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="hidden md:inline">{currentUser.displayName || 'User'}</span>
-                    <ChevronDown className="w-4 h-4 hidden md:inline" />
-                  </button>
-                  
-                  {/* Dropdown Menu */}
-                  {showProfileMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
-                        <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
-                      </div>
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowDeleteConfirm(true);
-                          setShowProfileMenu(false);
-                          setDeletePassword('');
-                          setDeleteError('');
-                        }}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Delete Account</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
+          {/* User Account Section */}
+          <div className="relative">
+            {currentUser ? (
+              <div>
                 <button
-                  onClick={() => setShowAuth(true)}
-                  className="flex items-center px-2 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition whitespace-nowrap"
-                  title="Sign in or create a new account"
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition"
                 >
-                  <User className="w-5 h-5 sm:mr-2" />
-                  <span className="hidden sm:inline">Sign In / Sign Up</span>
+                  <User className="w-5 h-5" />
+                  <span className="hidden sm:inline">{currentUser.displayName || 'User'}</span>
+                  <ChevronDown className="w-4 h-4 hidden sm:inline" />
                 </button>
-              )}
-            </div>
+                
+                {/* Dropdown Menu */}
+                {showProfileMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
+                      <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDeleteConfirm(true);
+                        setShowProfileMenu(false);
+                        setDeletePassword('');
+                        setDeleteError('');
+                      }}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete Account</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAuth(true)}
+                className="flex items-center px-3 sm:px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition whitespace-nowrap"
+                title="Sign in or create a new account"
+              >
+                <User className="w-5 h-5 sm:mr-2" />
+                <span className="hidden sm:inline">Sign In / Sign Up</span>
+              </button>
+            )}
           </div>
         </div>
-
-        {/* Mobile Menu Dropdown */}
-        {showMobileMenu && (
-          <div 
-            ref={mobileMenuDropdownRef}
-            className="lg:hidden absolute right-0 top-16 w-64 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl m-4"
-          >
-            <div className="py-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setShowMobileMenu(false)}
-                  className={`flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition ${
-                    link.highlight ? 'bg-purple-500/20 hover:bg-purple-500/30' : ''
-                  }`}
-                  title={link.title}
-                >
-                  <link.icon className="w-5 h-5" />
-                  <span className="font-medium">{link.label}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );
@@ -223,7 +166,7 @@ function ExploreDenominationsWrapper() {
 
 function OnboardingWrapper() {
   const navigate = useNavigate();
-  return <Onboarding onComplete={() => navigate('/')} />;
+  return <Onboarding onComplete={({ view }) => navigate(`/${view}`)} />;
 }
 
 function AppContent() {
@@ -236,15 +179,6 @@ function AppContent() {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [appKey, setAppKey] = useState(0); // Key to force rerender when data is cleared
-
-  // AI Paths View wrapper - shows user's saved AI lessons
-  const AIPathsWrapper = () => {
-    return <AIPathsView 
-      currentUser={currentUser}
-      onNavigate={(view) => navigate(`/${view}`)}
-      onGoBack={() => navigate(-1)}
-    />;
-  };
 
   // Listen for achievement events and check if we should show sign-up prompt
   useEffect(() => {
@@ -361,7 +295,6 @@ function AppContent() {
           <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
           <Route path="/onboarding" element={<OnboardingWrapper />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
-          <Route path="/ai-paths" element={<AIPathsWrapper />} />
         </Routes>
       </div>
 
