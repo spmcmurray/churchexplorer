@@ -121,16 +121,15 @@ export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarde
       return { success: true, message: 'Lesson already completed', xpAwarded: 0 };
     }
     
-    // Update progress
+    // Update progress - track completed lessons and per-course XP
     await updateDoc(progressRef, {
       [`courses.${courseId}.completedLessons`]: arrayUnion(lessonNumber),
       [`courses.${courseId}.totalXP`]: increment(xpAwarded),
       [`courses.${courseId}.lastCompleted`]: serverTimestamp(),
-      totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
     });
     
-    // Update user's total XP in main profile
+    // Update user's total XP in main profile (single source of truth for leaderboard)
     await updateDoc(userRef, {
       totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
@@ -175,18 +174,17 @@ export const completeDailyChallenge = async (uid, date, xpAwarded) => {
       newStreak = (dailyProgress.streak || 0) + 1;
     }
     
-    // Update progress
+    // Update progress - track daily challenge stats
     await updateDoc(progressRef, {
       'dailyChallenges.totalCompleted': increment(1),
       'dailyChallenges.totalXP': increment(xpAwarded),
       'dailyChallenges.streak': newStreak,
       'dailyChallenges.lastCompletedDate': date,
       'dailyChallenges.completedDates': arrayUnion(date),
-      totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
     });
     
-    // Update user's total XP
+    // Update user's total XP in profile (single source of truth for leaderboard)
     await updateDoc(userRef, {
       totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
@@ -221,16 +219,15 @@ export const completeReviewSession = async (uid, questionsCorrect, totalQuestion
       accuracy: Math.round((questionsCorrect / totalQuestions) * 100)
     };
     
-    // Update progress
+    // Update progress - track review sessions
     await updateDoc(progressRef, {
       'reviews.totalCompleted': increment(1),
       'reviews.totalXP': increment(xpAwarded),
       'reviews.sessions': arrayUnion(reviewSession),
-      totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
     });
     
-    // Update user's total XP
+    // Update user's total XP in profile (single source of truth for leaderboard)
     await updateDoc(userRef, {
       totalXP: increment(xpAwarded),
       lastUpdated: serverTimestamp()
