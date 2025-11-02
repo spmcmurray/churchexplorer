@@ -193,19 +193,19 @@ function ExplorerWrapper() {
   return <ExploreLanding onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
 }
 
-function StudyGuideWrapper() {
+function StudyGuideWrapper({ onProgressUpdate }) {
   const navigate = useNavigate();
-  return <ChurchHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+  return <ChurchHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
-function BibleHistoryWrapper() {
+function BibleHistoryWrapper({ onProgressUpdate }) {
   const navigate = useNavigate();
-  return <BibleHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+  return <BibleHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
-function ApologeticsWrapper() {
+function ApologeticsWrapper({ onProgressUpdate }) {
   const navigate = useNavigate();
-  return <ApologeticsGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+  return <ApologeticsGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
 function ExploreChurchWrapper() {
@@ -239,6 +239,33 @@ function AppContent() {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [appKey, setAppKey] = useState(0); // Key to force rerender when data is cleared
+
+  // Function to refresh user progress from Firestore
+  const refreshUserProgress = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const { getUserProgress, getAIPathsFromFirestore } = await import('./firebase/progressService');
+      
+      // Fetch fresh progress from Firestore (totalXP is in progress document)
+      const progressResult = await getUserProgress(currentUser.uid);
+      
+      if (progressResult.success && progressResult.progress) {
+        const p = progressResult.progress;
+        
+        // Load AI paths
+        const aiPathsResult = await getAIPathsFromFirestore(currentUser.uid);
+        if (aiPathsResult.success) {
+          p.aiPaths = aiPathsResult.paths || [];
+        }
+        
+        setUserProgress(p);
+        console.log('✅ User progress refreshed, totalXP:', p.totalXP);
+      }
+    } catch (error) {
+      console.error('Error refreshing progress:', error);
+    }
+  };
 
   // Listen for achievement events and check if we should show sign-up prompt
   useEffect(() => {
@@ -521,9 +548,9 @@ function AppContent() {
           <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} />} />
           <Route path="/learn" element={<PathsWrapper />} />
           <Route path="/explorer" element={<ExplorerWrapper />} />
-          <Route path="/study-guide" element={<StudyGuideWrapper />} />
-          <Route path="/bible-history" element={<BibleHistoryWrapper />} />
-          <Route path="/apologetics" element={<ApologeticsWrapper />} />
+          <Route path="/study-guide" element={<StudyGuideWrapper onProgressUpdate={refreshUserProgress} />} />
+          <Route path="/bible-history" element={<BibleHistoryWrapper onProgressUpdate={refreshUserProgress} />} />
+          <Route path="/apologetics" element={<ApologeticsWrapper onProgressUpdate={refreshUserProgress} />} />
           <Route path="/explore-church" element={<ExploreChurchWrapper />} />
           <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
           <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />

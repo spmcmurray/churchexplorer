@@ -9,7 +9,7 @@ import { addPathXP } from './services/progressService';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 
-const BibleHistoryGuide = ({ onNavigate, onGoBack }) => {
+const BibleHistoryGuide = ({ onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
@@ -148,6 +148,11 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack }) => {
       const user = getCurrentUser();
       if (user) {
         await completeCourseLesson(user.uid, 'bible', lessonNum, xpEarned);
+        
+        // Refresh progress in App state to update XP immediately
+        if (onProgressUpdate) {
+          onProgressUpdate();
+        }
       }
     }
 
