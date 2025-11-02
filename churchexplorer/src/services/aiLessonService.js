@@ -299,6 +299,12 @@ export const generateLearningPathOutline = async (topic, pathType, additionalCon
     const data = await response.json();
     const outline = data.outline || data;
 
+    // Validate that we have the lessons array
+    if (!outline || !outline.lessons || !Array.isArray(outline.lessons)) {
+      console.error('Invalid outline received:', outline);
+      throw new Error('Server returned invalid path outline (missing lessons array)');
+    }
+
     return {
       success: true,
       outline: {
@@ -383,13 +389,18 @@ export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate
   let totalUsage = { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
 
   try {
+    // Validate pathOutline has the required structure
+    if (!pathOutline || !pathOutline.lessons || !Array.isArray(pathOutline.lessons)) {
+      throw new Error('Invalid path outline: missing lessons array');
+    }
+
     for (let i = 1; i <= pathOutline.totalLessons; i++) {
       if (onProgressUpdate) {
         onProgressUpdate({
           current: i,
           total: pathOutline.totalLessons,
           status: 'generating',
-          lessonTitle: pathOutline.lessons[i - 1].title
+          lessonTitle: pathOutline.lessons[i - 1]?.title || `Lesson ${i}`
         });
       }
 
