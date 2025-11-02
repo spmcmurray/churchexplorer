@@ -19,7 +19,6 @@ import AILessonViewerPage from './AILessonViewerPage';
 import { onAuthChange, logOut, deleteAccount, getUserProfile } from './firebase/authService';
 import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
 import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement, saveProfile } from './services/progressService';
-import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
   const navigate = useNavigate();
