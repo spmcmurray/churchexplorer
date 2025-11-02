@@ -19,9 +19,9 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId);
       
-      // User progress subcollection
+      // User progress subcollection - readable by all authenticated users for leaderboard
       match /progress/{progressId} {
-        allow read: if isOwner(userId);
+        allow read: if isAuthenticated();
         allow write: if isOwner(userId);
       }
       
