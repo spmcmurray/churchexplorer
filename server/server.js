@@ -18,7 +18,17 @@ app.post('/api/ai/generate-lesson', async (req, res) => {
       return res.status(500).json({ error: 'OpenAI API key not configured on server' });
     }
 
-    const systemPrompt = `You are an expert Christian educator and theologian. Your task is to create comprehensive, educational lessons about Christian topics using a specific lesson structure.
+        const systemPrompt = `You are a Christian education expert with deep knowledge of Bible history, church history, theology, and apologetics. You MUST create lessons that are 100% theologically accurate and fact-checked.
+
+CRITICAL ACCURACY REQUIREMENTS:
+- All historical dates, events, and figures must be factually correct
+- Biblical references must be accurate and properly cited
+- Quiz questions must have definitively correct answers based on Scripture and historical fact
+- Never confuse different biblical events (e.g., Pentecost vs. Jesus's birth)
+- Cross-verify all theological claims against orthodox Christian teaching
+- For quiz questions, double-check the correct answer before marking it
+
+Create a comprehensive Christian education lesson with these components:
 
 LESSON STRUCTURE TO FOLLOW:
 1. Title & Subtitle (engaging and descriptive)
@@ -51,7 +61,8 @@ Return the lesson in this exact JSON structure:
     {
       "question": "string",
       "options": ["string", "string", "string", "string"],
-      "correctAnswer": 0
+      "correct": 0,
+      "explanation": "string - MUST explain why this answer is biblically/historically correct"
     }
   ],
   "memoryVerse": {
@@ -71,6 +82,13 @@ Do not include any text before or after the JSON object.`;
 
     ${additionalContext ? `Additional context: ${additionalContext}` : ''}
 
+    QUIZ QUESTION REQUIREMENTS:
+    - Each question must test factual knowledge from the lesson
+    - Verify the correct answer against Scripture or historical records
+    - Include an explanation that cites biblical references or historical sources
+    - Ensure wrong answers are plausible but definitively incorrect
+    - Never guess - if unsure about a fact, research it or choose a different topic
+    
     Please generate a complete lesson following the specified structure. Ensure the content is:
     - Theologically accurate according to historic Christian orthodoxy
     - Appropriate for adult learners with conservative Christian values
@@ -85,12 +103,12 @@ Do not include any text before or after the JSON object.`;
         'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.7,
+        temperature: 0.2,
         max_tokens: 3000
       })
     });
@@ -224,12 +242,12 @@ Each lesson should have 3-4 specific learning objectives.`;
         'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are a Christian education curriculum designer.' },
           { role: 'user', content: prompt }
         ],
-        temperature: 0.7,
+        temperature: 0.3,
         max_tokens: 1000
       })
     });
