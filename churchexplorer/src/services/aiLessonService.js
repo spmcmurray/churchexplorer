@@ -344,10 +344,14 @@ export const generatePathLesson = async (pathOutline, lessonNumber) => {
          Build upon this foundation.`
       : `This is the first lesson in the path "${pathOutline.pathTitle}".`;
 
+    // Build objectives text with fallback
+    const objectivesText = lessonInfo.objectives && Array.isArray(lessonInfo.objectives) && lessonInfo.objectives.length > 0
+      ? `Learning Objectives:\n${lessonInfo.objectives.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}`
+      : `Focus: ${lessonInfo.description || 'Cover the key concepts of this topic.'}`;
+
     const additionalContext = `${contextText}
 
-Learning Objectives:
-${lessonInfo.objectives.map((obj, i) => `${i + 1}. ${obj}`).join('\n')}
+${objectivesText}
 
 ${lessonNumber > 1 ? 'Build on concepts from previous lessons.' : 'Establish foundational understanding.'}
 ${lessonNumber < pathOutline.totalLessons ? 'Prepare for upcoming lessons.' : 'Provide comprehensive conclusion and application.'}`;

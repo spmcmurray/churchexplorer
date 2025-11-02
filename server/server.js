@@ -203,16 +203,19 @@ app.post('/api/ai/generate-path-outline', async (req, res) => {
   "pathTitle": "string (engaging title for the learning path)",
   "pathDescription": "string (brief description of what the path covers)",
   "totalLessons": ${lessonCount},
+  "estimatedTime": "X-Y minutes per lesson",
   "lessons": [
     {
+      "lessonNumber": number (1 to ${lessonCount}),
       "title": "string (lesson title)",
       "description": "string (what this lesson covers)",
-      "order": number (1 to ${lessonCount})
+      "objectives": ["objective 1", "objective 2", "objective 3"]
     }
   ]
 }
 
-Make sure the content is theologically accurate and appropriate for Christian education.`;
+Make sure the content is theologically accurate and appropriate for Christian education.
+Each lesson should have 3-4 specific learning objectives.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
