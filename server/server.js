@@ -186,24 +186,33 @@ app.post('/api/ai/suggest-topics', async (req, res) => {
 // Learning path outline endpoint
 app.post('/api/ai/generate-path-outline', async (req, res) => {
   try {
-    const { pathType, lessonCount } = req.body;
+    const { topic, pathType, lessonCount, additionalContext } = req.body;
 
     if (!process.env.REACT_APP_OPENAI_API_KEY) {
       return res.status(500).json({ error: 'OpenAI API key not configured on server' });
     }
 
-    const prompt = `Create a learning path outline for "${pathType}" with ${lessonCount} lessons. Return ONLY a JSON object with this structure:
+    const prompt = `Create a learning path outline about "${topic}" with ${lessonCount} lessons.
+    
+    ${additionalContext ? `Additional context: ${additionalContext}` : ''}
+    
+    The path type is: ${pathType}
+    
+    Return ONLY a JSON object with this exact structure:
 {
-  "title": "string",
-  "description": "string",
+  "pathTitle": "string (engaging title for the learning path)",
+  "pathDescription": "string (brief description of what the path covers)",
+  "totalLessons": ${lessonCount},
   "lessons": [
     {
-      "title": "string",
-      "description": "string",
-      "order": number
+      "title": "string (lesson title)",
+      "description": "string (what this lesson covers)",
+      "order": number (1 to ${lessonCount})
     }
   ]
-}`;
+}
+
+Make sure the content is theologically accurate and appropriate for Christian education.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
