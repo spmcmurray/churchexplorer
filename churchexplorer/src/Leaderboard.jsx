@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Medal, Award, TrendingUp, ArrowLeft } from 'lucide-react';
-import { getLeaderboard, getUserRank } from './firebase/leaderboardService';
+import { Trophy, Medal, Award, TrendingUp, ArrowLeft, RefreshCw } from 'lucide-react';
+import { getLeaderboard, getUserRank, updateUserXP } from './firebase/leaderboardService';
 import { getUserProfile } from './firebase/authService';
 import { getTotalXP } from './services/progressService';
 
@@ -10,6 +10,28 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [syncing, setSyncing] = useState(false);
+
+  const syncLocalXPToFirestore = async () => {
+    if (!currentUser) return;
+    
+    setSyncing(true);
+    try {
+      const localXP = getTotalXP();
+      console.log('Syncing local XP to Firestore:', localXP);
+      await updateUserXP(currentUser.uid, localXP);
+      
+      // Refresh the leaderboard data
+      await loadLeaderboard();
+      
+      alert(`Successfully synced ${localXP} XP to Firestore!`);
+    } catch (error) {
+      console.error('Sync failed:', error);
+      alert('Failed to sync XP to Firestore');
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const loadLeaderboard = async () => {
     setLoading(true);
@@ -152,7 +174,18 @@ const Leaderboard = ({ currentUser, onNavigate, onGoBack, onSignOut }) => {
               </div>
               <div className="text-right">
                 <p className="text-blue-100 text-sm font-medium">Total XP</p>
-                <p className="text-3xl font-black">{userProfile?.totalXP || 0}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-3xl font-black">{userProfile?.totalXP || 0}</p>
+                  <button
+                    onClick={syncLocalXPToFirestore}
+                    disabled={syncing}
+                    className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition disabled:opacity-50"
+                    title="Sync local XP to Firestore"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+                <p className="text-xs text-blue-200">Local: {getTotalXP()} XP</p>
               </div>
             </div>
           </div>
