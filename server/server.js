@@ -239,11 +239,25 @@ Make sure the content is theologically accurate and appropriate for Christian ed
     const data = await response.json();
     let content = data.choices[0].message.content.trim();
     
+    console.log('OpenAI raw response for path outline:', content);
+    
     if (content.startsWith('```json')) {
       content = content.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
     }
 
     const outline = JSON.parse(content);
+    
+    console.log('Parsed outline:', JSON.stringify(outline, null, 2));
+    
+    // Validate the outline has required fields
+    if (!outline.lessons || !Array.isArray(outline.lessons)) {
+      console.error('Invalid outline structure - missing or invalid lessons array');
+      return res.status(500).json({ 
+        error: 'Invalid outline structure from AI',
+        message: 'The AI response did not include a valid lessons array'
+      });
+    }
+    
     res.json({ outline });
 
   } catch (error) {
