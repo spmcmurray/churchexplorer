@@ -12,8 +12,7 @@ import {
   AlertCircle,
   CheckCircle
 } from 'lucide-react';
-import { generateAILesson, generateTopicSuggestions } from '../services/aiLessonService';
-import { recordLessonCompletion } from '../firebase/progressService';
+import { generateAILesson, generateTopicSuggestions } from './services/aiLessonService';
 
 const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
   const [topic, setTopic] = useState('');
@@ -39,7 +38,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
   useEffect(() => {
     // Load topic suggestions when component mounts
     loadTopicSuggestions();
-  }, []);
+  }, [loadTopicSuggestions]);
 
   const loadTopicSuggestions = async () => {
     setLoadingSuggestions(true);

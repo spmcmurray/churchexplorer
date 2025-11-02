@@ -66,9 +66,39 @@ REQUIREMENTS:
 - Quiz questions should test understanding, not memorization
 - Include both historical context and modern relevance
 
-RESPONSE FORMAT: JSON object matching the lesson template structure exactly.
+CRITICAL: You must respond with a valid JSON object that matches this exact structure:
+{
+  "title": "string",
+  "subtitle": "string", 
+  "introduction": "string",
+  "sections": [
+    {
+      "title": "string",
+      "content": "string",
+      "keyPoints": ["string", "string", "string"]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "correct": 0,
+      "explanation": "string"
+    }
+  ],
+  "practicalApplication": "string",
+  "memorizeVerse": {
+    "reference": "string",
+    "text": "string"
+  },
+  "furtherReading": ["string", "string", "string"],
+  "reflection": {
+    "question": "string",
+    "prompt": "string"
+  }
+}
 
-EXAMPLE TOPICS: Church history, denominational differences, theological concepts, Biblical interpretation, Christian practices, etc.`;
+Do not include any text before or after the JSON object.`;
 };
 
 /**
@@ -100,7 +130,7 @@ export const generateAILesson = async (topic, additionalContext = '') => {
         'Authorization': `Bearer ${AI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4', // or 'gpt-3.5-turbo' for faster/cheaper generation
+        model: 'gpt-3.5-turbo', // Using 3.5-turbo instead of gpt-4 (more widely available)
         messages: [
           {
             role: 'system',
@@ -112,17 +142,34 @@ export const generateAILesson = async (topic, additionalContext = '') => {
           }
         ],
         temperature: 0.7,
-        max_tokens: 4000,
-        response_format: { type: "json_object" }
+        max_tokens: 2000 // Reduced from 4000 to avoid limits
+        // Removed response_format as it might not be supported
       })
     });
 
     if (!response.ok) {
-      throw new Error(`AI API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('AI API Error:', errorText);
+      throw new Error(`AI API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
-    const lessonContent = JSON.parse(data.choices[0].message.content);
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response format from AI API');
+    }
+
+    let lessonContent;
+    try {
+      const responseText = data.choices[0].message.content.trim();
+      // Remove any markdown code blocks if present
+      const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
+      lessonContent = JSON.parse(cleanedResponse);
+    } catch (parseError) {
+      console.error('JSON parsing error:', parseError);
+      console.error('Raw response:', data.choices[0].message.content);
+      throw new Error('Failed to parse AI response as JSON. Please try again.');
+    }
 
     // Validate the generated lesson structure
     const validatedLesson = validateAndEnhanceLesson(lessonContent, topic);
@@ -231,13 +278,35 @@ export const generateTopicSuggestions = async (userInterests = []) => {
           }
         ],
         temperature: 0.8,
-        max_tokens: 1000,
-        response_format: { type: "json_object" }
+        max_tokens: 1000
       })
     });
 
+    if (!response.ok) {
+      throw new Error(`AI API error: ${response.status} ${response.statusText}`);
+    }
+
     const data = await response.json();
-    const suggestions = JSON.parse(data.choices[0].message.content);
+    let suggestions;
+    try {
+      const responseText = data.choices[0].message.content.trim();
+      const cleanedResponse = responseText.replace(/```json\n?|\n?```/g, '');
+      suggestions = JSON.parse(cleanedResponse);
+    } catch (parseError) {
+      console.error('Failed to parse suggestions:', parseError);
+      // Return fallback suggestions if parsing fails
+      return {
+        success: false,
+        error: 'Failed to generate suggestions',
+        fallbackSuggestions: [
+          { title: 'Catholic Church Beliefs', description: 'Explore the core doctrines and practices of Catholicism' },
+          { title: 'Protestant Reformation', description: 'Learn about the key events and figures of the Reformation' },
+          { title: 'Eastern Orthodox Theology', description: 'Understand the distinctive beliefs of Eastern Christianity' },
+          { title: 'Baptist Traditions', description: 'Discover the history and practices of Baptist churches' },
+          { title: 'Pentecostal Movement', description: 'Learn about the modern Pentecostal and Charismatic movements' }
+        ]
+      };
+    }
 
     return {
       success: true,
