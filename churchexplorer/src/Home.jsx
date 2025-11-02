@@ -63,9 +63,9 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
             </>
           ) : (
             <>
-              <h1 className="text-4xl md:text-5xl font-black mb-4">Welcome! Let’s tailor your start</h1>
+              <h1 className="text-4xl md:text-5xl font-black mb-4">Welcome! Let's tailor your start</h1>
               <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
-                Pick a starting point, then we’ll show you the best paths.
+                Choose a topic below to begin your learning journey.
               </p>
 
               {/* Quick prompts */}
@@ -117,11 +117,11 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
                 <div className="flex items-center gap-2 text-slate-700 font-bold">
                   <Flame className="w-5 h-5" /> Your Progress
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6">
                   {getStreak() > 0 && (
                     <div className="text-right">
                       <div className="text-xs text-slate-500 font-medium">Streak</div>
-                      <div className="text-xl font-black text-orange-600 flex items-center gap-1">
+                      <div className="text-xl font-black text-orange-600 flex items-center justify-end gap-1">
                         <Flame className="w-5 h-5 fill-orange-500" />
                         {getStreak()}
                       </div>
@@ -131,7 +131,10 @@ const Home = ({ onNavigate, onStartOnboarding }) => {
                     <div className="text-xs text-slate-500 font-medium">Total XP</div>
                     <div className="text-xl font-black text-amber-600">{getTotalXP()}</div>
                   </div>
-                  <span className="text-2xl font-black text-blue-700">{overall.percentage}%</span>
+                  <div className="text-right">
+                    <div className="text-xs text-slate-500 font-medium">Complete</div>
+                    <div className="text-xl font-black text-blue-700">{overall.percentage}%</div>
+                  </div>
                 </div>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-3 mb-6">

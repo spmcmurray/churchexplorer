@@ -25,7 +25,7 @@ export const lesson1Data = {
       type: 'content',
       title: 'The Power of Oral Tradition',
       content: [
-        'In the ancient Near East, oral tradition wasn\'t like the "telephone game" we played as children. It was serious business!',
+        'In the ancient Near East, oral tradition wasn\'t like the "telephone game" we played as children. It was a carefully practiced discipline.',
         'Professional memorizers and storytellers trained for years to preserve sacred texts with remarkable accuracy. Jewish rabbis could recite the entire Torah from memory.',
         'Early Christian communities passed down Jesus\'s teachings orally for decades before they were written down. This oral period wasn\'t a weakness—it was a feature of ancient culture where memorization was prized.'
       ],
@@ -58,7 +58,7 @@ export const lesson1Data = {
         '📖 **Parchment**: Treated animal skin, expensive but lasted longer. This became the preferred material.',
         'Around the 2nd-4th centuries AD, Christians pioneered the "codex" format (pages bound together like a modern book) instead of scrolls.'
       ],
-      highlight: 'Revolutionary! With a codex, you could flip directly to John\'s Gospel instead of unrolling through Matthew, Mark, and Luke first!'
+      highlight: 'The codex format was revolutionary — you could flip directly to John\'s Gospel instead of unrolling through Matthew, Mark, and Luke first.'
     },
 
     // Card 5: Matching Game - Writing Materials

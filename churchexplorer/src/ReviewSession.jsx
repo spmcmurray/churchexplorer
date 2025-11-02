@@ -86,19 +86,19 @@ const ReviewSession = ({ lessonData, path, lessonNumber, onComplete, onExit }) =
             <h2 className="text-4xl font-black text-gray-900 mb-4">Review Complete! 🎉</h2>
             <p className="text-xl text-gray-600 mb-8">Great work reinforcing your knowledge!</p>
 
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-8 border-2 border-blue-200 shadow-lg">
-              <div className="grid grid-cols-3 gap-6">
-                <div>
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 sm:p-8 mb-8 border-2 border-blue-200 shadow-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-6">
+                <div className="text-center sm:text-left">
                   <p className="text-gray-600 text-sm mb-2">Score</p>
-                  <p className="text-4xl font-black text-blue-600">{score}%</p>
+                  <p className="text-2xl sm:text-4xl font-black text-blue-600">{score}%</p>
                 </div>
-                <div>
+                <div className="text-center sm:text-left">
                   <p className="text-gray-600 text-sm mb-2">Correct</p>
-                  <p className="text-4xl font-black text-green-600">{correctCount}/{totalQuestions}</p>
+                  <p className="text-2xl sm:text-4xl font-black text-green-600">{correctCount}/{totalQuestions}</p>
                 </div>
-                <div>
+                <div className="text-center sm:text-left">
                   <p className="text-gray-600 text-sm mb-2">XP Earned</p>
-                  <p className="text-4xl font-black text-yellow-600">+{xp}</p>
+                  <p className="text-2xl sm:text-4xl font-black text-yellow-600">+{xp}</p>
                 </div>
               </div>
             </div>
