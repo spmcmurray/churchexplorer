@@ -31,6 +31,38 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
     return bibleXP + churchXP + apologeticsXP;
   };
 
+  const getAIPathsProgress = () => {
+    try {
+      const savedPaths = localStorage.getItem('aiGeneratedPaths');
+      if (!savedPaths) return { completed: 0, total: 0 };
+      
+      const paths = JSON.parse(savedPaths);
+      let totalLessons = 0;
+      let completedLessons = 0;
+      
+      paths.forEach(path => {
+        if (path.lessons && Array.isArray(path.lessons)) {
+          totalLessons += path.lessons.length;
+          
+          // Check progress for this path
+          const progressKey = `aiPathProgress_${path.id || path.pathId}`;
+          const progress = localStorage.getItem(progressKey);
+          if (progress) {
+            const completed = JSON.parse(progress);
+            if (Array.isArray(completed)) {
+              completedLessons += completed.length;
+            }
+          }
+        }
+      });
+      
+      return { completed: completedLessons, total: totalLessons };
+    } catch (error) {
+      console.error('Error getting AI paths progress:', error);
+      return { completed: 0, total: 0 };
+    }
+  };
+
   const getStreak = () => {
     const streakData = localStorage.getItem('dailyChallengeStreak');
     if (!streakData) return 0;
@@ -147,7 +179,7 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
               </div>
             </>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <PathProgressCard
               title="Bible History"
               color="blue"
@@ -172,6 +204,14 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
               onClick={() => onNavigate('apologetics')}
               recommended={firstTime && startingPoint === 'apologetics'}
             />
+            <PathProgressCard
+              title="AI Learning Paths"
+              color="emerald"
+              completed={getAIPathsProgress().completed}
+              total={getAIPathsProgress().total}
+              onClick={() => onNavigate('ai-paths')}
+              isAI={true}
+            />
           </div>
         </div>
 
@@ -189,12 +229,13 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress }) => {
   );
 };
 
-const PathProgressCard = ({ title, color, completed, total, onClick, recommended }) => {
+const PathProgressCard = ({ title, color, completed, total, onClick, recommended, isAI }) => {
   const pct = total ? Math.round((completed / total) * 100) : 0;
   const colorMap = {
     blue: 'from-blue-500 to-indigo-500',
     amber: 'from-amber-500 to-orange-500',
     indigo: 'from-indigo-500 to-purple-500',
+    emerald: 'from-emerald-500 to-teal-500',
   };
   return (
     <button onClick={onClick} className={`text-left bg-white rounded-xl border-2 p-5 hover:shadow transition ${recommended ? 'border-blue-400 ring-2 ring-blue-200' : 'border-slate-200'}`}>
@@ -204,8 +245,11 @@ const PathProgressCard = ({ title, color, completed, total, onClick, recommended
           {recommended && (
             <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded-full">Recommended</span>
           )}
+          {isAI && (
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">✨ AI</span>
+          )}
         </h3>
-        <span className="text-sm font-bold text-slate-700">{pct}%</span>
+        <span className="text-sm font-bold text-slate-700">{total > 0 ? `${pct}%` : 'New'}</span>
       </div>
       <div className="w-full bg-slate-200 rounded-full h-2">
         <div className={`h-2 rounded-full bg-gradient-to-r ${colorMap[color]}`} style={{ width: `${pct}%` }}></div>
