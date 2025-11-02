@@ -237,9 +237,20 @@ function AppContent() {
             // Fetch Firestore progress and persist it locally so Home shows the correct data
             const progressResult = await getUserProgress(user.uid);
             
-            // Check if we need to migrate localStorage to Firestore
-            if (progressResult && (!progressResult.success || !progressResult.progress || progressResult.progress.totalXP === 0)) {
-              // Try to migrate local progress to Firestore
+            console.log('Auth state change - user logged in, fetching progress...');
+            console.log('Progress result:', progressResult);
+            
+            // Check if Firestore has actual course data (not just totalXP)
+            const hasFirestoreCourseData = progressResult?.success && 
+              progressResult.progress && 
+              (
+                (progressResult.progress.courses?.bible?.completedLessons?.length > 0) ||
+                (progressResult.progress.courses?.church?.completedLessons?.length > 0) ||
+                (progressResult.progress.courses?.apologetics?.completedLessons?.length > 0)
+              );
+            
+            if (!hasFirestoreCourseData) {
+              // Check if we have localStorage data to migrate
               const localBibleProgress = JSON.parse(localStorage.getItem('bibleHistoryProgress') || '[]');
               const localChurchProgress = JSON.parse(localStorage.getItem('churchHistoryProgress') || '[]');
               const localApologeticsProgress = JSON.parse(localStorage.getItem('apologeticsProgress') || '[]');
@@ -248,9 +259,16 @@ function AppContent() {
               const localApologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
               const localTotalXP = localBibleXP + localChurchXP + localApologeticsXP;
               
+              console.log('Local progress found:', {
+                totalXP: localTotalXP,
+                bible: localBibleProgress.length,
+                church: localChurchProgress.length,
+                apologetics: localApologeticsProgress.length
+              });
+              
               // If we have local progress, migrate it to Firestore
               if (localTotalXP > 0 || localBibleProgress.length > 0 || localChurchProgress.length > 0 || localApologeticsProgress.length > 0) {
-                console.log('Migrating localStorage progress to Firestore...');
+                console.log('🔄 Migrating localStorage progress to Firestore...');
                 const localProgress = {
                   totalXP: localTotalXP,
                   bibleProgress: localBibleProgress,
@@ -263,17 +281,29 @@ function AppContent() {
                 
                 const migrationResult = await migrateLocalProgressToFirestore(user.uid, localProgress);
                 if (migrationResult.success) {
-                  console.log('Successfully migrated progress to Firestore');
+                  console.log('✅ Successfully migrated progress to Firestore');
                   // Fetch the newly migrated progress
                   const newProgressResult = await getUserProgress(user.uid);
-                  if (newProgressResult.success) {
-                    // Progress is already in localStorage, just log success
-                    console.log('Progress synced from Firestore after migration');
+                  if (newProgressResult.success && newProgressResult.progress) {
+                    console.log('✅ Progress synced from Firestore after migration');
+                    // Now sync it back to localStorage to ensure consistency
+                    const p = newProgressResult.progress;
+                    localStorage.setItem('bibleHistoryProgress', JSON.stringify(p.courses?.bible?.completedLessons || []));
+                    localStorage.setItem('churchHistoryProgress', JSON.stringify(p.courses?.church?.completedLessons || []));
+                    localStorage.setItem('apologeticsProgress', JSON.stringify(p.courses?.apologetics?.completedLessons || []));
+                    localStorage.setItem('bibleHistoryTotalXP', String(p.courses?.bible?.totalXP || 0));
+                    localStorage.setItem('churchHistoryTotalXP', String(p.courses?.church?.totalXP || 0));
+                    localStorage.setItem('apologeticsTotalXP', String(p.courses?.apologetics?.totalXP || 0));
                   }
+                } else {
+                  console.error('❌ Migration failed:', migrationResult.error);
                 }
+              } else {
+                console.log('No local progress to migrate');
               }
             } else if (progressResult && progressResult.success && progressResult.progress) {
-              // Firestore has progress, sync it to localStorage
+              // Firestore has progress with course data, sync it to localStorage
+              console.log('✅ Firestore has course data, syncing to localStorage');
               const p = progressResult.progress;
               const localProgress = {
                 totalXP: p.totalXP || 0,

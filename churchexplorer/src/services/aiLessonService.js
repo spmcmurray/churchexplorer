@@ -485,7 +485,8 @@ export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate
 export const saveAIPathToLibrary = async (path, currentUser = null) => {
   try {
     // Save to localStorage (always)
-    const savedPaths = getSavedAIPaths();
+    // getSavedAIPaths is async (may read from Firestore), await it
+    const savedPaths = await getSavedAIPaths(currentUser);
     
     // Check if path already exists (by ID)
     const existingIndex = savedPaths.findIndex(p => p.id === path.id);
