@@ -2,6 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const admin = require('firebase-admin');
+
+// Initialize Firebase Admin
+admin.initializeApp({
+  projectId: process.env.FIREBASE_PROJECT_ID || 'church-explorer-20e5a',
+});
+
+const db = admin.firestore();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,24 +31,122 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
   // Handle the event
   console.log('Webhook event received:', event.type);
 
-  switch (event.type) {
-    case 'checkout.session.completed':
-      const session = event.data.object;
-      console.log('Checkout completed:', session.id);
-      // TODO: Update Firestore subscription
-      break;
-    case 'customer.subscription.updated':
-      console.log('Subscription updated');
-      // TODO: Update Firestore subscription
-      break;
-    case 'customer.subscription.deleted':
-      console.log('Subscription canceled');
-      // TODO: Update Firestore subscription to canceled
-      break;
-    case 'invoice.payment_failed':
-      console.log('Payment failed');
-      // TODO: Update Firestore subscription to past_due
-      break;
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        console.log('Checkout completed:', session.id);
+        
+        const userId = session.metadata.userId;
+        const customerId = session.customer;
+        const subscriptionId = session.subscription;
+        
+        // Determine tier from price ID
+        const priceId = session.line_items?.data[0]?.price?.id || 
+                       (await stripe.subscriptions.retrieve(subscriptionId)).items.data[0].price.id;
+        
+        let tier = 'free';
+        if (priceId === process.env.STRIPE_BASIC_PRICE_ID) {
+          tier = 'basic';
+        } else if (priceId === process.env.STRIPE_PREMIUM_PRICE_ID) {
+          tier = 'premium';
+        }
+        
+        // Get subscription details
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        
+        // Update Firestore
+        await db.collection('users').doc(userId).collection('subscription').doc('current').set({
+          tier: tier,
+          status: 'active',
+          stripeCustomerId: customerId,
+          stripeSubscriptionId: subscriptionId,
+          currentPeriodStart: new Date(subscription.current_period_start * 1000),
+          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true });
+        
+        console.log(`✅ Updated subscription for user ${userId} to ${tier}`);
+        break;
+        
+      case 'customer.subscription.updated':
+        const updatedSub = event.data.object;
+        console.log('Subscription updated:', updatedSub.id);
+        
+        // Find user by subscription ID
+        const subSnapshot = await db.collectionGroup('subscription')
+          .where('stripeSubscriptionId', '==', updatedSub.id)
+          .limit(1)
+          .get();
+        
+        if (!subSnapshot.empty) {
+          const userDoc = subSnapshot.docs[0].ref.parent.parent;
+          
+          // Determine new tier from price ID
+          const newPriceId = updatedSub.items.data[0].price.id;
+          let newTier = 'free';
+          if (newPriceId === process.env.STRIPE_BASIC_PRICE_ID) {
+            newTier = 'basic';
+          } else if (newPriceId === process.env.STRIPE_PREMIUM_PRICE_ID) {
+            newTier = 'premium';
+          }
+          
+          await subSnapshot.docs[0].ref.update({
+            tier: newTier,
+            status: updatedSub.status,
+            currentPeriodStart: new Date(updatedSub.current_period_start * 1000),
+            currentPeriodEnd: new Date(updatedSub.current_period_end * 1000),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+          
+          console.log(`✅ Updated subscription to ${newTier}, status: ${updatedSub.status}`);
+        }
+        break;
+        
+      case 'customer.subscription.deleted':
+        const deletedSub = event.data.object;
+        console.log('Subscription canceled:', deletedSub.id);
+        
+        // Find user by subscription ID
+        const delSnapshot = await db.collectionGroup('subscription')
+          .where('stripeSubscriptionId', '==', deletedSub.id)
+          .limit(1)
+          .get();
+        
+        if (!delSnapshot.empty) {
+          await delSnapshot.docs[0].ref.update({
+            status: 'canceled',
+            tier: 'free',
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+          
+          console.log(`✅ Canceled subscription, reverted to free tier`);
+        }
+        break;
+        
+      case 'invoice.payment_failed':
+        const failedInvoice = event.data.object;
+        console.log('Payment failed for subscription:', failedInvoice.subscription);
+        
+        // Find user by subscription ID
+        const failSnapshot = await db.collectionGroup('subscription')
+          .where('stripeSubscriptionId', '==', failedInvoice.subscription)
+          .limit(1)
+          .get();
+        
+        if (!failSnapshot.empty) {
+          await failSnapshot.docs[0].ref.update({
+            status: 'past_due',
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+          
+          console.log(`⚠️ Subscription marked as past_due`);
+        }
+        break;
+    }
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    return res.status(500).json({ error: 'Webhook processing failed' });
   }
 
   res.json({received: true});
