@@ -256,7 +256,7 @@ function AppContent() {
     if (!currentUser) return;
     
     try {
-      const { getUserProgress, getAIPathsFromFirestore } = await import('./firebase/progressService');
+      const { getUserProgress, getAIPathsFromFirestore, getAIPathProgressFromFirestore } = await import('./firebase/progressService');
       
       // Fetch fresh progress from Firestore (totalXP is in progress document)
       const progressResult = await getUserProgress(currentUser.uid);
@@ -267,11 +267,32 @@ function AppContent() {
         // Load AI paths
         const aiPathsResult = await getAIPathsFromFirestore(currentUser.uid);
         if (aiPathsResult.success) {
-          p.aiPaths = aiPathsResult.paths || [];
+          // Load progress for each AI path
+          const pathsWithProgress = await Promise.all(
+            (aiPathsResult.paths || []).map(async (path) => {
+              const progressResult = await getAIPathProgressFromFirestore(currentUser.uid, path.id);
+              if (progressResult.success && progressResult.progress) {
+                return {
+                  ...path,
+                  completedLessons: progressResult.progress.completedLessons || [],
+                  // Calculate if path is completed (all lessons done)
+                  completed: path.lessons && progressResult.progress.completedLessons 
+                    ? progressResult.progress.completedLessons.length >= path.lessons.length
+                    : false
+                };
+              }
+              return {
+                ...path,
+                completedLessons: [],
+                completed: false
+              };
+            })
+          );
+          p.aiPaths = pathsWithProgress;
         }
         
         setUserProgress(p);
-        console.log('✅ User progress refreshed, totalXP:', p.totalXP);
+        console.log('✅ User progress refreshed, totalXP:', p.totalXP, 'AI Paths:', p.aiPaths?.length);
       }
     } catch (error) {
       console.error('Error refreshing progress:', error);
@@ -431,11 +452,32 @@ function AppContent() {
               console.log('✅ Firestore has course data, syncing to localStorage');
               const p = progressResult.progress;
               
-              // Load AI paths from Firestore
-              const { getAIPathsFromFirestore } = await import('./firebase/progressService');
+              // Load AI paths from Firestore with progress data
+              const { getAIPathsFromFirestore, getAIPathProgressFromFirestore } = await import('./firebase/progressService');
               const aiPathsResult = await getAIPathsFromFirestore(user.uid);
               if (aiPathsResult.success) {
-                p.aiPaths = aiPathsResult.paths || [];
+                // Load progress for each AI path
+                const pathsWithProgress = await Promise.all(
+                  (aiPathsResult.paths || []).map(async (path) => {
+                    const progressResult = await getAIPathProgressFromFirestore(user.uid, path.id);
+                    if (progressResult.success && progressResult.progress) {
+                      return {
+                        ...path,
+                        completedLessons: progressResult.progress.completedLessons || [],
+                        // Calculate if path is completed (all lessons done)
+                        completed: path.lessons && progressResult.progress.completedLessons 
+                          ? progressResult.progress.completedLessons.length >= path.lessons.length
+                          : false
+                      };
+                    }
+                    return {
+                      ...path,
+                      completedLessons: [],
+                      completed: false
+                    };
+                  })
+                );
+                p.aiPaths = pathsWithProgress;
                 console.log('✅ Loaded AI paths from Firestore:', p.aiPaths.length);
               } else {
                 p.aiPaths = [];

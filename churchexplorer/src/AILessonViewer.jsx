@@ -165,8 +165,9 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
       const completedKey = `aiLesson_${lesson.id}_completed`;
       localStorage.setItem(completedKey, 'true');
       
-      // If user is logged in, also save to Firestore
+      // If user is logged in, save to Firestore
       if (currentUser) {
+        // Award XP to total
         const result = await completeCourseLesson(
           currentUser.uid, 
           'ai_generated', 
@@ -175,6 +176,24 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
         );
         
         if (result.success) {
+          // If lesson belongs to an AI path, update path progress
+          if (lesson.pathId) {
+            const { saveAIPathProgressToFirestore, getAIPathProgressFromFirestore } = await import('./firebase/progressService');
+            
+            // Get current path progress
+            const progressResult = await getAIPathProgressFromFirestore(currentUser.uid, lesson.pathId);
+            const currentCompleted = progressResult.success && progressResult.progress 
+              ? progressResult.progress.completedLessons || []
+              : [];
+            
+            // Add this lesson if not already completed
+            if (!currentCompleted.includes(lesson.id)) {
+              const updatedCompleted = [...currentCompleted, lesson.id];
+              await saveAIPathProgressToFirestore(currentUser.uid, lesson.pathId, updatedCompleted);
+              console.log('✅ Updated AI path progress:', lesson.pathId, updatedCompleted.length, 'lessons');
+            }
+          }
+          
           setLessonCompleted(true);
           
           // Trigger progress refresh in parent App component
