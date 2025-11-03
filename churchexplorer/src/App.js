@@ -32,13 +32,17 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
           {/* Right Side: Hamburger Menu + Profile */}
           <div className="flex items-center space-x-3">
             {/* Hamburger Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
-              aria-label="Open menu"
-            >
-              <Menu className="w-6 h-6 text-white" />
-            </button>
+              {authLoading ? (
+                <div className="w-8 h-8 bg-white/20 rounded-lg animate-pulse" aria-hidden="true" />
+              ) : (
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
+                  aria-label="Open menu"
+                >
+                  <Menu className="w-6 h-6 text-white" />
+                </button>
+              )}
 
             {/* User Account Section */}
             <div className="relative">
@@ -306,10 +310,14 @@ function AppContent() {
         setShowAuth(false);
       }
       
-      // Clear sign-up prompt tracking when user signs in
+      // Mark sign-up prompt as seen when user signs in so it won't reappear
       if (user) {
-        localStorage.removeItem('hasSeenSignUpPrompt');
-        localStorage.removeItem('firstAchievementTime');
+        try {
+          localStorage.setItem('hasSeenSignUpPrompt', 'true');
+          // Keep a record of first achievement time if it exists, but don't use it to re-trigger prompts
+        } catch (e) {
+          console.warn('Could not persist sign-up prompt state', e);
+        }
         setShowSignUpPrompt(false);
       }
 
