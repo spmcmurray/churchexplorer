@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-require('dotenv').config({ path: '../churchexplorer/.env' });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
