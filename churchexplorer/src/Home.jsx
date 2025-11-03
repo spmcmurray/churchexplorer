@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, UserPlus } from 'lucide-react';
+import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, UserPlus, Award, Trophy } from 'lucide-react';
 import DailyChallenge from './DailyChallenge';
 import { getDueReviews } from './services/reviewService';
 
@@ -83,6 +83,26 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Refresh progress when returning to Home page
+  useEffect(() => {
+    if (onProgressUpdate && currentUser) {
+      onProgressUpdate();
+    }
+  }, [onProgressUpdate, currentUser]);
+
+  const getTimeBasedGreeting = () => {
+    const hour = new Date().getHours();
+    const firstName = currentUser?.displayName ? currentUser.displayName.split(' ')[0] : '';
+    
+    if (hour < 12) {
+      return `Good morning${firstName ? `, ${firstName}` : ''}`;
+    } else if (hour < 17) {
+      return `Good afternoon${firstName ? `, ${firstName}` : ''}`;
+    } else {
+      return `Good evening${firstName ? `, ${firstName}` : ''}`;
+    }
+  };
 
   const getTotalXP = () => {
     // Use Firestore progress from props as single source of truth
@@ -190,47 +210,58 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Hero */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16 px-4">
-        <div className="max-w-5xl mx-auto">
+      <div className="relative overflow-hidden text-white py-12 px-4">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-700 animate-gradient-shift"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500 via-blue-500 to-purple-700 opacity-60 animate-gradient-shift-reverse"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-5xl mx-auto z-10">
           {!firstTime ? (
             <>
-              <h1 className="text-4xl md:text-5xl font-black mb-4">Understand the Roots of Your Faith</h1>
-              <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
-                Explore where Christianity came from, how the Bible was formed, and why it matters—all in one guided journey.
+              {/* Personalized greeting for returning users */}
+              <h1 className="text-3xl md:text-4xl font-black mb-3">{getTimeBasedGreeting()}</h1>
+              <p className="text-base md:text-lg text-blue-100 max-w-3xl">
+                Ready to continue your journey? Pick up where you left off or explore something new.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <button
                   onClick={() => onNavigate(getPathMeta(rec.pathId).view)}
-                  className="flex items-center gap-2 bg-white text-blue-700 px-6 py-3 rounded-xl font-bold shadow hover:shadow-md"
+                  className="flex items-center gap-2 bg-white text-blue-700 px-6 py-3 rounded-xl font-bold shadow hover:shadow-md transition-all hover:scale-105"
                 >
-                  <PlayCircle className="w-5 h-5" /> Continue • {meta.title} L{rec.nextLesson}
+                  <PlayCircle className="w-5 h-5" /> Continue Learning • {meta.title} L{rec.nextLesson}
                 </button>
               </div>
             </>
           ) : (
             <>
-              <h1 className="text-4xl md:text-5xl font-black mb-4">Welcome! Let's tailor your start</h1>
-              <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
-                Choose a topic below to begin your learning journey.
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-white/20 backdrop-blur rounded-full px-4 py-2 border border-white/30">
+                  <span className="text-sm font-semibold">✨ New here?</span>
+                </div>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black mb-3">Let's build your learning path</h1>
+                            <p className="text-base md:text-lg text-blue-100 max-w-3xl">
+                Choose a topic that interests you, and we'll guide you through it step by step.
               </p>
 
               {/* Quick prompts */}
-              <div className="mt-8 grid md:grid-cols-1 gap-4">
-                <div className="bg-white/10 backdrop-blur rounded-2xl p-4 border border-white/20">
-                  <h2 className="font-bold mb-3">What’s your starting point?</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="mt-6 grid md:grid-cols-1 gap-4">
+                <div className="bg-white/10 backdrop-blur rounded-2xl p-5 border border-white/20">
+                  <h2 className="font-bold mb-4 text-lg">🎯 What interests you most?</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <Pick
-                      label="Bible"
+                      label="📖 Bible"
                       active={startingPoint === 'bible'}
                       onClick={() => setStartingPoint('bible')}
                     />
                     <Pick
-                      label="Church History"
+                      label="⛪ Church History"
                       active={startingPoint === 'church'}
                       onClick={() => setStartingPoint('church')}
                     />
                     <Pick
-                      label="Apologetics"
+                      label="💡 Apologetics"
                       active={startingPoint === 'apologetics'}
                       onClick={() => setStartingPoint('apologetics')}
                     />
@@ -242,11 +273,11 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
                 <button
                   disabled={!canCreate}
                   onClick={handleQuickStart}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold shadow ${
-                    canCreate ? 'bg-white text-blue-700 hover:shadow-md' : 'bg-white/30 text-white/60 cursor-not-allowed'
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold shadow transition-all ${
+                    canCreate ? 'bg-white text-blue-700 hover:shadow-md hover:scale-105' : 'bg-white/30 text-white/60 cursor-not-allowed'
                   }`}
                 >
-                  <Sparkles className="w-5 h-5" /> Start with my recommendation
+                  <Sparkles className="w-5 h-5" /> {canCreate ? 'Start My Journey' : 'Choose a topic to begin'}
                 </button>
               </div>
             </>
@@ -281,35 +312,38 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
 
       {/* Progress Sections */}
       <div className="max-w-5xl mx-auto px-4 py-10">
+        {/* Stats Pills for returning users */}
+        {!firstTime && userProgress && (
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            {getStreak() > 0 && (
+              <div className="bg-orange-500/10 backdrop-blur rounded-full px-5 py-2.5 border-2 border-orange-400/30 flex items-center gap-2 shadow-sm">
+                <Flame className="w-5 h-5 fill-orange-500 text-orange-600" />
+                <span className="text-sm font-bold text-orange-700">{getStreak()} day streak</span>
+              </div>
+            )}
+            {getTotalXP() > 0 && (
+              <div className="bg-amber-500/10 backdrop-blur rounded-full px-5 py-2.5 border-2 border-amber-400/30 flex items-center gap-2 shadow-sm">
+                <Award className="w-5 h-5 text-amber-600" />
+                <span className="text-sm font-bold text-amber-700">{getTotalXP()} XP</span>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Stats Overview */}
         {!firstTime && userProgress && (
           <div className="bg-white rounded-2xl border-2 border-slate-200 shadow p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-slate-700 font-bold">
-                <Flame className="w-5 h-5" /> Your Progress
+              <div className="flex items-center gap-2 text-slate-700 font-bold text-lg">
+                <BookOpen className="w-5 h-5" /> Learning Progress
               </div>
-              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6">
-                {getStreak() > 0 && (
-                  <div className="text-right">
-                    <div className="text-xs text-slate-500 font-medium">Streak</div>
-                    <div className="text-xl font-black text-orange-600 flex items-center justify-end gap-1">
-                      <Flame className="w-5 h-5 fill-orange-500" />
-                      {getStreak()}
-                    </div>
-                  </div>
-                )}
-                <div className="text-right">
-                  <div className="text-xs text-slate-500 font-medium">Total XP</div>
-                  <div className="text-xl font-black text-amber-600">{getTotalXP()}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-slate-500 font-medium">Complete</div>
-                  <div className="text-xl font-black text-blue-700">{overall.percentage}%</div>
-                </div>
+              <div className="text-right">
+                <div className="text-2xl font-black text-blue-700">{overall.percentage}%</div>
+                <div className="text-xs text-slate-500 font-medium">Complete</div>
               </div>
             </div>
             <div className="w-full bg-slate-200 rounded-full h-3">
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full" style={{ width: `${overall.percentage}%` }}></div>
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all" style={{ width: `${overall.percentage}%` }}></div>
             </div>
           </div>
         )}

@@ -11,6 +11,104 @@ const AI_API_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localho
 const AI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
 /**
+ * Validate topic before generation using AI to analyze intent
+ * Returns { valid: boolean, message: string }
+ */
+const validateTopic = async (topic, additionalContext = '') => {
+  const combinedText = `${topic} ${additionalContext}`.trim();
+  
+  // Check if topic is too short or generic
+  if (combinedText.length < 3) {
+    return {
+      valid: false,
+      message: 'Please enter a more specific topic for your lesson.'
+    };
+  }
+
+  // Use AI to validate the topic's alignment with orthodox Christian teaching
+  try {
+    const response = await fetch(`${AI_API_ENDPOINT}/validate-topic`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        topic: combinedText,
+        validationPrompt: `You are a content moderator for a Christian educational platform that teaches historic, orthodox Christian doctrine. 
+
+Your task is to evaluate if the following lesson topic request is appropriate for our platform.
+
+REJECT topics that:
+- Advocate for progressive theology or revisionist interpretations that contradict historic Christian teaching
+- Promote LGBTQ+ theology, gender identity ideology, or sexual ethics contrary to biblical teaching
+- Argue for women in senior pastoral roles (pastors, elders) or women's ordination
+- Advocate for political movements, social justice activism, or critical theory
+- Promote abortion, premarital sex, cohabitation, or other behaviors contrary to Christian ethics
+- Request content that undermines biblical authority or promotes theological liberalism
+- Seek to "make a case" for positions contrary to orthodox Christian teaching
+
+ACCEPT topics that:
+- Teach what the Bible says about various topics (even controversial ones)
+- Explain historic Christian positions on theology, doctrine, or ethics
+- Present apologetics defending the Christian faith
+- Explore church history, biblical history, or Christian doctrine
+- Discuss how Christians should think about modern issues from a biblical perspective
+
+Topic to evaluate: "${combinedText}"
+
+Respond with ONLY a JSON object in this exact format:
+{"approved": true/false, "reason": "brief explanation"}
+
+Do not include any other text or formatting.`
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Topic validation API error:', response.status);
+      // If validation fails, allow the topic (fail open to avoid blocking legitimate requests)
+      return { valid: true };
+    }
+
+    const data = await response.json();
+    
+    // Parse the AI response
+    let result;
+    if (data.validationResult) {
+      try {
+        // Try to parse the AI's response as JSON
+        const cleanedResponse = data.validationResult.trim();
+        result = JSON.parse(cleanedResponse);
+      } catch (e) {
+        console.error('Failed to parse validation result:', e);
+        // If we can't parse, check for keywords in the response
+        const responseText = data.validationResult.toLowerCase();
+        result = {
+          approved: !responseText.includes('"approved": false') && !responseText.includes('not appropriate'),
+          reason: 'Unable to parse validation response'
+        };
+      }
+    } else {
+      console.error('No validation result in response');
+      return { valid: true }; // Fail open
+    }
+
+    if (!result.approved) {
+      return {
+        valid: false,
+        message: 'This topic is outside our educational scope. Church Explorer focuses on historic Christian teaching and theology. Please try a different topic related to Bible study, church history, apologetics, or Christian doctrine.'
+      };
+    }
+
+    return { valid: true };
+
+  } catch (error) {
+    console.error('Topic validation error:', error);
+    // Fail open - allow the topic if validation fails to avoid blocking legitimate requests
+    return { valid: true };
+  }
+};
+
+/**
  * Generate a system prompt for the AI based on existing lesson examples
  */
 const generateSystemPrompt = () => {
@@ -124,6 +222,12 @@ Do not include any text before or after the JSON object.`;
  * Generate lesson content using AI
  */
 export const generateAILesson = async (topic, additionalContext = '') => {
+  // Validate topic before making API call
+  const validation = await validateTopic(topic, additionalContext);
+  if (!validation.valid) {
+    throw new Error(validation.message);
+  }
+  
   try {
     // Always use the proxy server for security
     const response = await fetch(`${AI_API_ENDPOINT}/generate-lesson`, {
@@ -290,6 +394,12 @@ export const generateTopicSuggestions = async (userInterests = []) => {
  * Generate a learning path outline (lesson titles and descriptions)
  */
 export const generateLearningPathOutline = async (topic, pathType, additionalContext = '') => {
+  // Validate topic before making API call
+  const validation = await validateTopic(topic, additionalContext);
+  if (!validation.valid) {
+    throw new Error(validation.message);
+  }
+  
   try {
     const lessonCounts = {
       'quick': 1,

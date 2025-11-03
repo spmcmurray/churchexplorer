@@ -96,8 +96,13 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="relative overflow-hidden text-white py-16 px-4">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-blue-500 to-purple-700 animate-gradient-shift"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-blue-500 via-purple-500 to-blue-700 opacity-60 animate-gradient-shift-reverse"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-4xl mx-auto text-center z-10">
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="w-12 h-12 mr-3" />
             <h1 className="text-4xl md:text-5xl font-bold">{path.title || 'AI Learning Path'}</h1>

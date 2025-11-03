@@ -50,8 +50,13 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16 px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="relative overflow-hidden text-white py-16 px-4">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-700 animate-gradient-shift"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500 via-blue-500 to-purple-700 opacity-60 animate-gradient-shift-reverse"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-6xl mx-auto z-10">
           <h1 className="text-4xl md:text-5xl font-black mb-4">Curated Learning Paths</h1>
           <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
             Three guided journeys to understand the Bible, Church, and Christian faith.

@@ -14,6 +14,14 @@ body {
   .animate-slideUp {
     animation: slideUp 0.4s ease-out;
   }
+  
+  .animate-gradient-shift {
+    animation: gradientShift 8s ease-in-out infinite;
+  }
+  
+  .animate-gradient-shift-reverse {
+    animation: gradientShiftReverse 12s ease-in-out infinite;
+  }
 }
 
 @keyframes fadeIn {
@@ -33,6 +41,28 @@ body {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+    background-size: 400% 400%;
+  }
+  50% {
+    background-position: 100% 50%;
+    background-size: 400% 400%;
+  }
+}
+
+@keyframes gradientShiftReverse {
+  0%, 100% {
+    background-position: 100% 50%;
+    background-size: 400% 400%;
+  }
+  50% {
+    background-position: 0% 50%;
+    background-size: 400% 400%;
   }
 }
 

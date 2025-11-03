@@ -419,8 +419,13 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       )}
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white py-12 px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="relative overflow-hidden text-white py-12 px-4">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-blue-500 to-indigo-700 animate-gradient-shift"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500 via-purple-500 to-blue-700 opacity-60 animate-gradient-shift-reverse"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-6xl mx-auto z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-white/20 backdrop-blur-md p-3 rounded-2xl shadow-lg">

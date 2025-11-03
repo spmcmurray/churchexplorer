@@ -325,8 +325,13 @@ const ChurchHistoryGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="relative overflow-hidden text-white py-16 px-4">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 animate-gradient-shift"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-orange-500 via-amber-500 to-orange-700 opacity-60 animate-gradient-shift-reverse"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-4xl mx-auto text-center z-10">
           <div className="flex items-center justify-center mb-4">
             <Scroll className="w-12 h-12 mr-3" />
             <h1 className="text-4xl md:text-5xl font-bold">Church History Study Guide</h1>

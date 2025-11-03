@@ -290,6 +290,55 @@ Each lesson should have 3-4 specific learning objectives.`;
   }
 });
 
+// Topic validation endpoint
+app.post('/api/ai/validate-topic', async (req, res) => {
+  try {
+    const { topic, validationPrompt } = req.body;
+
+    if (!process.env.REACT_APP_OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'OpenAI API key not configured on server' });
+    }
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: validationPrompt
+          }
+        ],
+        temperature: 0.1, // Low temperature for consistent moderation
+        max_tokens: 150
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'OpenAI API request failed');
+    }
+
+    const data = await response.json();
+    const validationResult = data.choices[0].message.content.trim();
+    
+    console.log('Topic validation result:', validationResult);
+    
+    res.json({ validationResult });
+
+  } catch (error) {
+    console.error('Error validating topic:', error);
+    res.status(500).json({ 
+      error: 'Failed to validate topic',
+      message: error.message 
+    });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -224,8 +224,13 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16 px-4">
-        <div className="max-w-5xl mx-auto">
+      <div className="relative overflow-hidden text-white py-16 px-4">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-blue-500 to-purple-700 animate-gradient-shift"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-blue-500 via-purple-500 to-blue-700 opacity-60 animate-gradient-shift-reverse"></div>
+        
+        {/* Content */}
+        <div className="relative max-w-5xl mx-auto z-10">
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
               <Brain className="w-10 h-10 text-white" />
