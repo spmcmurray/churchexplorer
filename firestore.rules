@@ -25,6 +25,12 @@ service cloud.firestore {
         allow write: if isOwner(userId);
       }
       
+      // Subscription subcollection - users can read their own subscription
+      match /subscription/{subscriptionId} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId);
+      }
+      
       // AI generated paths subcollection
       match /aiPaths/{pathId} {
         allow read: if isOwner(userId);

@@ -23,25 +23,59 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
     productUpdates: false,
   });
 
-  // Load subscription data
+  // Load subscription data with real-time updates
   useEffect(() => {
-    const loadSubscription = async () => {
-      if (!currentUser) return;
-      
+    if (!currentUser) return;
+    
+    let unsubscribe;
+    
+    const setupSubscriptionListener = async () => {
       try {
-        const { getUserSubscription } = await import('./firebase/subscriptionService');
-        const result = await getUserSubscription(currentUser.uid);
-        if (result.success) {
-          setSubscription(result.subscription);
-        }
+        const { db } = await import('./firebase/config');
+        const { doc, onSnapshot } = await import('firebase/firestore');
+        
+        // Listen to subscription changes in real-time
+        unsubscribe = onSnapshot(
+          doc(db, 'users', currentUser.uid, 'subscription', 'current'),
+          (docSnapshot) => {
+            if (docSnapshot.exists()) {
+              const data = docSnapshot.data();
+              setSubscription({
+                tier: data.tier || 'free',
+                status: data.status || 'active',
+                currentPeriodEnd: data.currentPeriodEnd?.toDate?.() || null,
+                stripeCustomerId: data.stripeCustomerId || null,
+                stripeSubscriptionId: data.stripeSubscriptionId || null,
+              });
+            } else {
+              // No subscription document = free tier
+              setSubscription({
+                tier: 'free',
+                status: 'active',
+                currentPeriodEnd: null,
+                stripeCustomerId: null,
+                stripeSubscriptionId: null,
+              });
+            }
+            setLoading(false);
+          },
+          (error) => {
+            console.error('Error listening to subscription:', error);
+            setLoading(false);
+          }
+        );
       } catch (error) {
-        console.error('Error loading subscription:', error);
-      } finally {
+        console.error('Error setting up subscription listener:', error);
         setLoading(false);
       }
     };
 
-    loadSubscription();
+    setupSubscriptionListener();
+    
+    // Cleanup listener on unmount
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [currentUser]);
 
   const getTierIcon = (tier) => {

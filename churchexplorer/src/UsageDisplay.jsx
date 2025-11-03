@@ -113,7 +113,11 @@ const UsageDisplay = ({ userId, compact = false, onUpgradeClick }) => {
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Clock className="w-4 h-4" />
         <span>
-          Resets {usage.periodEnd ? new Date(usage.periodEnd.toDate()).toLocaleDateString() : 'soon'}
+          Resets {usage.periodEnd ? (
+            usage.periodEnd.toDate ? 
+              new Date(usage.periodEnd.toDate()).toLocaleDateString() : 
+              new Date(usage.periodEnd).toLocaleDateString()
+          ) : 'soon'}
         </span>
       </div>
 

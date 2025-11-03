@@ -18,18 +18,20 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 // For webhook, we need raw body - add this before express.json()
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+  console.log('🔔 Webhook received at', new Date().toISOString());
   const sig = req.headers['stripe-signature'];
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    console.log('✅ Webhook signature verified');
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    console.error('❌ Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   // Handle the event
-  console.log('Webhook event received:', event.type);
+  console.log('📩 Webhook event received:', event.type, 'ID:', event.id);
 
   try {
     switch (event.type) {
