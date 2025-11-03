@@ -506,10 +506,31 @@ export const getSavedAIPaths = async (currentUser = null) => {
   try {
     // If user is logged in, load from Firestore
     if (currentUser?.uid) {
-      const { getAIPathsFromFirestore } = await import('../firebase/progressService');
+      const { getAIPathsFromFirestore, getAIPathProgressFromFirestore } = await import('../firebase/progressService');
       const result = await getAIPathsFromFirestore(currentUser.uid);
       if (result.success) {
-        return result.paths || [];
+        // Load progress for each AI path and merge it in
+        const pathsWithProgress = await Promise.all(
+          (result.paths || []).map(async (path) => {
+            const progressResult = await getAIPathProgressFromFirestore(currentUser.uid, path.id);
+            if (progressResult.success && progressResult.progress) {
+              return {
+                ...path,
+                completedLessons: progressResult.progress.completedLessons || [],
+                // Calculate if path is completed (all lessons done)
+                completed: path.lessons && progressResult.progress.completedLessons 
+                  ? progressResult.progress.completedLessons.length >= path.lessons.length
+                  : false
+              };
+            }
+            return {
+              ...path,
+              completedLessons: [],
+              completed: false
+            };
+          })
+        );
+        return pathsWithProgress;
       }
     }
     
@@ -569,9 +590,6 @@ const aiLessonService = {
   generatePathLesson,
   generateCompleteLearningPath,
   saveAILessonForReview,
-  saveAILessonToLibrary,
-  getSavedAILessons,
-  deleteAILesson,
   saveAIPathToLibrary,
   getSavedAIPaths,
   deleteAIPath

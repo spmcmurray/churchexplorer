@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Globe, LogIn, UserPlus, X } from 'lucide-react';
 import { signUp, signIn } from './firebase/authService';
-import { getTotalXP } from './services/progressService';
 
 const Auth = ({ onSuccess, onClose }) => {
   const [isSignUp, setIsSignUp] = useState(true);
@@ -37,15 +36,12 @@ const Auth = ({ onSuccess, onClose }) => {
       let result;
       
       if (isSignUp) {
-        // Sign up - migrate localStorage XP to new account
+        // Sign up - create new account
         if (!formData.firstName || !formData.lastName || !formData.country) {
           setError('Please fill in all fields');
           setLoading(false);
           return;
         }
-        
-        // Get current XP from localStorage to migrate to new account
-        const currentXP = getTotalXP();
         
         result = await signUp(
           formData.email, 
@@ -53,13 +49,8 @@ const Auth = ({ onSuccess, onClose }) => {
           formData.firstName, 
           formData.lastName, 
           formData.country,
-          currentXP // Pass localStorage XP to be saved in Firestore
+          0 // New accounts start with 0 XP
         );
-        
-        // Show success message if XP was migrated
-        if (result.success && currentXP > 0) {
-          console.log(`Successfully migrated ${currentXP} XP to new account!`);
-        }
       } else {
         // Sign in
         result = await signIn(formData.email, formData.password);

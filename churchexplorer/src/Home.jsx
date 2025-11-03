@@ -1,18 +1,83 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, UserPlus } from 'lucide-react';
-import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile, saveProfile } from './services/progressService';
 import DailyChallenge from './DailyChallenge';
-import { getDueReviews, getMasteryInfo } from './services/reviewService';
+import { getDueReviews } from './services/reviewService';
 
 const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, currentUser, onProgressUpdate }) => {
-  const overall = getOverallProgress();
-  const existingProfile = getProfile();
-  const rec = getContinueRecommendation();
-  const meta = getPathMeta(rec.pathId);
-
-  const firstTime = useMemo(() => !existingProfile && overall.percentage === 0, [existingProfile, overall.percentage]);
+  const firstTime = useMemo(() => !userProgress || !userProgress.totalXP || userProgress.totalXP === 0, [userProgress]);
   const [startingPoint, setStartingPoint] = useState('');
   const canCreate = !!startingPoint;
+
+  // Calculate overall progress from userProgress
+  const overall = useMemo(() => {
+    if (!userProgress) {
+      return {
+        percentage: 0,
+        paths: {
+          bible: { completedCount: 0, total: 8 },
+          church: { completedCount: 0, total: 8 },
+          apologetics: { completedCount: 0, total: 8 }
+        }
+      };
+    }
+
+    const bibleLessons = userProgress.courses?.bible?.completedLessons?.length || 0;
+    const churchLessons = userProgress.courses?.church?.completedLessons?.length || 0;
+    const apologeticsLessons = userProgress.courses?.apologetics?.completedLessons?.length || 0;
+
+    const totalCompleted = bibleLessons + churchLessons + apologeticsLessons;
+    const totalLessons = 8 + 8 + 8; // bible + church + apologetics (all have 8 lessons)
+    const percentage = totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
+
+    return {
+      percentage,
+      paths: {
+        bible: { completedCount: bibleLessons, total: 8 },
+        church: { completedCount: churchLessons, total: 8 },
+        apologetics: { completedCount: apologeticsLessons, total: 8 }
+      }
+    };
+  }, [userProgress]);
+
+  // Get continue recommendation from userProgress
+  const rec = useMemo(() => {
+    if (!userProgress) return { pathId: 'bible', nextLesson: 1 };
+
+    const bibleLessons = userProgress.courses?.bible?.completedLessons?.length || 0;
+    const churchLessons = userProgress.courses?.church?.completedLessons?.length || 0;
+    const apologeticsLessons = userProgress.courses?.apologetics?.completedLessons?.length || 0;
+
+    // Find path with partial progress (started but not finished)
+    if (bibleLessons > 0 && bibleLessons < 8) {
+      return { pathId: 'bible', nextLesson: bibleLessons + 1 };
+    }
+    if (churchLessons > 0 && churchLessons < 8) {
+      return { pathId: 'church', nextLesson: churchLessons + 1 };
+    }
+    if (apologeticsLessons > 0 && apologeticsLessons < 8) {
+      return { pathId: 'apologetics', nextLesson: apologeticsLessons + 1 };
+    }
+
+    // Default to first incomplete path
+    if (bibleLessons < 8) return { pathId: 'bible', nextLesson: bibleLessons + 1 };
+    if (churchLessons < 8) return { pathId: 'church', nextLesson: churchLessons + 1 };
+    if (apologeticsLessons < 8) return { pathId: 'apologetics', nextLesson: apologeticsLessons + 1 };
+
+    // All complete, default to bible
+    return { pathId: 'bible', nextLesson: 1 };
+  }, [userProgress]);
+
+  // Get path metadata
+  const getPathMeta = (pathId) => {
+    const paths = {
+      bible: { title: 'Bible History', view: 'bible-history' },
+      church: { title: 'Church History', view: 'study-guide' },
+      apologetics: { title: 'Apologetics', view: 'apologetics' }
+    };
+    return paths[pathId] || paths.bible;
+  };
+
+  const meta = getPathMeta(rec.pathId);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -78,21 +143,33 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
 
   // Sort and filter paths: started-incomplete first, then not-started, hide completed
   const sortPaths = (paths) => {
-    return paths
-      .filter(p => !p.isCompleted) // Hide completed paths
-      .sort((a, b) => {
-        const aStarted = a.completed > 0;
-        const bStarted = b.completed > 0;
-        
-        // Started paths come first
-        if (aStarted && !bStarted) return -1;
-        if (!aStarted && bStarted) return 1;
-        
-        // Within same category, sort by completion percentage
-        const aPct = a.total > 0 ? a.completed / a.total : 0;
-        const bPct = b.total > 0 ? b.completed / b.total : 0;
-        return bPct - aPct;
-      });
+    // Separate completed and non-completed paths
+    const nonCompleted = paths.filter(p => !p.isCompleted);
+    const completed = paths.filter(p => p.isCompleted);
+    
+    // Sort non-completed paths (started first, then by completion percentage)
+    const sortedNonCompleted = nonCompleted.sort((a, b) => {
+      const aStarted = a.completed > 0;
+      const bStarted = b.completed > 0;
+      
+      // Started paths come first
+      if (aStarted && !bStarted) return -1;
+      if (!aStarted && bStarted) return 1;
+      
+      // Within same category, sort by completion percentage
+      const aPct = a.total > 0 ? a.completed / a.total : 0;
+      const bPct = b.total > 0 ? b.completed / b.total : 0;
+      return bPct - aPct;
+    });
+    
+    // If we have fewer than 3 non-completed paths, add some completed ones
+    if (sortedNonCompleted.length < 3) {
+      const needed = 3 - sortedNonCompleted.length;
+      const completedToShow = completed.slice(0, needed);
+      return [...sortedNonCompleted, ...completedToShow];
+    }
+    
+    return sortedNonCompleted;
   };
 
   const getStreak = () => {
@@ -105,8 +182,7 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
 
   const handleQuickStart = () => {
     if (!canCreate) return;
-  const profile = saveProfile({ startingPoint });
-    const startId = profile.startingPoint || 'bible';
+    const startId = startingPoint || 'bible';
     const startView = getPathMeta(startId).view;
     onNavigate(startView);
   };
@@ -448,9 +524,21 @@ const Pick = ({ label, active, onClick }) => (
 const ReviewsAlert = ({ onNavigate }) => {
   const [dueReviews, setDueReviews] = useState([]);
 
+  // Mastery levels mapping
+  const MASTERY_LEVELS = {
+    0: { icon: '🌱', label: 'Learning', color: 'text-yellow-600' },
+    1: { icon: '🌿', label: 'Practicing', color: 'text-green-500' },
+    2: { icon: '🌳', label: 'Growing', color: 'text-green-600' },
+    3: { icon: '🏆', label: 'Proficient', color: 'text-blue-600' },
+    4: { icon: '⭐', label: 'Mastered', color: 'text-purple-600' }
+  };
+
   useEffect(() => {
-    const reviews = getDueReviews();
-    setDueReviews(reviews);
+    const loadDueReviews = async () => {
+      const reviews = await getDueReviews();
+      setDueReviews(reviews || []);
+    };
+    loadDueReviews();
   }, []);
 
   if (dueReviews.length === 0) {
@@ -532,7 +620,7 @@ const ReviewsAlert = ({ onNavigate }) => {
 
       <div className="space-y-2 mb-4">
         {dueReviews.slice(0, 3).map((review) => {
-          const mastery = getMasteryInfo(review.path, review.lessonNumber);
+          const mastery = MASTERY_LEVELS[review.masteryLevel] || MASTERY_LEVELS[0];
           return (
             <button
               key={review.lessonKey}

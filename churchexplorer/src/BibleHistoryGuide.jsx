@@ -989,8 +989,7 @@ const BibleHistoryGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdat
           path="bible"
           lessonNumber={reviewMode.lessonNumber}
           onComplete={async (xp) => {
-            // Award XP for review
-            await addPathXP('bible', xp);
+            // XP already awarded by ReviewSession component
             setReviewMode(null);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}

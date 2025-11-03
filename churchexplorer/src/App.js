@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { HashRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
@@ -193,9 +193,9 @@ function HomeWrapper({ userProgress, onShowAuth, currentUser, onProgressUpdate }
   return <Home userProgress={userProgress} onNavigate={(view, options) => navigate(`/${view}`, options)} onStartOnboarding={() => navigate('/onboarding')} onShowAuth={onShowAuth} currentUser={currentUser} onProgressUpdate={onProgressUpdate} />;
 }
 
-function PathsWrapper() {
+function PathsWrapper({ userProgress }) {
   const navigate = useNavigate();
-  return <Paths onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+  return <Paths userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
 }
 
 function ExplorerWrapper() {
@@ -236,6 +236,78 @@ function ExploreDenominationsWrapper() {
 function OnboardingWrapper() {
   const navigate = useNavigate();
   return <Onboarding onComplete={({ view }) => navigate(`/${view}`)} />;
+}
+
+function AIPathViewerWrapper({ currentUser }) {
+  const { pathId } = useParams();
+  const navigate = useNavigate();
+  const [path, setPath] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPath = async () => {
+      if (!currentUser?.uid) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { getAIPathsFromFirestore, getAIPathProgressFromFirestore } = await import('./firebase/progressService');
+        const result = await getAIPathsFromFirestore(currentUser.uid);
+        
+        if (result.success && result.paths) {
+          const foundPath = result.paths.find(p => p.id === pathId);
+          if (foundPath) {
+            // Load progress for this path
+            const progressResult = await getAIPathProgressFromFirestore(currentUser.uid, pathId);
+            const pathWithProgress = {
+              ...foundPath,
+              completedLessons: progressResult.success ? (progressResult.progress?.completedLessons || []) : [],
+              completed: foundPath.lessons && progressResult.success && progressResult.progress?.completedLessons
+                ? progressResult.progress.completedLessons.length >= foundPath.lessons.length
+                : false
+            };
+            setPath(pathWithProgress);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading AI path:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPath();
+  }, [pathId, currentUser]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading path...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!path) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-slate-600 mb-4">Path not found</p>
+          <button
+            onClick={() => navigate('/ai-paths')}
+            className="bg-purple-600 text-white px-6 py-2 rounded-xl font-semibold"
+          >
+            Back to AI Paths
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return <AIPathViewer path={path} currentUser={currentUser} onGoBack={() => navigate('/ai-paths')} />;
 }
 
 function AppContent() {
@@ -299,29 +371,7 @@ function AppContent() {
     }
   };
 
-  // Listen for achievement events and check if we should show sign-up prompt
-  useEffect(() => {
-    const unsubscribe = onAchievement(() => {
-      if (trackFirstAchievement()) {
-        // Small delay to let user see their achievement first
-        setTimeout(() => setShowSignUpPrompt(true), 1500);
-      }
-    });
-    return unsubscribe;
-  }, []);
-
-  // Check if we should show sign-up prompt on mount and when route changes
-  useEffect(() => {
-    const checkSignUpPrompt = () => {
-      if (shouldShowSignUpPrompt()) {
-        setShowSignUpPrompt(true);
-      }
-    };
-    
-    // Small delay to let user see their achievement first
-    const timer = setTimeout(checkSignUpPrompt, 1500);
-    return () => clearTimeout(timer);
-  }, [currentUser]);
+  // Sign-up prompts removed - no longer using localStorage achievement tracking
 
   // Listen for auth state changes
   useEffect(() => {
@@ -450,7 +500,7 @@ function AppContent() {
   };
 
   const handleDismissSignUpPrompt = () => {
-    markSignUpPromptSeen();
+    // No longer tracking prompt dismissals in localStorage
     setShowSignUpPrompt(false);
   };
 
@@ -481,9 +531,9 @@ function AppContent() {
         <div key={appKey}>
           <Routes>
             <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
-            <Route path="/learn" element={<PathsWrapper />} />
+            <Route path="/learn" element={<PathsWrapper userProgress={userProgress} />} />
             <Route path="/explorer" element={<ExplorerWrapper />} />
-            <Route path="/study-guide" element={<StudyGuideWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/study-guide" element={<ChurchHistoryWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/bible-history" element={<BibleHistoryWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/apologetics" element={<ApologeticsWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/explore-church" element={<ExploreChurchWrapper />} />
@@ -492,7 +542,7 @@ function AppContent() {
           <Route path="/onboarding" element={<OnboardingWrapper />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
           <Route path="/ai-paths" element={<AIPathsView currentUser={currentUser} />} />
-          <Route path="/ai-path/:pathId" element={<AIPathViewer currentUser={currentUser} />} />
+          <Route path="/ai-path/:pathId" element={<AIPathViewerWrapper currentUser={currentUser} />} />
           <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
         </Routes>
 
@@ -512,7 +562,7 @@ function AppContent() {
           <SignUpPrompt
             onSignUp={handleSignUpFromPrompt}
             onDismiss={handleDismissSignUpPrompt}
-            xp={getTotalXP()}
+            xp={userProgress?.totalXP || 0}
           />
         )}
       </div>

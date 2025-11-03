@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { recommendPathFromAnswers, saveProfile, getPathMeta } from './services/progressService';
 
 const Onboarding = ({ onComplete }) => {
   const [answers, setAnswers] = useState({ startingPoint: '', style: '' });
@@ -7,10 +6,15 @@ const Onboarding = ({ onComplete }) => {
   const canContinue = answers.startingPoint && answers.style;
 
   const handleFinish = () => {
-    saveProfile(answers);
-    const rec = recommendPathFromAnswers(answers);
-    const meta = getPathMeta(rec.pathId);
-    onComplete({ view: meta.view, lesson: rec.nextLesson });
+    // Map starting point to view
+    const pathToView = {
+      bible: 'bible-history',
+      church: 'study-guide',
+      apologetics: 'apologetics'
+    };
+    
+    const view = pathToView[answers.startingPoint] || 'bible-history';
+    onComplete({ view, lesson: 1 });
   };
 
   return (

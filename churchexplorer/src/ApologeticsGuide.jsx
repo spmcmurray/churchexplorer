@@ -264,8 +264,7 @@ const ApologeticsGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate
           path="apologetics"
           lessonNumber={reviewMode.lessonNumber}
           onComplete={async (xp) => {
-            // Award XP for review
-            await addPathXP('apologetics', xp);
+            // XP already awarded by ReviewSession component
             setReviewMode(null);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
