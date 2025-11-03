@@ -31,17 +31,68 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
   const getAIPathsProgress = () => {
     // Get AI paths from Firestore via userProgress prop
     if (userProgress?.aiPaths && Array.isArray(userProgress.aiPaths)) {
-      const total = userProgress.aiPaths.length;
-      // Count completed paths (paths where all lessons are completed)
-      const completed = userProgress.aiPaths.filter(path => {
-        if (!path.lessons || !Array.isArray(path.lessons)) return false;
-        // For now, consider a path completed if it has completion data
-        // TODO: Track actual lesson completion in aiPathProgress subcollection
-        return path.completed === true;
-      }).length;
-      return { completed, total };
+      return userProgress.aiPaths.map(path => ({
+        id: path.id,
+        title: path.title,
+        completed: path.completedLessons?.length || 0,
+        total: path.lessons?.length || 0,
+        isCompleted: path.completed === true
+      }));
     }
-    return { completed: 0, total: 0 };
+    return [];
+  };
+
+  const getCuratedPathsProgress = () => {
+    // Get curated paths with their progress
+    const paths = [
+      {
+        id: 'bible',
+        title: 'Bible History',
+        color: 'blue',
+        route: 'bible-history',
+        completed: overall.paths.bible.completedCount,
+        total: overall.paths.bible.total,
+        isCompleted: overall.paths.bible.completedCount === overall.paths.bible.total
+      },
+      {
+        id: 'church',
+        title: 'Church History',
+        color: 'amber',
+        route: 'study-guide',
+        completed: overall.paths.church.completedCount,
+        total: overall.paths.church.total,
+        isCompleted: overall.paths.church.completedCount === overall.paths.church.total
+      },
+      {
+        id: 'apologetics',
+        title: 'Apologetics',
+        color: 'indigo',
+        route: 'apologetics',
+        completed: overall.paths.apologetics.completedCount,
+        total: overall.paths.apologetics.total,
+        isCompleted: overall.paths.apologetics.completedCount === overall.paths.apologetics.total
+      }
+    ];
+    return paths;
+  };
+
+  // Sort and filter paths: started-incomplete first, then not-started, hide completed
+  const sortPaths = (paths) => {
+    return paths
+      .filter(p => !p.isCompleted) // Hide completed paths
+      .sort((a, b) => {
+        const aStarted = a.completed > 0;
+        const bStarted = b.completed > 0;
+        
+        // Started paths come first
+        if (aStarted && !bStarted) return -1;
+        if (!aStarted && bStarted) return 1;
+        
+        // Within same category, sort by completion percentage
+        const aPct = a.total > 0 ? a.completed / a.total : 0;
+        const bPct = b.total > 0 ? b.completed / b.total : 0;
+        return bPct - aPct;
+      });
   };
 
   const getStreak = () => {
@@ -152,75 +203,56 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
         </div>
       )}
 
-      {/* Paths snapshot + progress */}
+      {/* Progress Sections */}
       <div className="max-w-5xl mx-auto px-4 py-10">
-        <div className="bg-white rounded-2xl border-2 border-slate-200 shadow p-6">
-          {!firstTime && userProgress && (
-            <>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2 text-slate-700 font-bold">
-                  <Flame className="w-5 h-5" /> Your Progress
-                </div>
-                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6">
-                  {getStreak() > 0 && (
-                    <div className="text-right">
-                      <div className="text-xs text-slate-500 font-medium">Streak</div>
-                      <div className="text-xl font-black text-orange-600 flex items-center justify-end gap-1">
-                        <Flame className="w-5 h-5 fill-orange-500" />
-                        {getStreak()}
-                      </div>
+        {/* Stats Overview */}
+        {!firstTime && userProgress && (
+          <div className="bg-white rounded-2xl border-2 border-slate-200 shadow p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-slate-700 font-bold">
+                <Flame className="w-5 h-5" /> Your Progress
+              </div>
+              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 sm:gap-6">
+                {getStreak() > 0 && (
+                  <div className="text-right">
+                    <div className="text-xs text-slate-500 font-medium">Streak</div>
+                    <div className="text-xl font-black text-orange-600 flex items-center justify-end gap-1">
+                      <Flame className="w-5 h-5 fill-orange-500" />
+                      {getStreak()}
                     </div>
-                  )}
-                  <div className="text-right">
-                    <div className="text-xs text-slate-500 font-medium">Total XP</div>
-                    <div className="text-xl font-black text-amber-600">{getTotalXP()}</div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs text-slate-500 font-medium">Complete</div>
-                    <div className="text-xl font-black text-blue-700">{overall.percentage}%</div>
-                  </div>
+                )}
+                <div className="text-right">
+                  <div className="text-xs text-slate-500 font-medium">Total XP</div>
+                  <div className="text-xl font-black text-amber-600">{getTotalXP()}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-slate-500 font-medium">Complete</div>
+                  <div className="text-xl font-black text-blue-700">{overall.percentage}%</div>
                 </div>
               </div>
-              <div className="w-full bg-slate-200 rounded-full h-3 mb-6">
-                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full" style={{ width: `${overall.percentage}%` }}></div>
-              </div>
-            </>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <PathProgressCard
-              title="Bible History"
-              color="blue"
-              completed={overall.paths.bible.completedCount}
-              total={overall.paths.bible.total}
-              onClick={() => onNavigate('bible-history')}
-              recommended={firstTime && startingPoint === 'bible'}
-            />
-            <PathProgressCard
-              title="Church History"
-              color="amber"
-              completed={overall.paths.church.completedCount}
-              total={overall.paths.church.total}
-              onClick={() => onNavigate('study-guide')}
-              recommended={firstTime && startingPoint === 'church'}
-            />
-            <PathProgressCard
-              title="Apologetics"
-              color="indigo"
-              completed={overall.paths.apologetics.completedCount}
-              total={overall.paths.apologetics.total}
-              onClick={() => onNavigate('apologetics')}
-              recommended={firstTime && startingPoint === 'apologetics'}
-            />
-            <PathProgressCard
-              title="AI Learning Paths"
-              color="emerald"
-              completed={getAIPathsProgress().completed}
-              total={getAIPathsProgress().total}
-              onClick={() => onNavigate('ai-paths')}
-              isAI={true}
-            />
+            </div>
+            <div className="w-full bg-slate-200 rounded-full h-3">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full" style={{ width: `${overall.percentage}%` }}></div>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Curated Learning Paths Section */}
+        <CuratedPathsSection
+          paths={sortPaths(getCuratedPathsProgress())}
+          onNavigate={onNavigate}
+          firstTime={firstTime}
+          startingPoint={startingPoint}
+        />
+
+        {/* AI Learning Paths Section */}
+        {userProgress && (
+          <AIPathsSection
+            paths={sortPaths(getAIPathsProgress())}
+            onNavigate={onNavigate}
+          />
+        )}
 
         {/* Reviews Section */}
         {!firstTime && <ReviewsAlert onNavigate={onNavigate} />}
@@ -236,13 +268,148 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
   );
 };
 
-const PathProgressCard = ({ title, color, completed, total, onClick, recommended, isAI }) => {
+// Curated Learning Paths Section Component
+const CuratedPathsSection = ({ paths, onNavigate, firstTime, startingPoint }) => {
+  const [showAll, setShowAll] = useState(false);
+  const visiblePaths = showAll ? paths : paths.slice(0, 3);
+  const hiddenCount = paths.length - 3;
+
+  return (
+    <div className="bg-white rounded-2xl border-2 border-slate-200 shadow p-6 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-blue-600" />
+          Curated Learning Paths
+        </h2>
+        {hiddenCount > 0 && !showAll && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition"
+          >
+            {hiddenCount} more →
+          </button>
+        )}
+        {showAll && paths.length > 3 && (
+          <button
+            onClick={() => setShowAll(false)}
+            className="text-sm font-semibold text-slate-600 hover:text-slate-700 transition"
+          >
+            Show less ↑
+          </button>
+        )}
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {visiblePaths.map((path) => (
+          <PathProgressCard
+            key={path.id}
+            title={path.title}
+            color={path.color}
+            completed={path.completed}
+            total={path.total}
+            onClick={() => onNavigate(path.route)}
+            recommended={firstTime && startingPoint === path.id}
+          />
+        ))}
+      </div>
+      
+      {visiblePaths.length === 0 && (
+        <div className="text-center py-8 text-slate-500">
+          <p className="text-sm">🎉 All curated paths completed! Great work!</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// AI Learning Paths Section Component
+const AIPathsSection = ({ paths, onNavigate }) => {
+  const [showAll, setShowAll] = useState(false);
+  const visiblePaths = showAll ? paths : paths.slice(0, 3);
+  const hiddenCount = paths.length - 3;
+
+  return (
+    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200 shadow p-6 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-emerald-600" />
+          AI Learning Paths
+        </h2>
+        {hiddenCount > 0 && !showAll && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition"
+          >
+            {hiddenCount} more →
+          </button>
+        )}
+        {showAll && paths.length > 3 && (
+          <button
+            onClick={() => setShowAll(false)}
+            className="text-sm font-semibold text-slate-600 hover:text-slate-700 transition"
+          >
+            Show less ↑
+          </button>
+        )}
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {visiblePaths.map((path) => (
+          <AIPathCard
+            key={path.id}
+            title={path.title}
+            completed={path.completed}
+            total={path.total}
+            onClick={() => onNavigate(`ai-path/${path.id}`)}
+          />
+        ))}
+      </div>
+      
+      {paths.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-sm text-slate-600 mb-3">No AI paths created yet</p>
+          <button
+            onClick={() => onNavigate('ai-paths')}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-xl font-semibold shadow-sm transition"
+          >
+            Create Your First AI Path
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// AI Path Card Component
+const AIPathCard = ({ title, completed, total, onClick }) => {
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  
+  return (
+    <button
+      onClick={onClick}
+      className="text-left bg-white rounded-xl border-2 border-emerald-200 p-5 hover:shadow-lg hover:border-emerald-300 transition"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-emerald-600" />
+          {title}
+        </h3>
+        <span className="text-sm font-bold text-slate-700">{total > 0 ? `${pct}%` : 'New'}</span>
+      </div>
+      <div className="w-full bg-slate-200 rounded-full h-2">
+        <div className="h-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" style={{ width: `${pct}%` }}></div>
+      </div>
+      <p className="mt-2 text-sm text-slate-600">{completed}/{total} lessons</p>
+    </button>
+  );
+};
+
+const PathProgressCard = ({ title, color, completed, total, onClick, recommended }) => {
   const pct = total ? Math.round((completed / total) * 100) : 0;
   const colorMap = {
     blue: 'from-blue-500 to-indigo-500',
     amber: 'from-amber-500 to-orange-500',
     indigo: 'from-indigo-500 to-purple-500',
-    emerald: 'from-emerald-500 to-teal-500',
   };
   return (
     <button onClick={onClick} className={`text-left bg-white rounded-xl border-2 p-5 hover:shadow transition ${recommended ? 'border-blue-400 ring-2 ring-blue-200' : 'border-slate-200'}`}>
@@ -251,9 +418,6 @@ const PathProgressCard = ({ title, color, completed, total, onClick, recommended
           {title}
           {recommended && (
             <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded-full">Recommended</span>
-          )}
-          {isAI && (
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">✨ AI</span>
           )}
         </h3>
         <span className="text-sm font-bold text-slate-700">{total > 0 ? `${pct}%` : 'New'}</span>
