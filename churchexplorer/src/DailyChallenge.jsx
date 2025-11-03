@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, CheckCircle, X, Star, Trophy, Flame } from 'lucide-react';
 import { timelineChallenges, lessonChallenges } from './dailyChallenges';
-import { addPathXP } from './services/progressService';
+import { getCurrentUser } from './firebase/authService';
+import { completeDailyChallenge } from './firebase/progressService';
 
-const DailyChallenge = ({ onNavigate }) => {
+const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate }) => {
   const [challenge, setChallenge] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
@@ -140,8 +141,27 @@ const DailyChallenge = ({ onNavigate }) => {
   };
 
   const awardXP = async (xp) => {
-    // Award XP to bible path for daily challenge
-    await addPathXP('bible', xp);
+    // Use Firestore if user is logged in
+    const user = currentUser || getCurrentUser();
+    
+    if (user) {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      const result = await completeDailyChallenge(user.uid, today, xp);
+      
+      if (result.success) {
+        console.log('✅ Daily challenge XP awarded to Firestore:', xp);
+        // Trigger progress refresh in parent
+        if (onProgressUpdate) {
+          await onProgressUpdate();
+        }
+      } else {
+        console.error('❌ Failed to award daily challenge XP:', result.error);
+      }
+    } else {
+      // Fallback to localStorage for unauthenticated users
+      const { addPathXP } = await import('./services/progressService');
+      await addPathXP('bible', xp);
+    }
   };
 
   const markCompleted = () => {

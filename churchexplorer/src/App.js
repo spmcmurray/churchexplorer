@@ -188,9 +188,9 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
 }
 
 // Wrapper components to convert Router navigation to onNavigate props
-function HomeWrapper({ userProgress, onShowAuth }) {
+function HomeWrapper({ userProgress, onShowAuth, currentUser, onProgressUpdate }) {
   const navigate = useNavigate();
-  return <Home userProgress={userProgress} onNavigate={(view, options) => navigate(`/${view}`, options)} onStartOnboarding={() => navigate('/onboarding')} onShowAuth={onShowAuth} />;
+  return <Home userProgress={userProgress} onNavigate={(view, options) => navigate(`/${view}`, options)} onStartOnboarding={() => navigate('/onboarding')} onShowAuth={onShowAuth} currentUser={currentUser} onProgressUpdate={onProgressUpdate} />;
 }
 
 function PathsWrapper() {
@@ -583,7 +583,7 @@ function AppContent() {
         /* Main Content with Routes */
         <div key={appKey}>
           <Routes>
-            <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} />} />
+            <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/learn" element={<PathsWrapper />} />
             <Route path="/explorer" element={<ExplorerWrapper />} />
             <Route path="/study-guide" element={<StudyGuideWrapper onProgressUpdate={refreshUserProgress} />} />

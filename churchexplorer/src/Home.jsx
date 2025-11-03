@@ -4,7 +4,7 @@ import { getOverallProgress, getContinueRecommendation, getPathMeta, getProfile,
 import DailyChallenge from './DailyChallenge';
 import { getDueReviews, getMasteryInfo } from './services/reviewService';
 
-const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth }) => {
+const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, currentUser, onProgressUpdate }) => {
   const overall = getOverallProgress();
   const existingProfile = getProfile();
   const rec = getContinueRecommendation();
@@ -227,7 +227,7 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth }) => {
 
         {/* Daily Challenge */}
         <div className="mt-6">
-          <DailyChallenge onNavigate={onNavigate} />
+          <DailyChallenge onNavigate={onNavigate} currentUser={currentUser} onProgressUpdate={onProgressUpdate} />
         </div>
       </div>
 
