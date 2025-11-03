@@ -10,18 +10,16 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [viewingLesson, setViewingLesson] = useState(null);
 
-  // Load progress from localStorage and Firestore
+  // Load progress from Firestore only
   useEffect(() => {
     const loadProgress = async () => {
-      // Try Firestore first if user is logged in
+      // Load from Firestore if user is logged in
       if (currentUser?.uid) {
         try {
           const { getAIPathProgressFromFirestore } = await import('./firebase/progressService');
           const result = await getAIPathProgressFromFirestore(currentUser.uid, path.id);
           if (result.success && result.progress?.completedLessons) {
             setCompletedLessons(result.progress.completedLessons);
-            // Sync to localStorage as backup
-            localStorage.setItem(`aiPathProgress_${path.id}`, JSON.stringify(result.progress.completedLessons));
             return;
           }
         } catch (error) {
@@ -29,11 +27,8 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
         }
       }
       
-      // Fallback to localStorage
-      const saved = localStorage.getItem(`aiPathProgress_${path.id}`);
-      if (saved) {
-        setCompletedLessons(JSON.parse(saved));
-      }
+      // If not logged in, no progress to show
+      setCompletedLessons([]);
     };
     
     loadProgress();
@@ -58,13 +53,13 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
     if (!completedLessons.includes(lessonIndex)) {
       const updated = [...completedLessons, lessonIndex];
       setCompletedLessons(updated);
-      localStorage.setItem(`aiPathProgress_${path.id}`, JSON.stringify(updated));
       
-      // Also save to Firestore if user is logged in
+      // Save to Firestore if user is logged in
       if (currentUser?.uid) {
         try {
           const { saveAIPathProgressToFirestore } = await import('./firebase/progressService');
           await saveAIPathProgressToFirestore(currentUser.uid, path.id, updated);
+          console.log('✅ AI path progress saved to Firestore');
         } catch (error) {
           console.error('Error saving progress to Firestore:', error);
         }

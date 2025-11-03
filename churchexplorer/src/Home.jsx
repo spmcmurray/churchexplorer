@@ -259,7 +259,7 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
 
         {/* Daily Challenge */}
         <div className="mt-6">
-          <DailyChallenge onNavigate={onNavigate} currentUser={currentUser} onProgressUpdate={onProgressUpdate} />
+          <DailyChallenge onNavigate={onNavigate} currentUser={currentUser} onProgressUpdate={onProgressUpdate} userProgress={userProgress} />
         </div>
       </div>
 

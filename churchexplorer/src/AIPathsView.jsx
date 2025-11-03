@@ -667,13 +667,12 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
         {!loading && aiPaths.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
             {aiPaths.map((path) => {
-              // Calculate progress for this path
-              const savedProgress = localStorage.getItem(`aiPathProgress_${path.id}`);
-              const completedLessons = savedProgress ? JSON.parse(savedProgress) : [];
+              // Calculate progress for this path (from Firestore data already loaded)
+              const completedLessons = path.completedLessons || [];
               const totalLessons = path.lessons?.length || 0;
               const completedCount = completedLessons.length;
               const progressPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
-              const isCompleted = completedCount === totalLessons && totalLessons > 0;
+              const isCompleted = path.completed === true;
               
               return (
                 <div

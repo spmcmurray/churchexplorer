@@ -161,10 +161,6 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
     try {
       const totalXp = xp + (lesson.xpReward || 50);
       
-      // Mark lesson as completed in localStorage
-      const completedKey = `aiLesson_${lesson.id}_completed`;
-      localStorage.setItem(completedKey, 'true');
-      
       // If user is logged in, save to Firestore
       if (currentUser) {
         // Award XP to total
@@ -202,6 +198,8 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
           }
         }
       } else {
+        // User not authenticated - cannot save progress
+        console.warn('⚠️ User not authenticated - lesson progress not saved');
         setLessonCompleted(true);
       }
       

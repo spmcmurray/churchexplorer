@@ -13,18 +13,33 @@ const AILessonViewerPage = ({ currentUser, onProgressUpdate }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load the specific lesson from localStorage
-    const loadLesson = () => {
+    // Load the specific lesson from Firestore AI paths
+    const loadLesson = async () => {
       try {
-        const savedLessons = JSON.parse(localStorage.getItem('aiGeneratedLessons') || '[]');
-        const foundLesson = savedLessons.find(l => l.id === lessonId);
-        
-        if (foundLesson) {
-          setLesson(foundLesson);
-        } else {
-          // Lesson not found, redirect to AI paths
-          navigate('/ai-paths');
+        if (currentUser?.uid) {
+          // Load all AI paths from Firestore
+          const { getAIPathsFromFirestore } = await import('./firebase/progressService');
+          const result = await getAIPathsFromFirestore(currentUser.uid);
+          
+          if (result.success && result.paths) {
+            // Find the lesson across all paths
+            for (const path of result.paths) {
+              if (path.lessons && Array.isArray(path.lessons)) {
+                const foundLesson = path.lessons.find(l => l.id === lessonId);
+                if (foundLesson) {
+                  // Attach pathId to lesson for progress tracking
+                  setLesson({ ...foundLesson, pathId: path.id });
+                  setLoading(false);
+                  return;
+                }
+              }
+            }
+          }
         }
+        
+        // Lesson not found in Firestore
+        console.error('Lesson not found in Firestore');
+        navigate('/ai-paths');
       } catch (error) {
         console.error('Error loading lesson:', error);
         navigate('/ai-paths');
@@ -34,7 +49,7 @@ const AILessonViewerPage = ({ currentUser, onProgressUpdate }) => {
     };
 
     loadLesson();
-  }, [lessonId, navigate]);
+  }, [lessonId, navigate, currentUser]);
 
   if (loading) {
     return (

@@ -524,20 +524,17 @@ export const saveAIPathToLibrary = async (path, currentUser = null) => {
  */
 export const getSavedAIPaths = async (currentUser = null) => {
   try {
-    // If user is logged in, try Firestore first
+    // If user is logged in, load from Firestore
     if (currentUser?.uid) {
       const { getAIPathsFromFirestore } = await import('../firebase/progressService');
       const result = await getAIPathsFromFirestore(currentUser.uid);
-      if (result.success && result.paths.length > 0) {
-        // Sync Firestore data to localStorage as backup
-        localStorage.setItem('aiGeneratedPaths', JSON.stringify(result.paths));
-        return result.paths;
+      if (result.success) {
+        return result.paths || [];
       }
     }
     
-    // Fallback to localStorage
-    const saved = localStorage.getItem('aiGeneratedPaths');
-    return saved ? JSON.parse(saved) : [];
+    // No paths if not logged in
+    return [];
   } catch (error) {
     console.error('Error loading AI paths:', error);
     return [];
@@ -549,16 +546,13 @@ export const getSavedAIPaths = async (currentUser = null) => {
  */
 export const deleteAIPath = async (pathId, currentUser = null) => {
   try {
-    const savedPaths = await getSavedAIPaths();
-    const filtered = savedPaths.filter(p => p.id !== pathId);
-    localStorage.setItem('aiGeneratedPaths', JSON.stringify(filtered));
-    // Also clean up progress for this path
-    localStorage.removeItem(`aiPathProgress_${pathId}`);
-    
-    // Also delete from Firestore if user is logged in
+    // Delete from Firestore if user is logged in
     if (currentUser?.uid) {
       const { deleteAIPathFromFirestore } = await import('../firebase/progressService');
       await deleteAIPathFromFirestore(currentUser.uid, pathId);
+      console.log('✅ AI path deleted from Firestore');
+    } else {
+      console.warn('⚠️ User not authenticated - cannot delete path');
     }
     
     return { success: true };

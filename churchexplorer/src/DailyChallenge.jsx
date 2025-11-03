@@ -4,7 +4,7 @@ import { timelineChallenges, lessonChallenges } from './dailyChallenges';
 import { getCurrentUser } from './firebase/authService';
 import { completeDailyChallenge } from './firebase/progressService';
 
-const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate }) => {
+const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate, userProgress }) => {
   const [challenge, setChallenge] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
@@ -17,21 +17,21 @@ const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate }) => {
     loadDailyChallenge();
     loadStreak();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userProgress]);
 
   const loadDailyChallenge = () => {
-    // Check if already completed today
-    const today = new Date().toDateString();
-    const savedCompletion = localStorage.getItem('dailyChallengeCompletion');
-    if (savedCompletion === today) {
+    // Check if already completed today from Firestore
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    if (userProgress?.dailyChallenges?.completedDates?.includes(today)) {
       setCompletedToday(true);
       return;
     }
 
-    // Get user's completed lessons
-    const bibleProgress = JSON.parse(localStorage.getItem('bibleHistoryProgress') || '[]');
-    const churchProgress = JSON.parse(localStorage.getItem('churchHistoryProgress') || '[]');
-    const apologeticsProgress = JSON.parse(localStorage.getItem('apologeticsProgress') || '[]');
+    // Get user's completed lessons from Firestore
+    const bibleProgress = userProgress?.courses?.bible?.completedLessons || [];
+    const churchProgress = userProgress?.courses?.church?.completedLessons || [];
+    const apologeticsProgress = userProgress?.courses?.apologetics?.completedLessons || [];
 
     // Filter lesson challenges based on completion
     const availableLessonChallenges = lessonChallenges.filter(c => {
@@ -62,44 +62,17 @@ const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate }) => {
   };
 
   const loadStreak = () => {
-    const streakData = localStorage.getItem('dailyChallengeStreak');
-    if (streakData) {
-      const { count, lastCompletedDate } = JSON.parse(streakData);
-      setStreak(count);
+    // Get streak from Firestore userProgress
+    if (userProgress?.dailyChallenges) {
+      setStreak(userProgress.dailyChallenges.streak || 0);
     }
   };
 
   const updateStreak = () => {
-    const today = new Date().toDateString();
-    const streakData = localStorage.getItem('dailyChallengeStreak');
-    
-    if (!streakData) {
-      // First time completing
-      const newStreak = { count: 1, lastCompletedDate: today };
-      localStorage.setItem('dailyChallengeStreak', JSON.stringify(newStreak));
-      setStreak(1);
-      return;
-    }
-
-    const { count, lastCompletedDate } = JSON.parse(streakData);
-    const lastDate = new Date(lastCompletedDate);
-    const todayDate = new Date(today);
-    const yesterday = new Date(todayDate);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (lastCompletedDate === today) {
-      // Already completed today, no change
-      return;
-    } else if (lastDate.toDateString() === yesterday.toDateString()) {
-      // Consecutive day - increment streak
-      const newStreak = { count: count + 1, lastCompletedDate: today };
-      localStorage.setItem('dailyChallengeStreak', JSON.stringify(newStreak));
-      setStreak(count + 1);
-    } else {
-      // Streak broken - reset to 1
-      const newStreak = { count: 1, lastCompletedDate: today };
-      localStorage.setItem('dailyChallengeStreak', JSON.stringify(newStreak));
-      setStreak(1);
+    // Streak is now managed by Firestore completeDailyChallenge function
+    // Just update local state from userProgress after refresh
+    if (userProgress?.dailyChallenges) {
+      setStreak(userProgress.dailyChallenges.streak || 0);
     }
   };
 
@@ -141,7 +114,7 @@ const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate }) => {
   };
 
   const awardXP = async (xp) => {
-    // Use Firestore if user is logged in
+    // Always use Firestore for authenticated users
     const user = currentUser || getCurrentUser();
     
     if (user) {
@@ -158,15 +131,12 @@ const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate }) => {
         console.error('❌ Failed to award daily challenge XP:', result.error);
       }
     } else {
-      // Fallback to localStorage for unauthenticated users
-      const { addPathXP } = await import('./services/progressService');
-      await addPathXP('bible', xp);
+      console.warn('⚠️ User not authenticated - daily challenge cannot be saved');
     }
   };
 
   const markCompleted = () => {
-    const today = new Date().toDateString();
-    localStorage.setItem('dailyChallengeCompletion', today);
+    // Completion is tracked in Firestore via completeDailyChallenge
     updateStreak();
     setCompletedToday(true);
   };
