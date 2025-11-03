@@ -51,7 +51,7 @@ const parseContent = (text) => {
   });
 };
 
-const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack }) => {
+const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressUpdate }) => {
   const [currentCard, setCurrentCard] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [showFeedback, setShowFeedback] = useState({});
@@ -176,6 +176,11 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack }) => {
         
         if (result.success) {
           setLessonCompleted(true);
+          
+          // Trigger progress refresh in parent App component
+          if (onProgressUpdate) {
+            await onProgressUpdate();
+          }
         }
       } else {
         setLessonCompleted(true);

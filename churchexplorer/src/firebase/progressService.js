@@ -101,6 +101,7 @@ export const getUserProgress = async (uid) => {
 
 /**
  * Complete a course lesson and award XP
+ * Supports standard courses (bible, church, apologetics) and AI-generated lessons
  */
 export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarded) => {
   try {
@@ -113,6 +114,20 @@ export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarde
     }
     
     const currentProgress = progressDoc.data() || {};
+    
+    // Handle AI-generated lessons differently (just award XP, no lesson tracking by number)
+    if (courseId === 'ai_generated') {
+      // For AI lessons, we track completion separately in aiPathProgress
+      // Just award the XP to totalXP
+      await updateDoc(progressRef, {
+        totalXP: increment(xpAwarded),
+        lastUpdated: serverTimestamp()
+      });
+      
+      return { success: true, xpAwarded, message: 'AI lesson XP awarded successfully' };
+    }
+    
+    // Standard course logic
     const courseProgress = currentProgress.courses?.[courseId] || { completedLessons: [], totalXP: 0 };
     
     // Check if lesson already completed
@@ -120,7 +135,6 @@ export const completeCourseLesson = async (uid, courseId, lessonNumber, xpAwarde
       return { success: true, message: 'Lesson already completed', xpAwarded: 0 };
     }
     
-    // Update progress
     // Update progress - progress.totalXP is the single source of truth
     await updateDoc(progressRef, {
       [`courses.${courseId}.completedLessons`]: arrayUnion(lessonNumber),

@@ -6,7 +6,7 @@ import AILessonViewer from './AILessonViewer';
  * Standalone page for viewing a single AI-generated lesson
  * Scalable for millions of lessons using dynamic routing with lesson ID
  */
-const AILessonViewerPage = ({ currentUser }) => {
+const AILessonViewerPage = ({ currentUser, onProgressUpdate }) => {
   const { lessonId } = useParams();
   const navigate = useNavigate();
   const [lesson, setLesson] = useState(null);
@@ -55,6 +55,7 @@ const AILessonViewerPage = ({ currentUser }) => {
     <AILessonViewer
       lesson={lesson}
       currentUser={currentUser}
+      onProgressUpdate={onProgressUpdate}
       onComplete={(result) => {
         console.log('Lesson completed:', result);
         navigate('/ai-paths');

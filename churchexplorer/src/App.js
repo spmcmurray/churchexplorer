@@ -20,7 +20,7 @@ import { onAuthChange, logOut, deleteAccount, getUserProfile } from './firebase/
 import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
 import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement, saveProfile } from './services/progressService';
 
-function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError }) {
+function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError, authLoading }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -42,7 +42,13 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
 
             {/* User Account Section */}
             <div className="relative">
-              {currentUser ? (
+              {authLoading ? (
+                // While auth is initializing, show a neutral placeholder to avoid
+                // a flash of unauthenticated UI (sign-in button) before we know state
+                <div className="px-3 py-2">
+                  <div className="w-24 h-8 bg-white/20 rounded-lg animate-pulse" />
+                </div>
+              ) : currentUser ? (
                 <div>
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -232,6 +238,7 @@ function AppContent() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [userProgress, setUserProgress] = useState(null); // Store Firestore progress in state
+  const [authLoading, setAuthLoading] = useState(true); // Track auth initialization
   const [showAuth, setShowAuth] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -297,6 +304,13 @@ function AppContent() {
       setCurrentUser(user);
       if (user && showAuth) {
         setShowAuth(false);
+      }
+      
+      // Clear sign-up prompt tracking when user signs in
+      if (user) {
+        localStorage.removeItem('hasSeenSignUpPrompt');
+        localStorage.removeItem('firstAchievementTime');
+        setShowSignUpPrompt(false);
       }
 
       // When a user signs in, load their Firestore profile and progress
@@ -467,9 +481,15 @@ function AppContent() {
                 console.warn('Failed to persist Firestore progress to localStorage', err);
               }
             }
+          } else {
+            // User signed out - clear userProgress state
+            setUserProgress(null);
           }
         } catch (err) {
           console.error('Error loading user profile/progress on auth change:', err);
+        } finally {
+          // Auth state is now determined, stop showing loading screen
+          setAuthLoading(false);
         }
       })();
     });
@@ -536,50 +556,61 @@ function AppContent() {
         showProfileMenu={showProfileMenu}
         setShowProfileMenu={setShowProfileMenu}
         setShowAuth={setShowAuth}
+        authLoading={authLoading}
         handleSignOut={handleSignOut}
         setShowDeleteConfirm={setShowDeleteConfirm}
         setDeletePassword={setDeletePassword}
         setDeleteError={setDeleteError}
       />
 
-      {/* Main Content with Routes */}
-      <div key={appKey}>
-        <Routes>
-          <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} />} />
-          <Route path="/learn" element={<PathsWrapper />} />
-          <Route path="/explorer" element={<ExplorerWrapper />} />
-          <Route path="/study-guide" element={<StudyGuideWrapper onProgressUpdate={refreshUserProgress} />} />
-          <Route path="/bible-history" element={<BibleHistoryWrapper onProgressUpdate={refreshUserProgress} />} />
-          <Route path="/apologetics" element={<ApologeticsWrapper onProgressUpdate={refreshUserProgress} />} />
-          <Route path="/explore-church" element={<ExploreChurchWrapper />} />
-          <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
-          <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
+      {/* Show loading screen while determining auth state */}
+      {authLoading ? (
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-600 font-medium">Loading...</p>
+          </div>
+        </div>
+      ) : (
+        /* Main Content with Routes */
+        <div key={appKey}>
+          <Routes>
+            <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} />} />
+            <Route path="/learn" element={<PathsWrapper />} />
+            <Route path="/explorer" element={<ExplorerWrapper />} />
+            <Route path="/study-guide" element={<StudyGuideWrapper onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/bible-history" element={<BibleHistoryWrapper onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/apologetics" element={<ApologeticsWrapper onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/explore-church" element={<ExploreChurchWrapper />} />
+            <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
+            <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
           <Route path="/onboarding" element={<OnboardingWrapper />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
           <Route path="/ai-paths" element={<AIPathsView currentUser={currentUser} />} />
           <Route path="/ai-path/:pathId" element={<AIPathViewer currentUser={currentUser} />} />
-          <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage />} />
+          <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
         </Routes>
+
+        {/* Auth Modal */}
+        {showAuth && (
+          <Auth
+            onSuccess={(user) => {
+              setCurrentUser(user);
+              setShowAuth(false);
+            }}
+            onClose={() => setShowAuth(false)}
+          />
+        )}
+
+        {/* Sign Up Prompt */}
+        {showSignUpPrompt && (
+          <SignUpPrompt
+            onSignUp={handleSignUpFromPrompt}
+            onDismiss={handleDismissSignUpPrompt}
+            xp={getTotalXP()}
+          />
+        )}
       </div>
-
-      {/* Auth Modal */}
-      {showAuth && (
-        <Auth
-          onSuccess={(user) => {
-            setCurrentUser(user);
-            setShowAuth(false);
-          }}
-          onClose={() => setShowAuth(false)}
-        />
-      )}
-
-      {/* Sign Up Prompt */}
-      {showSignUpPrompt && (
-        <SignUpPrompt
-          onSignUp={handleSignUpFromPrompt}
-          onDismiss={handleDismissSignUpPrompt}
-          xp={getTotalXP()}
-        />
       )}
 
       {/* Delete Account Confirmation Modal */}
