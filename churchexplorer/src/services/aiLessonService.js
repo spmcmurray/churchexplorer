@@ -563,66 +563,6 @@ export const deleteAIPath = async (pathId, currentUser = null) => {
 };
 
 /**
- * Save AI-generated lesson to localStorage for user's personal library
- * DEPRECATED: Use saveAIPathToLibrary instead for multi-lesson paths
- */
-export const saveAILessonToLibrary = (lesson) => {
-  try {
-    const savedLessons = getSavedAILessons();
-    
-    // Check if lesson already exists (by ID)
-    const existingIndex = savedLessons.findIndex(l => l.id === lesson.id);
-    if (existingIndex >= 0) {
-      // Update existing lesson
-      savedLessons[existingIndex] = {
-        ...lesson,
-        updatedAt: new Date().toISOString()
-      };
-    } else {
-      // Add new lesson
-      savedLessons.push({
-        ...lesson,
-        savedAt: new Date().toISOString()
-      });
-    }
-    
-    localStorage.setItem('aiGeneratedLessons', JSON.stringify(savedLessons));
-    return { success: true, lesson };
-  } catch (error) {
-    console.error('Error saving AI lesson:', error);
-    return { success: false, error: error.message };
-  }
-};
-
-/**
- * Get all saved AI lessons from localStorage
- */
-export const getSavedAILessons = () => {
-  try {
-    const saved = localStorage.getItem('aiGeneratedLessons');
-    return saved ? JSON.parse(saved) : [];
-  } catch (error) {
-    console.error('Error loading AI lessons:', error);
-    return [];
-  }
-};
-
-/**
- * Delete an AI lesson from the library
- */
-export const deleteAILesson = (lessonId) => {
-  try {
-    const savedLessons = getSavedAILessons();
-    const filtered = savedLessons.filter(l => l.id !== lessonId);
-    localStorage.setItem('aiGeneratedLessons', JSON.stringify(filtered));
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting AI lesson:', error);
-    return { success: false, error: error.message };
-  }
-};
-
-/**
  * Save AI-generated lesson for potential sharing with other users
  */
 export const saveAILessonForReview = async (lesson, userRating, userFeedback) => {

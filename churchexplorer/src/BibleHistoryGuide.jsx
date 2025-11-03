@@ -5,11 +5,10 @@ import InteractiveLesson from './InteractiveLesson';
 import ReviewSession from './ReviewSession';
 import { lesson1Data, lesson2Data, lesson3Data, lesson4Data, lesson5Data, lesson6Data, lesson7Data, lesson8Data } from './interactiveLessonData';
 import { scheduleReviews } from './services/reviewService';
-import { addPathXP } from './services/progressService';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 
-const BibleHistoryGuide = ({ onNavigate, onGoBack, onProgressUpdate }) => {
+const BibleHistoryGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
   const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
@@ -68,18 +67,16 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack, onProgressUpdate }) => {
     });
   };
 
-  // Load progress from localStorage
+  // Load progress from Firestore userProgress
   useEffect(() => {
-    const saved = localStorage.getItem('bibleHistoryProgress');
-    if (saved) {
-      setCompletedLessons(JSON.parse(saved));
+    if (userProgress?.courses?.bible?.completedLessons) {
+      setCompletedLessons(userProgress.courses.bible.completedLessons);
     }
-  }, []);
+  }, [userProgress]);
 
-  // Calculate total XP earned
+  // Calculate total XP earned from Firestore
   const getTotalXP = () => {
-    const savedXP = localStorage.getItem('bibleHistoryTotalXP');
-    return savedXP ? parseInt(savedXP) : 0;
+    return userProgress?.courses?.bible?.totalXP || 0;
   };
 
   // Get mastery level based on completion
@@ -92,12 +89,12 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack, onProgressUpdate }) => {
     return 'Master';
   };
 
-  // Save progress to localStorage
+  // Mark lesson complete (saved to Firestore via completeCourseLesson)
   const markLessonComplete = (lessonNum) => {
     if (!completedLessons.includes(lessonNum)) {
       const updated = [...completedLessons, lessonNum];
       setCompletedLessons(updated);
-      localStorage.setItem('bibleHistoryProgress', JSON.stringify(updated));
+      // No localStorage - Firestore is source of truth
     }
   };
 
@@ -123,11 +120,8 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack, onProgressUpdate }) => {
       [lessonNum]: quizResult
     }));
 
-    // Save quiz results to localStorage for accuracy calculation
-    const savedResults = localStorage.getItem('bibleHistoryQuizResults');
-    const results = savedResults ? JSON.parse(savedResults) : {};
-    results[lessonNum] = quizResult;
-    localStorage.setItem('bibleHistoryQuizResults', JSON.stringify(results));
+    // Quiz results saved to Firestore via completeCourseLesson
+    // No localStorage - Firestore is source of truth
 
     if (correct >= quiz.length * 0.7) {
       markLessonComplete(lessonNum);
@@ -140,11 +134,8 @@ const BibleHistoryGuide = ({ onNavigate, onGoBack, onProgressUpdate }) => {
     // Schedule spaced repetition reviews
     scheduleReviews('bible', lessonNum);
 
-    // Save XP to localStorage and sync to Firebase
+    // Save to Firestore only (no localStorage)
     if (xpEarned) {
-      await addPathXP('bible', xpEarned);
-      
-      // Also sync this specific lesson completion to Firestore
       const user = getCurrentUser();
       if (user) {
         await completeCourseLesson(user.uid, 'bible', lessonNum, xpEarned);

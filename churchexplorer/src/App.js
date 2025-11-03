@@ -16,9 +16,9 @@ import SignUpPrompt from './SignUpPrompt';
 import AIPathsView from './AIPathsView';
 import AIPathViewer from './AIPathViewer';
 import AILessonViewerPage from './AILessonViewerPage';
-import { onAuthChange, logOut, deleteAccount, getUserProfile } from './firebase/authService';
-import { getUserProgress, migrateLocalProgressToFirestore } from './firebase/progressService';
-import { clearAllProgress, getTotalXP, shouldShowSignUpPrompt, markSignUpPromptSeen, trackFirstAchievement, onAchievement, saveProfile } from './services/progressService';
+import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
+import { getUserProgress } from './firebase/progressService';
+import { notifyAchievement, onAchievement } from './services/progressService';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError, authLoading }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -203,19 +203,19 @@ function ExplorerWrapper() {
   return <ExploreLanding onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
 }
 
-function StudyGuideWrapper({ onProgressUpdate }) {
+function ChurchHistoryWrapper({ userProgress, onProgressUpdate }) {
   const navigate = useNavigate();
-  return <ChurchHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+  return <ChurchHistoryGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
-function BibleHistoryWrapper({ onProgressUpdate }) {
+function BibleHistoryWrapper({ userProgress, onProgressUpdate }) {
   const navigate = useNavigate();
-  return <BibleHistoryGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+  return <BibleHistoryGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
-function ApologeticsWrapper({ onProgressUpdate }) {
+function ApologeticsWrapper({ userProgress, onProgressUpdate }) {
   const navigate = useNavigate();
-  return <ApologeticsGuide onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+  return <ApologeticsGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
 function ExploreChurchWrapper() {
@@ -331,125 +331,22 @@ function AppContent() {
         setShowAuth(false);
       }
       
-      // Mark sign-up prompt as seen when user signs in so it won't reappear
+      // Hide sign-up prompt when user signs in
       if (user) {
-        try {
-          localStorage.setItem('hasSeenSignUpPrompt', 'true');
-          // Keep a record of first achievement time if it exists, but don't use it to re-trigger prompts
-        } catch (e) {
-          console.warn('Could not persist sign-up prompt state', e);
-        }
         setShowSignUpPrompt(false);
       }
 
-      // When a user signs in, load their Firestore profile and progress
+      // When a user signs in, load their Firestore progress
       (async () => {
         try {
           if (user) {
-            // Fetch and persist profile locally so UI like Home reads it from localStorage
-            const profileResult = await getUserProfile(user.uid);
-            if (profileResult && profileResult.success && profileResult.profile) {
-              // Merge profile into local storage profile used by front-end
-              saveProfile(profileResult.profile);
-              // If profile has a totalXP but per-course XP in localStorage is zero,
-              // distribute the total across courses for display purposes until
-              // detailed course progress is available in Firestore.
-              try {
-                const profileXP = profileResult.profile.totalXP || 0;
-                const currentBibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
-                const currentChurchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
-                const currentApologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
-                if (profileXP > 0 && currentBibleXP === 0 && currentChurchXP === 0 && currentApologeticsXP === 0) {
-                  localStorage.setItem('bibleHistoryTotalXP', String(Math.floor(profileXP / 3)));
-                  localStorage.setItem('churchHistoryTotalXP', String(Math.floor(profileXP / 3)));
-                  localStorage.setItem('apologeticsTotalXP', String(profileXP - 2 * Math.floor(profileXP / 3)));
-                  console.log('✅ Distributed profile totalXP to per-course localStorage for display:', profileXP);
-                  // Force re-render of Home component to show updated XP
-                  setAppKey(prev => prev + 1);
-                }
-              } catch (e) {
-                console.warn('Failed to distribute profile totalXP to localStorage', e);
-              }
-            }
-
-            // Fetch Firestore progress and persist it locally so Home shows the correct data
-            const progressResult = await getUserProgress(user.uid);
-            
             console.log('Auth state change - user logged in, fetching progress...');
+            
+            // Fetch Firestore progress
+            const progressResult = await getUserProgress(user.uid);
             console.log('Progress result:', progressResult);
             
-            // Check if Firestore has actual course data (not just totalXP)
-            const hasFirestoreCourseData = progressResult?.success && 
-              progressResult.progress && 
-              (
-                (progressResult.progress.courses?.bible?.completedLessons?.length > 0) ||
-                (progressResult.progress.courses?.church?.completedLessons?.length > 0) ||
-                (progressResult.progress.courses?.apologetics?.completedLessons?.length > 0)
-              );
-            
-            console.log('Firestore course data check:', {
-              hasData: hasFirestoreCourseData,
-              bibleLessons: progressResult?.progress?.courses?.bible?.completedLessons?.length || 0,
-              churchLessons: progressResult?.progress?.courses?.church?.completedLessons?.length || 0,
-              apologeticsLessons: progressResult?.progress?.courses?.apologetics?.completedLessons?.length || 0,
-              firestoreTotalXP: progressResult?.progress?.totalXP || 0
-            });
-            
-            if (!hasFirestoreCourseData) {
-              // Check if we have localStorage data to migrate
-              const localBibleProgress = JSON.parse(localStorage.getItem('bibleHistoryProgress') || '[]');
-              const localChurchProgress = JSON.parse(localStorage.getItem('churchHistoryProgress') || '[]');
-              const localApologeticsProgress = JSON.parse(localStorage.getItem('apologeticsProgress') || '[]');
-              const localBibleXP = parseInt(localStorage.getItem('bibleHistoryTotalXP') || '0');
-              const localChurchXP = parseInt(localStorage.getItem('churchHistoryTotalXP') || '0');
-              const localApologeticsXP = parseInt(localStorage.getItem('apologeticsTotalXP') || '0');
-              const localTotalXP = localBibleXP + localChurchXP + localApologeticsXP;
-              
-              console.log('Local progress found:', {
-                totalXP: localTotalXP,
-                bible: localBibleProgress.length,
-                church: localChurchProgress.length,
-                apologetics: localApologeticsProgress.length
-              });
-              
-              // If we have local progress, migrate it to Firestore
-              if (localTotalXP > 0 || localBibleProgress.length > 0 || localChurchProgress.length > 0 || localApologeticsProgress.length > 0) {
-                console.log('🔄 Migrating localStorage progress to Firestore...');
-                const localProgress = {
-                  totalXP: localTotalXP,
-                  bibleProgress: localBibleProgress,
-                  bibleXP: localBibleXP,
-                  churchProgress: localChurchProgress,
-                  churchXP: localChurchXP,
-                  apologeticsProgress: localApologeticsProgress,
-                  apologeticsXP: localApologeticsXP
-                };
-                
-                const migrationResult = await migrateLocalProgressToFirestore(user.uid, localProgress);
-                if (migrationResult.success) {
-                  console.log('✅ Successfully migrated progress to Firestore');
-                  // Fetch the newly migrated progress
-                  const newProgressResult = await getUserProgress(user.uid);
-                  if (newProgressResult.success && newProgressResult.progress) {
-                    console.log('✅ Progress synced from Firestore after migration');
-                    // Now sync it back to localStorage to ensure consistency
-                    const p = newProgressResult.progress;
-                    localStorage.setItem('bibleHistoryProgress', JSON.stringify(p.courses?.bible?.completedLessons || []));
-                    localStorage.setItem('churchHistoryProgress', JSON.stringify(p.courses?.church?.completedLessons || []));
-                    localStorage.setItem('apologeticsProgress', JSON.stringify(p.courses?.apologetics?.completedLessons || []));
-                    localStorage.setItem('bibleHistoryTotalXP', String(p.courses?.bible?.totalXP || 0));
-                    localStorage.setItem('churchHistoryTotalXP', String(p.courses?.church?.totalXP || 0));
-                    localStorage.setItem('apologeticsTotalXP', String(p.courses?.apologetics?.totalXP || 0));
-                  }
-                } else {
-                  console.error('❌ Migration failed:', migrationResult.error);
-                }
-              } else {
-                console.log('No local progress to migrate');
-              }
-            } else if (progressResult && progressResult.success && progressResult.progress) {
-              // Firestore has progress with course data, sync it to localStorage
-              console.log('✅ Firestore has course data, syncing to localStorage');
+            if (progressResult && progressResult.success && progressResult.progress) {
               const p = progressResult.progress;
               
               // Load AI paths from Firestore with progress data
@@ -464,7 +361,6 @@ function AppContent() {
                       return {
                         ...path,
                         completedLessons: progressResult.progress.completedLessons || [],
-                        // Calculate if path is completed (all lessons done)
                         completed: path.lessons && progressResult.progress.completedLessons 
                           ? progressResult.progress.completedLessons.length >= path.lessons.length
                           : false
@@ -484,59 +380,16 @@ function AppContent() {
                 console.warn('Failed to load AI paths:', aiPathsResult.error);
               }
               
-              // Update React state with Firestore progress (including AI paths)
+              // Update React state with Firestore progress (single source of truth)
               setUserProgress(p);
-              
-              // Sync profile totalXP with progress totalXP (progress is source of truth)
-              if (profileResult?.profile?.totalXP !== p.totalXP) {
-                console.log(`⚠️ XP mismatch detected - Profile: ${profileResult?.profile?.totalXP}, Progress: ${p.totalXP}`);
-                console.log('🔄 Syncing profile totalXP to match progress document...');
-                const { updateDoc, doc } = await import('firebase/firestore');
-                const { db } = await import('./firebase/config');
-                const userRef = doc(db, 'users', user.uid);
-                try {
-                  await updateDoc(userRef, {
-                    totalXP: p.totalXP || 0
-                  });
-                  console.log(`✅ Profile totalXP synced to ${p.totalXP}`);
-                } catch (syncError) {
-                  console.error('❌ Failed to sync profile totalXP:', syncError);
-                }
-              }
-              
-              const localProgress = {
-                totalXP: p.totalXP || 0,
-                bibleProgress: p.courses?.bible?.completedLessons || [],
-                bibleXP: p.courses?.bible?.totalXP || 0,
-                churchProgress: p.courses?.church?.completedLessons || [],
-                churchXP: p.courses?.church?.totalXP || 0,
-                apologeticsProgress: p.courses?.apologetics?.completedLessons || [],
-                apologeticsXP: p.courses?.apologetics?.totalXP || 0,
-                dailyChallengeStreak: p.dailyChallenges?.streak || 0,
-                dailyChallengeXP: p.dailyChallenges?.totalXP || 0
-              };
-
-              try {
-                localStorage.setItem('bibleHistoryProgress', JSON.stringify(localProgress.bibleProgress || []));
-                localStorage.setItem('churchHistoryProgress', JSON.stringify(localProgress.churchProgress || []));
-                localStorage.setItem('apologeticsProgress', JSON.stringify(localProgress.apologeticsProgress || []));
-
-                localStorage.setItem('bibleHistoryTotalXP', String(localProgress.bibleXP || 0));
-                localStorage.setItem('churchHistoryTotalXP', String(localProgress.churchXP || 0));
-                localStorage.setItem('apologeticsTotalXP', String(localProgress.apologeticsXP || 0));
-
-                saveProfile({ syncedFrom: 'firestore', totalXP: localProgress.totalXP });
-                console.log('Synced Firestore progress to localStorage');
-              } catch (err) {
-                console.warn('Failed to persist Firestore progress to localStorage', err);
-              }
+              console.log('✅ Progress loaded from Firestore (single source of truth)');
             }
           } else {
             // User signed out - clear userProgress state
             setUserProgress(null);
           }
         } catch (err) {
-          console.error('Error loading user profile/progress on auth change:', err);
+          console.error('Error loading user progress on auth change:', err);
         } finally {
           // Auth state is now determined, stop showing loading screen
           setAuthLoading(false);
@@ -559,8 +412,9 @@ function AppContent() {
 
   const handleSignOut = async () => {
     await logOut();
-    clearAllProgress(); // Clear all localStorage data
+    // Clear React state (Firestore is source of truth, no localStorage to clear)
     setCurrentUser(null);
+    setUserProgress(null);
     setShowProfileMenu(false);
     setAppKey(prev => prev + 1); // Force rerender to show fresh state
     navigate('/');
@@ -576,8 +430,9 @@ function AppContent() {
     
     const result = await deleteAccount(deletePassword);
     if (result.success) {
-      clearAllProgress(); // Clear all localStorage data
+      // Clear React state (Firestore is source of truth, no localStorage to clear)
       setCurrentUser(null);
+      setUserProgress(null);
       setShowProfileMenu(false);
       setShowDeleteConfirm(false);
       setDeletePassword('');
@@ -628,9 +483,9 @@ function AppContent() {
             <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/learn" element={<PathsWrapper />} />
             <Route path="/explorer" element={<ExplorerWrapper />} />
-            <Route path="/study-guide" element={<StudyGuideWrapper onProgressUpdate={refreshUserProgress} />} />
-            <Route path="/bible-history" element={<BibleHistoryWrapper onProgressUpdate={refreshUserProgress} />} />
-            <Route path="/apologetics" element={<ApologeticsWrapper onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/study-guide" element={<StudyGuideWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/bible-history" element={<BibleHistoryWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/apologetics" element={<ApologeticsWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/explore-church" element={<ExploreChurchWrapper />} />
             <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
             <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
