@@ -37,15 +37,29 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object;
-        console.log('Checkout completed:', session.id);
+        console.log('🎉 Checkout completed:', session.id);
+        console.log('Session metadata:', session.metadata);
         
         const userId = session.metadata.userId;
         const customerId = session.customer;
         const subscriptionId = session.subscription;
         
-        // Determine tier from price ID
-        const priceId = session.line_items?.data[0]?.price?.id || 
-                       (await stripe.subscriptions.retrieve(subscriptionId)).items.data[0].price.id;
+        console.log('User ID:', userId);
+        console.log('Customer ID:', customerId);
+        console.log('Subscription ID:', subscriptionId);
+        
+        if (!userId) {
+          console.error('❌ No userId in session metadata!');
+          return res.status(400).json({ error: 'No userId in metadata' });
+        }
+        
+        // Get subscription details to retrieve the price
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const priceId = subscription.items.data[0].price.id;
+        
+        console.log('Price ID:', priceId);
+        console.log('Expected Basic:', process.env.STRIPE_BASIC_PRICE_ID);
+        console.log('Expected Premium:', process.env.STRIPE_PREMIUM_PRICE_ID);
         
         let tier = 'free';
         if (priceId === process.env.STRIPE_BASIC_PRICE_ID) {
@@ -54,11 +68,10 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           tier = 'premium';
         }
         
-        // Get subscription details
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        console.log('Determined tier:', tier);
         
         // Update Firestore
-        await db.collection('users').doc(userId).collection('subscription').doc('current').set({
+        const subscriptionData = {
           tier: tier,
           status: 'active',
           stripeCustomerId: customerId,
@@ -66,7 +79,14 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           currentPeriodStart: new Date(subscription.current_period_start * 1000),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        }, { merge: true });
+        };
+        
+        console.log('Writing to Firestore:', `users/${userId}/subscription/current`);
+        console.log('Subscription data:', subscriptionData);
+        
+        await db.collection('users').doc(userId).collection('subscription').doc('current').set(subscriptionData, { merge: true });
+        
+        console.log('✅ Firestore write successful!');
         
         console.log(`✅ Updated subscription for user ${userId} to ${tier}`);
         break;
