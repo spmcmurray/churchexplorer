@@ -479,40 +479,20 @@ export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate
 };
 
 /**
- * Save AI-generated learning path to localStorage and Firestore (if user logged in)
+ * Save AI-generated learning path to Firestore
  * Paths are stored separately from individual lessons
  */
 export const saveAIPathToLibrary = async (path, currentUser = null) => {
   try {
-    // Save to localStorage (always)
-    // getSavedAIPaths is async (may read from Firestore), await it
-    const savedPaths = await getSavedAIPaths(currentUser);
-    
-    // Check if path already exists (by ID)
-    const existingIndex = savedPaths.findIndex(p => p.id === path.id);
-    if (existingIndex >= 0) {
-      // Update existing path
-      savedPaths[existingIndex] = {
-        ...path,
-        updatedAt: new Date().toISOString()
-      };
-    } else {
-      // Add new path
-      savedPaths.push({
-        ...path,
-        savedAt: new Date().toISOString()
-      });
-    }
-    
-    localStorage.setItem('aiGeneratedPaths', JSON.stringify(savedPaths));
-    
-    // Also save to Firestore if user is logged in
+    // Save to Firestore if user is logged in
     if (currentUser?.uid) {
       const { saveAIPathToFirestore } = await import('../firebase/progressService');
       await saveAIPathToFirestore(currentUser.uid, path);
+      return { success: true, path };
+    } else {
+      console.warn('Cannot save AI path - user not logged in');
+      return { success: false, error: 'User not logged in' };
     }
-    
-    return { success: true, path };
   } catch (error) {
     console.error('Error saving AI path:', error);
     return { success: false, error: error.message };
@@ -520,7 +500,7 @@ export const saveAIPathToLibrary = async (path, currentUser = null) => {
 };
 
 /**
- * Get all saved AI paths from localStorage and Firestore (if user logged in)
+ * Get all saved AI paths from Firestore
  */
 export const getSavedAIPaths = async (currentUser = null) => {
   try {

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, CheckCircle, Calendar, ChevronDown, ChevronRight, Award, Target } from 'lucide-react';
+import { getCurrentUser } from './firebase/authService';
+import { updateStudyGuideProgress } from './firebase/progressService';
 
-const StudyGuide = ({ onNavigate }) => {
+const StudyGuide = ({ onNavigate, userProgress }) => {
   const [expandedWeek, setExpandedWeek] = useState(null);
   const [completedWeeks, setCompletedWeeks] = useState([]);
   const [quizScores, setQuizScores] = useState({});
@@ -46,39 +48,25 @@ const StudyGuide = ({ onNavigate }) => {
     });
   };
 
-  // Load completed weeks and quiz scores from localStorage on mount
+  // Load completed weeks and quiz scores from Firestore userProgress
   useEffect(() => {
-    const savedProgress = localStorage.getItem('churchExplorerProgress');
-    const savedQuizScores = localStorage.getItem('churchExplorerQuizScores');
-
-    if (savedProgress) {
-      try {
-        const parsed = JSON.parse(savedProgress);
-        setCompletedWeeks(parsed);
-      } catch (e) {
-        console.error('Error loading progress:', e);
-      }
+    if (userProgress?.studyGuide) {
+      setCompletedWeeks(userProgress.studyGuide.completedWeeks || []);
+      setQuizScores(userProgress.studyGuide.quizScores || {});
     }
+  }, [userProgress]);
 
-    if (savedQuizScores) {
-      try {
-        const parsed = JSON.parse(savedQuizScores);
-        setQuizScores(parsed);
-      } catch (e) {
-        console.error('Error loading quiz scores:', e);
+  // Save to Firestore whenever completedWeeks or quizScores change
+  useEffect(() => {
+    const saveProgress = async () => {
+      const user = getCurrentUser();
+      if (user && (completedWeeks.length > 0 || Object.keys(quizScores).length > 0)) {
+        await updateStudyGuideProgress(user.uid, completedWeeks, quizScores);
       }
-    }
-  }, []);
-
-  // Save to localStorage whenever completedWeeks changes
-  useEffect(() => {
-    localStorage.setItem('churchExplorerProgress', JSON.stringify(completedWeeks));
-  }, [completedWeeks]);
-
-  // Save to localStorage whenever quizScores changes
-  useEffect(() => {
-    localStorage.setItem('churchExplorerQuizScores', JSON.stringify(quizScores));
-  }, [quizScores]);
+    };
+    
+    saveProgress();
+  }, [completedWeeks, quizScores]);
 
   // 8-Week Study Guide Curriculum
   const curriculum = [

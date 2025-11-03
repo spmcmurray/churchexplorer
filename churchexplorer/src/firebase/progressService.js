@@ -60,6 +60,11 @@ export const initializeUserProgress = async (uid) => {
           lastCompletedDate: null,
           completedDates: []
         },
+        studyGuide: {
+          completedWeeks: [],
+          quizScores: {},
+          lastUpdated: null
+        },
         reviews: {
           totalCompleted: 0,
           totalXP: 0,
@@ -463,11 +468,34 @@ export const getAIPathProgressFromFirestore = async (uid, pathId) => {
     const progressDoc = await getDoc(progressRef);
     
     if (progressDoc.exists()) {
-      return { success: true, completedLessons: progressDoc.data().completedLessons || [] };
+      return { success: true, progress: progressDoc.data() };
     }
-    return { success: true, completedLessons: [] };
+    return { success: true, progress: { completedLessons: [] } };
   } catch (error) {
     console.error('Error loading AI path progress:', error);
-    return { success: false, error: error.message, completedLessons: [] };
+    return { success: false, error: error.message, progress: { completedLessons: [] } };
+  }
+};
+
+/**
+ * Update study guide progress (completedWeeks and quizScores)
+ */
+export const updateStudyGuideProgress = async (uid, completedWeeks, quizScores) => {
+  try {
+    const progressRef = doc(db, 'users', uid, 'progress', 'main');
+    
+    await updateDoc(progressRef, {
+      studyGuide: {
+        completedWeeks: completedWeeks || [],
+        quizScores: quizScores || {},
+        lastUpdated: serverTimestamp()
+      },
+      lastUpdated: serverTimestamp()
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating study guide progress:', error);
+    return { success: false, error: error.message };
   }
 };

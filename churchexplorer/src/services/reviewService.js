@@ -1,4 +1,7 @@
-// Spaced Repetition Review Service
+// Spaced Repetition Review Service - Firestore Edition
+import { getCurrentUser } from '../firebase/authService';
+import { db } from '../firebase/config';
+import { doc, setDoc, getDoc, getDocs, collection, query } from 'firebase/firestore';
 
 // Review intervals in days
 const REVIEW_INTERVALS = [1, 3, 7, 14];
@@ -20,58 +23,88 @@ export const getLessonKey = (path, lessonNumber) => {
 };
 
 /**
- * Schedule reviews when a lesson is completed
+ * Schedule reviews when a lesson is completed - saves to Firestore
  */
-export const scheduleReviews = (path, lessonNumber) => {
+export const scheduleReviews = async (path, lessonNumber) => {
+  const user = getCurrentUser();
+  if (!user) {
+    console.warn('Cannot schedule reviews - user not logged in');
+    return;
+  }
+
   const lessonKey = getLessonKey(path, lessonNumber);
   const completedDate = new Date().toISOString();
   
-  // Get existing schedule or create new
-  const scheduleData = getReviewSchedule();
-  
-  // Don't reschedule if already exists
-  if (scheduleData[lessonKey]) {
-    return;
-  }
-  
-  // Create review schedule
-  const reviews = REVIEW_INTERVALS.map((interval, index) => {
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + interval);
+  try {
+    // Check if review schedule already exists
+    const reviewRef = doc(db, 'users', user.uid, 'reviewSchedule', lessonKey);
+    const existingDoc = await getDoc(reviewRef);
     
-    return {
-      dueDate: dueDate.toISOString(),
-      completed: false,
-      completedDate: null,
-      interval: interval,
-      reviewNumber: index + 1
+    if (existingDoc.exists()) {
+      console.log('Review schedule already exists for', lessonKey);
+      return;
+    }
+    
+    // Create review schedule
+    const reviews = REVIEW_INTERVALS.map((interval, index) => {
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + interval);
+      
+      return {
+        dueDate: dueDate.toISOString(),
+        completed: false,
+        completedDate: null,
+        interval: interval,
+        reviewNumber: index + 1
+      };
+    });
+    
+    const scheduleData = {
+      path,
+      lessonNumber,
+      completedDate,
+      reviews,
+      masteryLevel: 0
     };
-  });
-  
-  scheduleData[lessonKey] = {
-    path,
-    lessonNumber,
-    completedDate,
-    reviews,
-    masteryLevel: 0
-  };
-  
-  localStorage.setItem('reviewSchedule', JSON.stringify(scheduleData));
+    
+    await setDoc(reviewRef, scheduleData);
+    console.log('✅ Review schedule created in Firestore:', lessonKey);
+  } catch (error) {
+    console.error('Error scheduling reviews:', error);
+  }
 };
 
 /**
- * Get all review schedule data
+ * Get all review schedule data from Firestore
  */
-export const getReviewSchedule = () => {
-  const data = localStorage.getItem('reviewSchedule');
-  return data ? JSON.parse(data) : {};
+export const getReviewSchedule = async () => {
+  const user = getCurrentUser();
+  if (!user) {
+    return {};
+  }
+
+  try {
+    const reviewsRef = collection(db, 'users', user.uid, 'reviewSchedule');
+    const q = query(reviewsRef);
+    const snapshot = await getDocs(q);
+    
+    const scheduleData = {};
+    snapshot.forEach((doc) => {
+      scheduleData[doc.id] = doc.data();
+    });
+    
+    return scheduleData;
+  } catch (error) {
+    console.error('Error loading review schedule:', error);
+    return {};
+  }
 };
 
 /**
- * Get reviews that are due today or overdue
+ * Get reviews that are due today or overdue from Firestore
  */
-export const getDueReviews = () => {
-  const scheduleData = getReviewSchedule();
+export const getDueReviews = async () => {
+  const scheduleData = await getReviewSchedule();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
@@ -103,38 +136,52 @@ export const getDueReviews = () => {
 };
 
 /**
- * Mark a review as completed
+ * Mark a review as completed - saves to Firestore
  */
-export const markReviewComplete = (path, lessonNumber, score) => {
-  const lessonKey = getLessonKey(path, lessonNumber);
-  const scheduleData = getReviewSchedule();
-  
-  if (!scheduleData[lessonKey]) {
+export const markReviewComplete = async (path, lessonNumber, score) => {
+  const user = getCurrentUser();
+  if (!user) {
+    console.warn('Cannot mark review complete - user not logged in');
     return;
   }
+
+  const lessonKey = getLessonKey(path, lessonNumber);
   
-  const lessonData = scheduleData[lessonKey];
-  const nextReview = lessonData.reviews.find(r => !r.completed);
-  
-  if (nextReview) {
-    nextReview.completed = true;
-    nextReview.completedDate = new Date().toISOString();
-    nextReview.score = score;
+  try {
+    const reviewRef = doc(db, 'users', user.uid, 'reviewSchedule', lessonKey);
+    const docSnap = await getDoc(reviewRef);
     
-    // Update mastery level
-    const completedReviews = lessonData.reviews.filter(r => r.completed).length;
-    lessonData.masteryLevel = completedReviews;
+    if (!docSnap.exists()) {
+      console.warn('Review schedule not found for', lessonKey);
+      return;
+    }
     
-    localStorage.setItem('reviewSchedule', JSON.stringify(scheduleData));
+    const lessonData = docSnap.data();
+    const nextReview = lessonData.reviews.find(r => !r.completed);
+    
+    if (nextReview) {
+      nextReview.completed = true;
+      nextReview.completedDate = new Date().toISOString();
+      nextReview.score = score;
+      
+      // Update mastery level
+      const completedReviews = lessonData.reviews.filter(r => r.completed).length;
+      lessonData.masteryLevel = completedReviews;
+      
+      await setDoc(reviewRef, lessonData);
+      console.log('✅ Review marked complete in Firestore:', lessonKey);
+    }
+  } catch (error) {
+    console.error('Error marking review complete:', error);
   }
 };
 
 /**
- * Get mastery info for a lesson
+ * Get mastery info for a lesson from Firestore
  */
-export const getMasteryInfo = (path, lessonNumber) => {
+export const getMasteryInfo = async (path, lessonNumber) => {
   const lessonKey = getLessonKey(path, lessonNumber);
-  const scheduleData = getReviewSchedule();
+  const scheduleData = await getReviewSchedule();
   
   if (!scheduleData[lessonKey]) {
     return MASTERY_LEVELS[0];
@@ -145,11 +192,11 @@ export const getMasteryInfo = (path, lessonNumber) => {
 };
 
 /**
- * Get next review date for a lesson
+ * Get next review date for a lesson from Firestore
  */
-export const getNextReviewDate = (path, lessonNumber) => {
+export const getNextReviewDate = async (path, lessonNumber) => {
   const lessonKey = getLessonKey(path, lessonNumber);
-  const scheduleData = getReviewSchedule();
+  const scheduleData = await getReviewSchedule();
   
   if (!scheduleData[lessonKey]) {
     return null;
@@ -160,11 +207,11 @@ export const getNextReviewDate = (path, lessonNumber) => {
 };
 
 /**
- * Get review statistics
+ * Get review statistics from Firestore
  */
-export const getReviewStats = () => {
-  const scheduleData = getReviewSchedule();
-  const dueReviews = getDueReviews();
+export const getReviewStats = async () => {
+  const scheduleData = await getReviewSchedule();
+  const dueReviews = await getDueReviews();
   
   let totalLessons = Object.keys(scheduleData).length;
   let masteredCount = 0;
