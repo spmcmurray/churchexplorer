@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Globe, LogIn, UserPlus, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { signUp, signIn } from './firebase/authService';
 
 const Auth = ({ onSuccess, onClose }) => {
@@ -228,7 +229,7 @@ const Auth = ({ onSuccess, onClose }) => {
             onClick={() => {
               setIsSignUp(!isSignUp);
               setError('');
-              setFormData({ name: '', email: '', password: '', country: '' });
+              setFormData({ firstName: '', lastName: '', email: '', password: '', country: '' });
             }}
             className="text-blue-600 hover:text-blue-700 font-semibold text-sm"
           >
@@ -237,6 +238,19 @@ const Auth = ({ onSuccess, onClose }) => {
               : "Don't have an account? Sign up"}
           </button>
         </div>
+
+        {isSignUp && (
+          <div className="mt-4 text-center text-xs text-slate-500">
+            By creating an account, you agree to our{' '}
+            <Link to="/legal" onClick={onClose} className="text-blue-600 hover:underline">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link to="/legal" onClick={onClose} className="text-blue-600 hover:underline">
+              Privacy Policy
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

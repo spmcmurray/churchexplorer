@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 require('dotenv').config({ path: '../churchexplorer/.env' });
 
 const app = express();
@@ -7,6 +8,44 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
+// For webhook, we need raw body - add this before express.json()
+app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  console.log('Webhook event received:', event.type);
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      console.log('Checkout completed:', session.id);
+      // TODO: Update Firestore subscription
+      break;
+    case 'customer.subscription.updated':
+      console.log('Subscription updated');
+      // TODO: Update Firestore subscription
+      break;
+    case 'customer.subscription.deleted':
+      console.log('Subscription canceled');
+      // TODO: Update Firestore subscription to canceled
+      break;
+    case 'invoice.payment_failed':
+      console.log('Payment failed');
+      // TODO: Update Firestore subscription to past_due
+      break;
+  }
+
+  res.json({received: true});
+});
+
 app.use(express.json());
 
 // OpenAI API endpoint proxy
@@ -339,6 +378,65 @@ app.post('/api/ai/validate-topic', async (req, res) => {
   }
 });
 
+// Stripe Checkout Session - Create subscription checkout
+app.post('/api/create-checkout-session', async (req, res) => {
+  try {
+    const { priceId, userId, userEmail } = req.body;
+
+    if (!priceId || !userId || !userEmail) {
+      return res.status(400).json({ error: 'Missing required fields: priceId, userId, userEmail' });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      customer_email: userEmail,
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      success_url: `${req.headers.origin}/#/profile?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.origin}/#/profile?canceled=true`,
+      metadata: {
+        userId: userId,
+      },
+      subscription_data: {
+        metadata: {
+          userId: userId,
+        },
+      },
+    });
+
+    res.json({ sessionId: session.id, url: session.url });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Stripe Customer Portal - Manage subscription/billing
+app.post('/api/create-portal-session', async (req, res) => {
+  try {
+    const { customerId } = req.body;
+
+    if (!customerId) {
+      return res.status(400).json({ error: 'Missing customerId' });
+    }
+
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${req.headers.origin}/#/profile`,
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Error creating portal session:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -347,4 +445,7 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 AI Proxy Server running on port ${PORT}`);
   console.log(`✅ OpenAI API key configured: ${!!process.env.REACT_APP_OPENAI_API_KEY}`);
+  console.log(`✅ Stripe configured: ${!!process.env.STRIPE_SECRET_KEY}`);
+  console.log(`✅ Stripe Basic Price ID: ${process.env.STRIPE_BASIC_PRICE_ID}`);
+  console.log(`✅ Stripe Premium Price ID: ${process.env.STRIPE_PREMIUM_PRICE_ID}`);
 });

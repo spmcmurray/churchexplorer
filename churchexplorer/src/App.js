@@ -4,7 +4,7 @@ import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import ApologeticsGuide from "./ApologeticsGuide";
-import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Menu, X, Sparkles } from 'lucide-react';
+import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Menu, X, Sparkles, Settings } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
 import Onboarding from './Onboarding';
@@ -16,6 +16,8 @@ import SignUpPrompt from './SignUpPrompt';
 import AIPathsView from './AIPathsView';
 import AIPathViewer from './AIPathViewer';
 import AILessonViewerPage from './AILessonViewerPage';
+import Profile from './Profile';
+import Legal from './Legal';
 import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
 import { getUserProgress } from './firebase/progressService';
 import { notifyAchievement, onAchievement } from './services/progressService';
@@ -70,6 +72,14 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
                         <p className="text-sm font-semibold text-gray-900">{currentUser.displayName || 'User'}</p>
                         <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
                       </div>
+                      <Link
+                        to="/profile"
+                        onClick={() => setShowProfileMenu(false)}
+                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+                      >
+                        <Settings className="w-4 h-4" />
+                        <span>Profile & Settings</span>
+                      </Link>
                       <button
                         onClick={handleSignOut}
                         className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
@@ -196,6 +206,10 @@ function HomeWrapper({ userProgress, onShowAuth, currentUser, onProgressUpdate }
 function PathsWrapper({ userProgress }) {
   const navigate = useNavigate();
   return <Paths userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} />;
+}
+
+function ProfileWrapper({ currentUser, onDeleteAccount, onSignOut }) {
+  return <Profile currentUser={currentUser} onDeleteAccount={onDeleteAccount} onSignOut={onSignOut} />;
 }
 
 function ExplorerWrapper() {
@@ -541,6 +555,8 @@ function AppContent() {
             <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
           <Route path="/onboarding" element={<OnboardingWrapper />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
+          <Route path="/profile" element={<ProfileWrapper currentUser={currentUser} onDeleteAccount={() => setShowDeleteConfirm(true)} onSignOut={handleSignOut} />} />
+          <Route path="/legal" element={<Legal />} />
           <Route path="/ai-paths" element={<AIPathsView currentUser={currentUser} />} />
           <Route path="/ai-path/:pathId" element={<AIPathViewerWrapper currentUser={currentUser} />} />
           <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />

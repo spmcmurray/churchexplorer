@@ -221,7 +221,26 @@ Do not include any text before or after the JSON object.`;
 /**
  * Generate lesson content using AI
  */
-export const generateAILesson = async (topic, additionalContext = '') => {
+/**
+ * Generate AI lesson with usage tracking
+ * Now requires userId to check subscription limits
+ */
+export const generateAILesson = async (topic, additionalContext = '', userId = null) => {
+  // Check subscription limits if userId provided
+  if (userId) {
+    const { canCreateAILesson, incrementAILessonUsage } = await import('../firebase/subscriptionService');
+    const eligibility = await canCreateAILesson(userId, 'lesson');
+    
+    if (!eligibility.allowed) {
+      const error = new Error(eligibility.reason || 'You have reached your monthly AI lesson limit.');
+      error.upgradeNeeded = eligibility.upgradeNeeded;
+      error.tier = eligibility.tier;
+      error.used = eligibility.used;
+      error.limit = eligibility.limit;
+      throw error;
+    }
+  }
+  
   // Validate topic before making API call
   const validation = await validateTopic(topic, additionalContext);
   if (!validation.valid) {
@@ -255,6 +274,12 @@ export const generateAILesson = async (topic, additionalContext = '') => {
 
     // Validate the generated lesson structure
     const validatedLesson = validateAndEnhanceLesson(data.lesson, topic);
+
+    // Increment usage counter after successful generation
+    if (userId) {
+      const { incrementAILessonUsage } = await import('../firebase/subscriptionService');
+      await incrementAILessonUsage(userId, 'lesson');
+    }
 
     return {
       success: true,
@@ -393,7 +418,29 @@ export const generateTopicSuggestions = async (userInterests = []) => {
 /**
  * Generate a learning path outline (lesson titles and descriptions)
  */
-export const generateLearningPathOutline = async (topic, pathType, additionalContext = '') => {
+/**
+ * Generate a learning path outline (lesson titles and descriptions)
+ * Now requires userId to check subscription limits
+ */
+export const generateLearningPathOutline = async (topic, pathType, additionalContext = '', userId = null) => {
+  // Check subscription limits if userId provided
+  if (userId) {
+    const { canCreateAILesson, incrementAILessonUsage } = await import('../firebase/subscriptionService');
+    
+    // Determine lesson type for limit checking
+    const lessonType = pathType === 'quick' ? 'quick' : 'lesson';
+    const eligibility = await canCreateAILesson(userId, lessonType);
+    
+    if (!eligibility.allowed) {
+      const error = new Error(eligibility.reason || 'You have reached your monthly AI lesson limit.');
+      error.upgradeNeeded = eligibility.upgradeNeeded;
+      error.tier = eligibility.tier;
+      error.used = eligibility.used;
+      error.limit = eligibility.limit;
+      throw error;
+    }
+  }
+  
   // Validate topic before making API call
   const validation = await validateTopic(topic, additionalContext);
   if (!validation.valid) {
@@ -435,6 +482,13 @@ export const generateLearningPathOutline = async (topic, pathType, additionalCon
     if (!outline || !outline.lessons || !Array.isArray(outline.lessons)) {
       console.error('Invalid outline received:', outline);
       throw new Error('Server returned invalid path outline (missing lessons array)');
+    }
+
+    // Increment usage counter after successful generation
+    if (userId) {
+      const { incrementAILessonUsage } = await import('../firebase/subscriptionService');
+      const lessonType = pathType === 'quick' ? 'quick' : 'lesson';
+      await incrementAILessonUsage(userId, lessonType);
     }
 
     return {
