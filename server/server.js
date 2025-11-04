@@ -56,6 +56,7 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
         
         // Get subscription details to retrieve the price
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        console.log('Subscription object:', JSON.stringify(subscription, null, 2));
         const priceId = subscription.items.data[0].price.id;
         
         console.log('Price ID:', priceId);
