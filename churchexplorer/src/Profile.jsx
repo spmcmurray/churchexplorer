@@ -211,7 +211,7 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
               </div>
               <p className="text-white/90 mb-4">
                 {subscription?.tier === 'premium' && 'Unlimited AI lessons + all features'}
-                {subscription?.tier === 'basic' && '1 AI lesson per month + all curated content'}
+                {subscription?.tier === 'basic' && '1 AI lesson per week (4 per month) + all curated content'}
                 {subscription?.tier === 'free' && 'Access to all curated lessons'}
               </p>
               <div className="flex items-center space-x-4 text-sm text-white/80">
