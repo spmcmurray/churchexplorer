@@ -3,6 +3,8 @@ import { Brain, Sparkles, BookOpen, CheckCircle2, ArrowLeft, Trash2, Play, Chevr
 import AIPathViewer from './AIPathViewer';
 import UpgradeModal from './UpgradeModal';
 import UsageDisplay from './UsageDisplay';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase/config';
 import { 
   generateAILesson, 
   generateTopicSuggestions,
@@ -23,6 +25,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
   const [showCreator, setShowCreator] = useState(false);
   const [viewingPath, setViewingPath] = useState(null); // For conditional rendering of path viewer
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [subscription, setSubscription] = useState(null);
   
   // Creator states
   const [topic, setTopic] = useState('');
@@ -55,6 +58,26 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
     loadTopicSuggestions();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Listen for subscription changes
+  useEffect(() => {
+    if (!currentUser) {
+      setSubscription(null);
+      return;
+    }
+
+    const subscriptionRef = doc(db, 'users', currentUser.uid, 'subscription', 'current');
+    const unsubscribe = onSnapshot(subscriptionRef, (doc) => {
+      if (doc.exists()) {
+        setSubscription(doc.data());
+      } else {
+        // Default to free tier if no subscription document exists
+        setSubscription({ tier: 'free', status: 'active' });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
 
   const loadAIPaths = async () => {
     setLoading(true);
@@ -317,8 +340,13 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
         setError(result.error || 'Failed to generate complete path. Please try again.');
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
       console.error('Complete path generation error:', error);
+      if (error.upgradeNeeded) {
+        setShowUpgradeModal(true);
+        setError(error.message || 'You have reached your monthly AI lesson limit.');
+      } else {
+        setError(error.message || 'An unexpected error occurred. Please try again.');
+      }
     } finally {
       setGeneratingPath(false);
     }
@@ -788,12 +816,13 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       </div>
       
       {/* Upgrade Modal */}
-      {showUpgradeModal && (
-        <UpgradeModal
-          currentUser={currentUser}
-          onClose={() => setShowUpgradeModal(false)}
-        />
-      )}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentUser={currentUser}
+        currentTier={subscription?.tier || 'free'}
+        reason="You've reached your monthly AI lesson limit. Upgrade to create more AI-powered lessons!"
+      />
     </div>
   );
 };
