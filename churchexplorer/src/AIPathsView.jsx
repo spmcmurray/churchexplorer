@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Brain, Sparkles, BookOpen, CheckCircle2, ArrowLeft, Trash2, Play, ChevronDown, ChevronUp, Shuffle, Zap, Layers, Rocket, Lightbulb, TrendingUp, Star, BookMarked, AlertCircle } from 'lucide-react';
 import AIPathViewer from './AIPathViewer';
+import UpgradeModal from './UpgradeModal';
+import UsageDisplay from './UsageDisplay';
 import { 
   generateAILesson, 
   generateTopicSuggestions,
@@ -20,6 +22,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
   const [loading, setLoading] = useState(true);
   const [showCreator, setShowCreator] = useState(false);
   const [viewingPath, setViewingPath] = useState(null); // For conditional rendering of path viewer
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   
   // Creator states
   const [topic, setTopic] = useState('');
@@ -192,10 +195,10 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
     setPathOutline(null);
 
     try {
-      if (pathType === 'quick') {
+  if (pathType === 'quick') {
         // Single lesson - create as a 1-lesson path
         setPathProgress('Generating lesson...');
-        const result = await generateAILesson(topic, additionalContext);
+  const result = await generateAILesson(topic, additionalContext, currentUser?.uid);
         
         if (result.success) {
           const singleLessonPath = {
@@ -223,7 +226,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       } else {
         // Multi-lesson paths (Deep Dive or Complete Course)
         // Step 1: Generate outline
-        const outlineResult = await generateLearningPathOutline(topic, pathType, additionalContext);
+  const outlineResult = await generateLearningPathOutline(topic, pathType, additionalContext, currentUser?.uid);
         
         if (outlineResult.success) {
           setPathOutline(outlineResult.outline);
@@ -232,7 +235,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
           // Step 2: Generate all lessons in the path
           const pathResult = await generateCompleteLearningPath(outlineResult.outline, (progress) => {
             setPathProgress(progress);
-          });
+          }, currentUser?.uid);
           
           if (pathResult.success) {
             // Save the complete path as a single entity
@@ -264,8 +267,13 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
         }
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
       console.error('Path generation error:', error);
+      if (error.upgradeNeeded) {
+        setShowUpgradeModal(true);
+        setError(error.message || 'You have reached your monthly AI lesson limit.');
+      } else {
+        setError(error.message || 'An unexpected error occurred. Please try again.');
+      }
     } finally {
       setGenerating(false);
       setGeneratingPath(false);
@@ -281,7 +289,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
     try {
       const result = await generateCompleteLearningPath(pathOutline, (progress) => {
         setPathProgress(progress);
-      });
+      }, currentUser?.uid);
       
       if (result.success) {
         if (result.path.lessons && result.path.lessons.length > 0) {
@@ -448,6 +456,11 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Usage Display */}
+        <div className="mb-6">
+          <UsageDisplay currentUser={currentUser} />
+        </div>
+        
         {/* Mobile Back Button */}
         <button
           onClick={() => onGoBack ? onGoBack() : onNavigate('home')}
@@ -773,6 +786,14 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
           </div>
         )}
       </div>
+      
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <UpgradeModal
+          currentUser={currentUser}
+          onClose={() => setShowUpgradeModal(false)}
+        />
+      )}
     </div>
   );
 };
