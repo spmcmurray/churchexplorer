@@ -204,7 +204,7 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
         {/* Subscription Overview Card */}
         <div className={`${getTierColor(subscription?.tier)} rounded-2xl p-6 mb-6 text-white shadow-lg`}>
           <div className="flex items-start justify-between">
-            <div>
+            <div className="flex-1">
               <div className="flex items-center space-x-2 mb-2">
                 {getTierIcon(subscription?.tier)}
                 <h2 className="text-2xl font-bold">{getTierName(subscription?.tier)} Plan</h2>
@@ -225,14 +225,6 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                 )}
               </div>
             </div>
-            {subscription?.tier !== 'premium' && (
-              <button
-                onClick={() => setShowUpgradeModal(true)}
-                className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-purple-50 transition"
-              >
-                Upgrade
-              </button>
-            )}
           </div>
         </div>
 
@@ -441,17 +433,6 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                     </div>
                   </div>
 
-                  {subscription?.tier !== 'premium' && (
-                    <div className="mt-6">
-                      <button
-                        onClick={() => setShowUpgradeModal(true)}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-lg"
-                      >
-                        Upgrade to {subscription?.tier === 'basic' ? 'Premium' : 'a Paid Plan'}
-                      </button>
-                    </div>
-                  )}
-
                   {subscription?.status === 'active' && subscription?.tier !== 'free' && (
                     <div className="mt-6 pt-6 border-t border-slate-200">
                       <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
@@ -487,7 +468,7 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                       onClick={() => setShowUpgradeModal(true)}
                       className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-lg"
                     >
-                      View Plans
+                      View Plans & Upgrade
                     </button>
                   </div>
                 </div>
