@@ -559,14 +559,12 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
       </div>
 
       {/* Upgrade Modal */}
-      {showUpgradeModal && (
-        <UpgradeModal
-          isOpen={showUpgradeModal}
-          currentTier={subscription?.tier}
-          currentUser={currentUser}
-          onClose={() => setShowUpgradeModal(false)}
-        />
-      )}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentTier={subscription?.tier || 'free'}
+        currentUser={currentUser}
+      />
     </div>
   );
 }

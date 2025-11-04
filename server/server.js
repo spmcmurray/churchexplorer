@@ -541,6 +541,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
           quantity: 1,
         },
       ],
+      // Enable promo code input in checkout
+      allow_promotion_codes: true,
       success_url: `${req.headers.origin}/#/profile?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/#/profile?canceled=true`,
       metadata: {
