@@ -44,8 +44,8 @@ const UpgradeModal = ({ isOpen, onClose, currentTier = 'free', currentUser, reas
     try {
       // Map tier to Stripe price ID
       const priceIds = {
-        basic: process.env.REACT_APP_STRIPE_BASIC_PRICE_ID || 'price_1SPnF5CfikIx5DrkLR89ONxV',
-        premium: process.env.REACT_APP_STRIPE_PREMIUM_PRICE_ID || 'price_1SPnG1CfikIx5DrkfYOJlD2h',
+        basic: process.env.REACT_APP_STRIPE_BASIC_PRICE_ID || 'price_1SPnkPCfikIx5DrknESztFpf',
+        premium: process.env.REACT_APP_STRIPE_PREMIUM_PRICE_ID || 'price_1SPnkbCfikIx5DrkwASRL00l',
       };
 
       const apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT?.replace('/api/ai', '') || 
