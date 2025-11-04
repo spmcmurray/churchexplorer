@@ -1,3 +1,4 @@
+// Church Explorer API Server - Updated 2025-11-04
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
