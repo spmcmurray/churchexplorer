@@ -25,11 +25,11 @@ export const SUBSCRIPTION_TIERS = {
   BASIC: {
     id: 'basic',
     name: 'Basic',
-    price: 4.99,
-    aiLessonsPerMonth: 1,
+    price: 2.99,
+    aiLessonsPerMonth: 4,
     features: [
       'All curated learning paths',
-      '1 AI lesson per month',
+      '1 AI lesson per week (4/month)',
       'Custom AI-generated content',
       'Progress tracking',
       'Daily challenges'
@@ -38,7 +38,7 @@ export const SUBSCRIPTION_TIERS = {
   PREMIUM: {
     id: 'premium',
     name: 'Premium',
-    price: 9.99,
+    price: 5.99,
     aiLessonsPerMonth: Infinity,
     isUnlimited: true,
     features: [
