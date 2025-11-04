@@ -71,14 +71,14 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
         
         console.log('Determined tier:', tier);
         
-        // Update Firestore - use Firestore Timestamp from seconds
+        // Update Firestore - store as JavaScript Date objects
         const subscriptionData = {
           tier: tier,
           status: 'active',
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscriptionId,
-          currentPeriodStart: admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_start * 1000)),
-          currentPeriodEnd: admin.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+          currentPeriodStart: new Date(subscription.current_period_start * 1000),
+          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         };
         
@@ -117,8 +117,8 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           await subSnapshot.docs[0].ref.update({
             tier: newTier,
             status: updatedSub.status,
-            currentPeriodStart: admin.firestore.Timestamp.fromDate(new Date(updatedSub.current_period_start * 1000)),
-            currentPeriodEnd: admin.firestore.Timestamp.fromDate(new Date(updatedSub.current_period_end * 1000)),
+            currentPeriodStart: new Date(updatedSub.current_period_start * 1000),
+            currentPeriodEnd: new Date(updatedSub.current_period_end * 1000),
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
           });
           
