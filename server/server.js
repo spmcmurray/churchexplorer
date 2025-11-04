@@ -106,6 +106,7 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           stripeSubscriptionId: subscriptionId,
           currentPeriodStart: new Date(periodStart * 1000),
           currentPeriodEnd: new Date(periodEnd * 1000),
+          aiLessonsUsed: 0, // Reset usage counter on new subscription
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         };
         
@@ -180,6 +181,7 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           stripeSubscriptionId: createdSub.id,
           currentPeriodStart: createdPeriodStart ? new Date(createdPeriodStart * 1000) : null,
           currentPeriodEnd: createdPeriodEnd ? new Date(createdPeriodEnd * 1000) : null,
+          aiLessonsUsed: 0, // Reset usage counter on new subscription
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         };
 
