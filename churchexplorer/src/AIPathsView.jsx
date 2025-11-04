@@ -486,7 +486,10 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Usage Display */}
         <div className="mb-6">
-          <UsageDisplay currentUser={currentUser} />
+          <UsageDisplay 
+            userId={currentUser?.uid} 
+            onUpgradeClick={() => setShowUpgradeModal(true)}
+          />
         </div>
         
         {/* Mobile Back Button */}

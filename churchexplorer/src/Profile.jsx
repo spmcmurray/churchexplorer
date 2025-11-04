@@ -377,7 +377,10 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
             <div className="p-6 space-y-6">
               <div>
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">AI Lesson Usage</h3>
-                <UsageDisplay userId={currentUser?.uid} />
+                <UsageDisplay 
+                  userId={currentUser?.uid} 
+                  onUpgradeClick={() => setShowUpgradeModal(true)}
+                />
               </div>
 
               {subscription?.tier !== 'free' && (
