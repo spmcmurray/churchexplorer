@@ -6,9 +6,17 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const admin = require('firebase-admin');
 
 // Initialize Firebase Admin
-admin.initializeApp({
-  projectId: process.env.FIREBASE_PROJECT_ID || 'church-explorer-20e5a',
-});
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+  const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    projectId: process.env.FIREBASE_PROJECT_ID || 'church-explorer-20e5a',
+  });
+} else {
+  admin.initializeApp({
+    projectId: process.env.FIREBASE_PROJECT_ID || 'church-explorer-20e5a',
+  });
+}
 
 const db = admin.firestore();
 
