@@ -116,7 +116,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
       setGeneratedLesson(null);
 
       try {
-        const result = await generateAILesson(topic, additionalContext);
+  const result = await generateAILesson(topic, additionalContext, currentUser?.uid);
         
         if (result.success) {
           // Save lesson to user's library
@@ -139,7 +139,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
       setPathOutline(null);
 
       try {
-        const result = await generateLearningPathOutline(topic, pathType, additionalContext);
+  const result = await generateLearningPathOutline(topic, pathType, additionalContext, currentUser?.uid);
         
         if (result.success) {
           setPathOutline(result.outline);
@@ -164,7 +164,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
     try {
       const result = await generateCompleteLearningPath(pathOutline, (progress) => {
         setPathProgress(progress);
-      });
+      }, currentUser?.uid);
       
       if (result.success) {
         // For now, start with the first lesson

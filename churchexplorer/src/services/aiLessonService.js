@@ -515,7 +515,7 @@ export const generateLearningPathOutline = async (topic, pathType, additionalCon
 /**
  * Generate full content for a specific lesson in a learning path
  */
-export const generatePathLesson = async (pathOutline, lessonNumber) => {
+export const generatePathLesson = async (pathOutline, lessonNumber, userId = null) => {
   try {
     const lessonInfo = pathOutline.lessons[lessonNumber - 1];
     if (!lessonInfo) {
@@ -542,8 +542,8 @@ ${objectivesText}
 ${lessonNumber > 1 ? 'Build on concepts from previous lessons.' : 'Establish foundational understanding.'}
 ${lessonNumber < pathOutline.totalLessons ? 'Prepare for upcoming lessons.' : 'Provide comprehensive conclusion and application.'}`;
 
-    // Use the existing generate-lesson endpoint
-    const result = await generateAILesson(lessonInfo.title, additionalContext);
+  // Use the existing generate-lesson endpoint
+  const result = await generateAILesson(lessonInfo.title, additionalContext, userId);
     
     if (!result.success) {
       throw new Error(result.error);
@@ -574,7 +574,7 @@ ${lessonNumber < pathOutline.totalLessons ? 'Prepare for upcoming lessons.' : 'P
 /**
  * Generate all lessons in a learning path sequentially
  */
-export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate) => {
+export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate, userId = null) => {
   const lessons = [];
   let totalUsage = { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
 
@@ -594,7 +594,7 @@ export const generateCompleteLearningPath = async (pathOutline, onProgressUpdate
         });
       }
 
-      const result = await generatePathLesson(pathOutline, i);
+  const result = await generatePathLesson(pathOutline, i, userId);
       
       if (!result.success) {
         throw new Error(`Failed to generate lesson ${i}: ${result.error}`);
