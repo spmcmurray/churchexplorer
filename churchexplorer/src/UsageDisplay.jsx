@@ -81,6 +81,13 @@ const UsageDisplay = ({ userId, compact = false, onUpgradeClick }) => {
         )}
       </div>
 
+      {/* Free trial banner */}
+      {usage.freeTrialAvailable && (
+        <div className="mb-4 bg-green-50 border border-green-100 rounded-lg p-3">
+          <p className="text-sm font-semibold text-green-800">✨ You have 1 free AI lesson available. Try a personalized lesson now!</p>
+        </div>
+      )}
+
       {/* Progress Bar or Unlimited Badge */}
       {usage.isUnlimited ? (
         <div className="mb-4">

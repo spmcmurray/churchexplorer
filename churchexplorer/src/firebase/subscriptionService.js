@@ -130,6 +130,20 @@ export const canCreateAILesson = async (userId, lessonType = 'lesson') => {
     const used = subscription.aiLessonsUsed || 0;
     const limit = tierConfig.aiLessonsPerMonth;
     
+    // Special-case: allow one free AI lesson for registered users on the Free tier
+    // This gives each new registered user one free AI lesson (one-time) before requiring a paid tier.
+    if (subscription.tier === 'free' && used === 0) {
+      return {
+        allowed: true,
+        tier: subscription.tier,
+        used,
+        limit,
+        remaining: 1,
+        freeTrialAvailable: true,
+        note: 'One free AI lesson available for new registered users'
+      };
+    }
+
     if (used >= limit) {
       return { 
         allowed: false, 
@@ -284,14 +298,18 @@ export const getUsageSummary = async (userId) => {
     
     const remaining = limit - used;
     const percentage = limit > 0 ? Math.round((used / limit) * 100) : 0;
-    
+    // For free users, surface one-time free trial availability when appropriate
+    const freeTrialAvailable = subscription.tier === 'free' && (subscription.aiLessonsUsed || 0) === 0;
+    const adjustedRemaining = freeTrialAvailable ? Math.max(remaining, 1) : Math.max(remaining, 0);
+
     return {
       success: true,
       tier: subscription.tier,
       tierName: tierConfig.name,
       used,
       limit,
-      remaining: remaining >= 0 ? remaining : 0,
+      remaining: adjustedRemaining,
+      freeTrialAvailable,
       percentage,
       isUnlimited: false,
       periodEnd: subscription.currentPeriodEnd,

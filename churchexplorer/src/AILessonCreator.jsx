@@ -22,6 +22,7 @@ import {
   generateCompleteLearningPath,
   saveAILessonToLibrary
 } from './services/aiLessonService';
+import { canCreateAILesson } from './firebase/subscriptionService';
 
 const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
   const [topic, setTopic] = useState('');
@@ -35,6 +36,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
   const [generatingPath, setGeneratingPath] = useState(false);
   const [pathProgress, setPathProgress] = useState(null);
   const [error, setError] = useState('');
+  const [aiEligibility, setAiEligibility] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState('2-3 minutes');
   
   // Ref for scrolling to input section
@@ -102,6 +104,21 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
     // Load topic suggestions when component mounts
     loadTopicSuggestions();
   }, []); // Removed the dependency to avoid circular reference
+
+  useEffect(() => {
+    // Check AI eligibility (free trial/remaining) for current user
+    const checkEligibility = async () => {
+      if (!currentUser?.uid) return;
+      try {
+        const res = await canCreateAILesson(currentUser.uid, 'lesson');
+        setAiEligibility(res);
+      } catch (e) {
+        console.error('Failed to check AI eligibility', e);
+      }
+    };
+
+    checkEligibility();
+  }, [currentUser]);
 
   const handleGenerateLesson = async () => {
     if (!topic.trim()) {
@@ -241,6 +258,19 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
             Create personalized lessons on any Christian topic. Our AI generates comprehensive, structured lessons 
             tailored to what you want to learn.
           </p>
+            {/* AI eligibility banner */}
+            {aiEligibility && aiEligibility.freeTrialAvailable && (
+              <div className="mt-4 inline-flex items-center gap-3 bg-green-50 text-green-800 px-4 py-2 rounded-lg border border-green-100">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="font-semibold">You have 1 free AI lesson available. Try it now!</span>
+              </div>
+            )}
+            {aiEligibility && !aiEligibility.freeTrialAvailable && aiEligibility.allowed && aiEligibility.remaining !== 'unlimited' && (
+              <div className="mt-4 inline-flex items-center gap-3 bg-yellow-50 text-yellow-800 px-4 py-2 rounded-lg border border-yellow-100">
+                <Zap className="w-5 h-5 text-yellow-600" />
+                <span className="font-semibold">{aiEligibility.remaining} AI lesson{aiEligibility.remaining > 1 ? 's' : ''} remaining this period.</span>
+              </div>
+            )}
         </div>
       </div>
 

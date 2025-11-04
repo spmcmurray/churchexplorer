@@ -39,6 +39,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
   const [pathProgress, setPathProgress] = useState(null);
   const [error, setError] = useState('');
   const [recentTopics, setRecentTopics] = useState([]);
+  const [showCompletedPaths, setShowCompletedPaths] = useState(false);
   const creatorSectionRef = React.useRef(null);
 
   // Fallback topic pool when API suggestions are not available
@@ -714,107 +715,151 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
 
         {/* Paths Grid */}
         {!loading && aiPaths.length > 0 && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
-            {aiPaths.map((path) => {
-              // Calculate progress for this path (from Firestore data already loaded)
-              const completedLessons = path.completedLessons || [];
-              const totalLessons = path.lessons?.length || 0;
-              const completedCount = completedLessons.length;
-              const progressPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
-              const isCompleted = path.completed === true;
-              
-              return (
-                <div
-                  key={path.id}
-                  className="bg-white rounded-2xl border-2 border-slate-200 p-6 hover:shadow-lg transition cursor-pointer"
-                  onClick={() => setViewingPath(path)}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${
-                        isCompleted ? 'from-green-600 to-emerald-600' : 'from-purple-600 to-blue-600'
-                      } text-white flex items-center justify-center flex-shrink-0`}>
-                        {isCompleted ? (
-                          <CheckCircle2 className="w-6 h-6" />
-                        ) : (
+          <>
+            {/* Active/In-Progress Paths */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 mb-6">
+              {aiPaths.filter(path => path.completed !== true).map((path) => {
+                // Calculate progress for this path (from Firestore data already loaded)
+                const completedLessons = path.completedLessons || [];
+                const totalLessons = path.lessons?.length || 0;
+                const completedCount = completedLessons.length;
+                const progressPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+                
+                return (
+                  <div
+                    key={path.id}
+                    className="bg-white rounded-2xl border-2 border-slate-200 p-6 hover:shadow-lg transition cursor-pointer"
+                    onClick={() => setViewingPath(path)}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start gap-3 flex-1">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white flex items-center justify-center flex-shrink-0">
                           <Sparkles className="w-6 h-6" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-slate-900 text-lg mb-1 line-clamp-2">
-                          {path.title}
-                        </h3>
-                        {path.description && (
-                          <p className="text-sm text-slate-600 mb-2 line-clamp-2">{path.description}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-xs text-purple-700 bg-purple-100 px-2 py-1 rounded-full inline-flex">
-                          <Layers className="w-3 h-3" />
-                          {totalLessons} {totalLessons === 1 ? 'Lesson' : 'Lessons'}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-slate-900 text-lg mb-1 line-clamp-2">
+                            {path.title}
+                          </h3>
+                          {path.description && (
+                            <p className="text-sm text-slate-600 mb-2 line-clamp-2">{path.description}</p>
+                          )}
+                          <div className="flex items-center gap-2 text-xs text-purple-700 bg-purple-100 px-2 py-1 rounded-full inline-flex">
+                            <Layers className="w-3 h-3" />
+                            {totalLessons} {totalLessons === 1 ? 'Lesson' : 'Lessons'}
+                          </div>
                         </div>
                       </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePath(path.id);
+                        }}
+                        className="text-slate-400 hover:text-red-600 transition p-2 -mr-2"
+                        title="Delete path"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
+
+                    {/* Progress Bar */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between text-sm mb-2">
+                        <span className="text-slate-600 font-medium">Progress</span>
+                        <span className="text-purple-600 font-bold">{progressPercent}%</span>
+                      </div>
+                      <div className="w-full bg-slate-200 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all"
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        {completedCount} of {totalLessons} lessons completed
+                      </div>
+                    </div>
+
+                    {/* View Button */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDeletePath(path.id);
+                        setViewingPath(path);
                       }}
-                      className="text-slate-400 hover:text-red-600 transition p-2 -mr-2"
-                      title="Delete path"
+                      className="w-full font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-md hover:shadow-lg"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      {completedCount > 0 ? (
+                        <>
+                          <Play className="w-4 h-4" />
+                          Continue Learning
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4" />
+                          Start Path
+                        </>
+                      )}
                     </button>
                   </div>
+                );
+              })}
+            </div>
 
-                  {/* Progress Bar */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-600 font-medium">Progress</span>
-                      <span className="text-purple-600 font-bold">{progressPercent}%</span>
+            {/* Completed Paths - Collapsible */}
+            {aiPaths.filter(path => path.completed === true).length > 0 && (
+              <div className="mb-6">
+                <button
+                  onClick={() => setShowCompletedPaths(!showCompletedPaths)}
+                  className="w-full bg-white rounded-xl border-2 border-slate-200 p-4 hover:bg-slate-50 transition flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                      <CheckCircle2 className="w-5 h-5 text-green-600" />
                     </div>
-                    <div className="w-full bg-slate-200 rounded-full h-2">
-                      <div 
-                        className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${progressPercent}%` }}
-                      />
-                    </div>
-                    <div className="text-xs text-slate-500 mt-1">
-                      {completedCount} of {totalLessons} lessons completed
+                    <div className="text-left">
+                      <h3 className="font-bold text-slate-900">Completed Paths</h3>
+                      <p className="text-sm text-slate-600">
+                        {aiPaths.filter(path => path.completed === true).length} path{aiPaths.filter(path => path.completed === true).length !== 1 ? 's' : ''}
+                      </p>
                     </div>
                   </div>
+                  {showCompletedPaths ? (
+                    <ChevronUp className="w-5 h-5 text-slate-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                  )}
+                </button>
 
-                  {/* View Button */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setViewingPath(path);
-                    }}
-                    className={`w-full font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 ${
-                      isCompleted
-                        ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                        : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-md hover:shadow-lg'
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        Review Path
-                      </>
-                    ) : completedCount > 0 ? (
-                      <>
-                        <Play className="w-4 h-4" />
-                        Continue Learning
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-4 h-4" />
-                        Start Path
-                      </>
-                    )}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                {showCompletedPaths && (
+                  <div className="mt-4 space-y-2">
+                    {aiPaths.filter(path => path.completed === true).map((path) => (
+                      <div
+                        key={path.id}
+                        className="bg-white rounded-lg border border-slate-200 p-4 hover:bg-slate-50 transition cursor-pointer flex items-center justify-between gap-3"
+                        onClick={() => setViewingPath(path)}
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-slate-900 break-words">{path.title}</h4>
+                            <p className="text-sm text-green-600">Complete</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePath(path.id);
+                          }}
+                          className="text-slate-400 hover:text-red-600 transition p-2 flex-shrink-0"
+                          title="Delete path"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
       

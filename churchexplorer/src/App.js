@@ -29,12 +29,15 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
     <nav className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <h1 className="text-xl font-bold">Church Explorer</h1>
+          <Link to="/" className="text-xl font-bold hover:text-blue-100 transition">
+            Church Explorer
+          </Link>
 
           {/* Right Side: Hamburger Menu + Profile */}
           <div className="flex items-center space-x-3">
-            {/* Hamburger Menu Button */}
-              {authLoading ? (
+            {/* Hamburger Menu Button - only show if authenticated */}
+            {currentUser && (
+              authLoading ? (
                 <div className="w-8 h-8 bg-white/20 rounded-lg animate-pulse" aria-hidden="true" />
               ) : (
                 <button
@@ -44,7 +47,8 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
                 >
                   <Menu className="w-6 h-6 text-white" />
                 </button>
-              )}
+              )
+            )}
 
             {/* User Account Section */}
             <div className="relative">
@@ -247,9 +251,9 @@ function ExploreDenominationsWrapper() {
   return <DenominationExplorer onNavigate={(view) => navigate(`/${view}`)} />;
 }
 
-function OnboardingWrapper() {
+function OnboardingWrapper({ setShowAuth }) {
   const navigate = useNavigate();
-  return <Onboarding onComplete={({ view }) => navigate(`/${view}`)} />;
+  return <Onboarding onComplete={({ view }) => navigate(`/${view}`)} setShowAuth={setShowAuth} />;
 }
 
 function AIPathViewerWrapper({ currentUser }) {
@@ -544,7 +548,11 @@ function AppContent() {
         /* Main Content with Routes */
         <div key={appKey}>
           <Routes>
-            <Route path="/" element={<HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/" element={
+              currentUser 
+                ? <HomeWrapper userProgress={userProgress} onShowAuth={() => setShowAuth(true)} currentUser={currentUser} onProgressUpdate={refreshUserProgress} />
+                : <OnboardingWrapper setShowAuth={setShowAuth} />
+            } />
             <Route path="/learn" element={<PathsWrapper userProgress={userProgress} />} />
             <Route path="/explorer" element={<ExplorerWrapper />} />
             <Route path="/study-guide" element={<ChurchHistoryWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
@@ -553,7 +561,7 @@ function AppContent() {
             <Route path="/explore-church" element={<ExploreChurchWrapper />} />
             <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
             <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
-          <Route path="/onboarding" element={<OnboardingWrapper />} />
+          <Route path="/onboarding" element={<OnboardingWrapper setShowAuth={setShowAuth} />} />
           <Route path="/leaderboard" element={<Leaderboard currentUser={currentUser} />} />
           <Route path="/profile" element={<ProfileWrapper currentUser={currentUser} onDeleteAccount={() => setShowDeleteConfirm(true)} onSignOut={handleSignOut} />} />
           <Route path="/legal" element={<Legal />} />
@@ -561,6 +569,20 @@ function AppContent() {
           <Route path="/ai-path/:pathId" element={<AIPathViewerWrapper currentUser={currentUser} />} />
           <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
         </Routes>
+
+        {/* Footer with motto */}
+        <footer className="bg-gradient-to-r from-slate-800 to-slate-900 text-slate-300 py-6 mt-12">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="text-sm italic mb-2">
+              "In essentials, unity. In non-essentials, liberty. In all things, charity."
+            </p>
+            <div className="flex items-center justify-center gap-4 text-xs text-slate-400">
+              <Link to="/legal" className="hover:text-white transition">Legal & Privacy</Link>
+              <span>·</span>
+              <span>© {new Date().getFullYear()} Church Explorer</span>
+            </div>
+          </div>
+        </footer>
 
         {/* Auth Modal */}
         {showAuth && (

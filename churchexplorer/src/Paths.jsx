@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { BookOpen, Scroll, Shield, CheckCircle2, ArrowLeft, Sparkles, Play } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { BookOpen, Scroll, Shield, CheckCircle2, ArrowLeft, Sparkles, Play, ChevronDown, ChevronUp } from 'lucide-react';
 
 const Paths = ({ onNavigate, onGoBack, userProgress }) => {
+  const [showCompletedPaths, setShowCompletedPaths] = useState(false);
   // Calculate progress from userProgress prop
   const bible = {
     completedCount: userProgress?.courses?.bible?.completedLessons?.length || 0,
@@ -74,12 +75,15 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
           <span>Back</span>
         </button>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cards.map((card) => {
+        {/* Active/In-Progress Paths */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          {cards.filter(card => {
+            const isCompleted = card.progress.completedCount === card.progress.total;
+            return !isCompleted;
+          }).map((card) => {
             const progressPercent = card.progress.total > 0 
               ? Math.round((card.progress.completedCount / card.progress.total) * 100) 
               : 0;
-            const isCompleted = card.progress.completedCount === card.progress.total;
             
             return (
               <div
@@ -98,11 +102,6 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
                       </h3>
                       <p className="text-sm text-slate-600 mb-2">{card.subtitle}</p>
                     </div>
-                    {isCompleted && (
-                      <div className="text-green-600">
-                        <CheckCircle2 className="w-6 h-6" />
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -110,17 +109,13 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm mb-2">
                     <span className="text-slate-600 font-medium">Progress</span>
-                    <span className={`font-bold ${isCompleted ? 'text-green-600' : 'text-blue-600'}`}>
+                    <span className="text-blue-600 font-bold">
                       {progressPercent}%
                     </span>
                   </div>
                   <div className="w-full bg-slate-200 rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-full transition-all ${
-                        isCompleted 
-                          ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
-                          : 'bg-gradient-to-r ' + card.color
-                      }`}
+                      className={`h-2 rounded-full transition-all bg-gradient-to-r ${card.color}`}
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>
@@ -135,18 +130,9 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
                     e.stopPropagation();
                     onNavigate(card.id);
                   }}
-                  className={`w-full py-2.5 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
-                    isCompleted
-                      ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200'
-                      : 'bg-gradient-to-r ' + card.color + ' text-white hover:shadow-md'
-                  }`}
+                  className={`w-full py-2.5 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r ${card.color} text-white hover:shadow-md`}
                 >
-                  {isCompleted ? (
-                    <>
-                      <CheckCircle2 className="w-4 h-4" />
-                      Review Path
-                    </>
-                  ) : card.progress.completedCount > 0 ? (
+                  {card.progress.completedCount > 0 ? (
                     <>
                       <Play className="w-4 h-4" />
                       Continue Learning
@@ -162,6 +148,62 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
             );
           })}
         </div>
+
+        {/* Completed Paths - Collapsible */}
+        {cards.filter(card => card.progress.completedCount === card.progress.total).length > 0 && (
+          <div className="mb-6">
+            <button
+              onClick={() => setShowCompletedPaths(!showCompletedPaths)}
+              className="w-full bg-white rounded-xl border-2 border-slate-200 p-4 hover:bg-slate-50 transition flex items-center justify-between"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                  <CheckCircle2 className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-bold text-slate-900">Completed Paths</h3>
+                  <p className="text-sm text-slate-600">
+                    {cards.filter(card => card.progress.completedCount === card.progress.total).length} path{cards.filter(card => card.progress.completedCount === card.progress.total).length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+              {showCompletedPaths ? (
+                <ChevronUp className="w-5 h-5 text-slate-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-slate-400" />
+              )}
+            </button>
+
+            {showCompletedPaths && (
+              <div className="mt-4 space-y-2">
+                {cards.filter(card => card.progress.completedCount === card.progress.total).map((card) => (
+                  <div
+                    key={card.id}
+                    className="bg-white rounded-lg border border-slate-200 p-4 hover:bg-slate-50 transition cursor-pointer flex items-center justify-between gap-3"
+                    onClick={() => onNavigate(card.id)}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-slate-900 break-words">{card.title}</h4>
+                        <p className="text-sm text-green-600">Complete</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onNavigate(card.id);
+                      }}
+                      className="text-green-600 hover:text-green-700 transition px-3 py-1 rounded-lg bg-green-50 hover:bg-green-100 text-sm font-medium flex-shrink-0"
+                    >
+                      Review
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

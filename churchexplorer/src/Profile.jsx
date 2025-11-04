@@ -270,6 +270,19 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                 <span>Preferences</span>
               </div>
             </button>
+            <button
+              onClick={() => setActiveTab('about')}
+              className={`flex-1 px-6 py-4 font-medium transition ${
+                activeTab === 'about'
+                  ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <Star className="w-4 h-4" />
+                <span>Our Approach</span>
+              </div>
+            </button>
           </div>
 
           {/* Account Tab */}
@@ -535,6 +548,57 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                     </div>
                     <p className="text-sm text-slate-600 mt-1">Review our terms of service, privacy policy, and data practices</p>
                   </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* About / Our Approach Tab */}
+          {activeTab === 'about' && (
+            <div className="p-6 space-y-6">
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">Our Guiding Principle</h3>
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-purple-200 rounded-xl p-6 mb-6">
+                  <p className="text-2xl font-bold text-slate-900 italic text-center">
+                    "In essentials, unity. In non-essentials, liberty. In all things, charity."
+                  </p>
+                </div>
+
+                <div className="space-y-4 text-slate-700">
+                  <p className="text-lg leading-relaxed">
+                    This ancient motto shapes everything we do at Church Explorer. It's a timeless principle that helps believers navigate theology with both conviction and grace.
+                  </p>
+
+                  <div className="grid md:grid-cols-3 gap-4 my-6">
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-4">
+                      <h4 className="font-bold text-blue-700 mb-2">In Essentials, Unity</h4>
+                      <p className="text-sm text-slate-600">
+                        We focus on the core beliefs all Christians share — like the Trinity, the resurrection, and salvation through Christ.
+                      </p>
+                    </div>
+                    <div className="bg-white border-2 border-purple-200 rounded-lg p-4">
+                      <h4 className="font-bold text-purple-700 mb-2">In Non-Essentials, Liberty</h4>
+                      <p className="text-sm text-slate-600">
+                        On secondary matters where faithful believers disagree, we explore different views with respect and clarity.
+                      </p>
+                    </div>
+                    <div className="bg-white border-2 border-green-200 rounded-lg p-4">
+                      <h4 className="font-bold text-green-700 mb-2">In All Things, Charity</h4>
+                      <p className="text-sm text-slate-600">
+                        Whether discussing essentials or non-essentials, we approach every topic with love, humility, and grace.
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-base leading-relaxed">
+                    Our lessons are designed to help you understand <strong>what</strong> Christians believe, <strong>why</strong> they believe it, and <strong>how</strong> those beliefs developed historically — all while distinguishing between the core doctrines that unite believers and the secondary matters where Christians can graciously disagree.
+                  </p>
+
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mt-4">
+                    <p className="text-sm text-slate-600 italic">
+                      This approach helps us avoid both the rigidity of treating every belief as equally important and the chaos of treating no beliefs as important. It's the wisdom of the historic church applied to modern learning.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
