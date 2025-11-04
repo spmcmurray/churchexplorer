@@ -78,9 +78,9 @@ const UpgradeModal = ({ isOpen, onClose, currentTier = 'free', currentUser, reas
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header - Fixed at top */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl flex-shrink-0 z-10">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl font-bold mb-2">Upgrade Your Learning</h2>
@@ -97,32 +97,71 @@ const UpgradeModal = ({ isOpen, onClose, currentTier = 'free', currentUser, reas
           </div>
         </div>
 
-        {/* Pricing Tiers */}
-        <div className="p-8">
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto flex-1 p-8">{/* Pricing Tiers */}
           <div className="grid md:grid-cols-3 gap-6">
             {Object.values(SUBSCRIPTION_TIERS).map((tier) => {
               const color = getTierColor(tier.id);
               const isCurrent = currentTier === tier.id;
               const isUpgrade = tier.price > SUBSCRIPTION_TIERS[currentTier.toUpperCase()].price;
 
+              // Color mappings for inline styles
+              const colorStyles = {
+                slate: { 
+                  border: 'rgb(100, 116, 139)', 
+                  bg: 'rgb(248, 250, 252)',
+                  badge: 'rgb(71, 85, 105)',
+                  text: 'rgb(51, 65, 85)',
+                  buttonBg: 'rgb(226, 232, 240)',
+                  buttonText: 'rgb(51, 65, 85)',
+                  highlightBg: 'rgb(241, 245, 249)',
+                  highlightText: 'rgb(51, 65, 85)'
+                },
+                blue: { 
+                  border: 'rgb(59, 130, 246)', 
+                  bg: 'rgb(239, 246, 255)',
+                  badge: 'rgb(37, 99, 235)',
+                  text: 'rgb(29, 78, 216)',
+                  buttonBg: 'linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216))',
+                  buttonText: 'white',
+                  highlightBg: 'rgb(219, 234, 254)',
+                  highlightText: 'rgb(30, 64, 175)'
+                },
+                purple: { 
+                  border: 'rgb(168, 85, 247)', 
+                  bg: 'rgb(250, 245, 255)',
+                  badge: 'rgb(147, 51, 234)',
+                  text: 'rgb(126, 34, 206)',
+                  buttonBg: 'linear-gradient(to right, rgb(147, 51, 234), rgb(126, 34, 206))',
+                  buttonText: 'white',
+                  highlightBg: 'rgb(233, 213, 255)',
+                  highlightText: 'rgb(107, 33, 168)'
+                }
+              };
+
+              const colors = colorStyles[color];
+
               return (
                 <div
                   key={tier.id}
-                  className={`relative rounded-2xl border-2 p-6 transition-all ${
-                    isCurrent
-                      ? `border-${color}-500 bg-${color}-50`
-                      : `border-gray-200 hover:border-${color}-300 hover:shadow-lg`
-                  }`}
+                  className="relative rounded-2xl border-2 p-6 transition-all hover:shadow-lg"
+                  style={{ 
+                    borderColor: isCurrent ? colors.border : 'rgb(229, 231, 235)',
+                    backgroundColor: isCurrent ? colors.bg : 'white'
+                  }}
                 >
                   {/* Current Badge */}
                   {isCurrent && (
-                    <div className={`absolute -top-3 left-1/2 transform -translate-x-1/2 bg-${color}-500 text-white px-4 py-1 rounded-full text-sm font-bold`}>
+                    <div 
+                      className="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-sm font-bold shadow-md"
+                      style={{ backgroundColor: colors.badge, color: 'white' }}
+                    >
                       Current Plan
                     </div>
                   )}
 
                   {/* Icon */}
-                  <div className={`flex justify-center mb-4 text-${color}-600`}>
+                  <div className="flex justify-center mb-4" style={{ color: colors.text }}>
                     {getTierIcon(tier.id)}
                   </div>
 
@@ -147,12 +186,15 @@ const UpgradeModal = ({ isOpen, onClose, currentTier = 'free', currentUser, reas
                   </div>
 
                   {/* AI Lessons Limit */}
-                  <div className={`bg-${color}-100 rounded-lg p-4 mb-6`}>
+                  <div 
+                    className="rounded-lg p-4 mb-6"
+                    style={{ backgroundColor: colors.highlightBg }}
+                  >
                     <div className="text-center">
-                      <div className={`text-3xl font-bold text-${color}-700`}>
+                      <div className="text-3xl font-bold" style={{ color: colors.highlightText }}>
                         {tier.isUnlimited ? '∞' : tier.aiLessonsPerMonth}
                       </div>
-                      <div className={`text-sm text-${color}-600 font-semibold`}>
+                      <div className="text-sm font-semibold" style={{ color: colors.highlightText }}>
                         {tier.isUnlimited ? 'Unlimited AI Lessons' : `AI Lesson${tier.aiLessonsPerMonth === 1 ? '' : 's'}/Month`}
                       </div>
                     </div>
@@ -160,19 +202,25 @@ const UpgradeModal = ({ isOpen, onClose, currentTier = 'free', currentUser, reas
 
                   {/* Features */}
                   <ul className="space-y-3 mb-6">
-                    {tier.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <Check className={`w-5 h-5 text-${color}-600 flex-shrink-0 mt-0.5`} />
-                        <span className="text-gray-700 text-sm">{feature}</span>
-                      </li>
-                    ))}
+                    {tier.features
+                      .filter(feature => !feature.toLowerCase().includes('support'))
+                      .map((feature, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <Check className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: colors.text }} />
+                          <span className="text-gray-700 text-sm">{feature}</span>
+                        </li>
+                      ))}
                   </ul>
 
                   {/* Action Button */}
                   {isCurrent ? (
                     <button
                       disabled
-                      className={`w-full bg-${color}-100 text-${color}-700 font-bold py-3 rounded-xl cursor-not-allowed`}
+                      className="w-full font-bold py-3 rounded-xl cursor-not-allowed"
+                      style={{ 
+                        backgroundColor: colors.buttonBg,
+                        color: colors.buttonText
+                      }}
                     >
                       Your Current Plan
                     </button>
@@ -180,7 +228,10 @@ const UpgradeModal = ({ isOpen, onClose, currentTier = 'free', currentUser, reas
                     <button
                       onClick={() => handleUpgrade(tier.id)}
                       disabled={loading}
-                      className={`w-full bg-gradient-to-r from-${color}-600 to-${color}-700 hover:from-${color}-700 hover:to-${color}-800 text-white font-bold py-3 rounded-xl transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed`}
+                      className="w-full text-white font-bold py-3 rounded-xl transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
+                      style={{ 
+                        background: colors.buttonBg
+                      }}
                     >
                       {loading ? 'Loading...' : `Upgrade to ${tier.name}`}
                     </button>

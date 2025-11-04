@@ -32,8 +32,7 @@ export const SUBSCRIPTION_TIERS = {
       '1 AI lesson per month',
       'Custom AI-generated content',
       'Progress tracking',
-      'Daily challenges',
-      'Priority support'
+      'Daily challenges'
     ]
   },
   PREMIUM: {
@@ -49,7 +48,6 @@ export const SUBSCRIPTION_TIERS = {
       'Unlimited Full Paths (8 lessons)',
       'Progress tracking',
       'Daily challenges',
-      'Priority support',
       'Early access to new features'
     ]
   }
