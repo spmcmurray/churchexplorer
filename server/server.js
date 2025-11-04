@@ -5,6 +5,10 @@ const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const admin = require('firebase-admin');
 
+// Log Stripe Price IDs at startup for debugging
+console.log('✅ Stripe Basic Price ID:', process.env.STRIPE_BASIC_PRICE_ID);
+console.log('✅ Stripe Premium Price ID:', process.env.STRIPE_PREMIUM_PRICE_ID);
+
 // Initialize Firebase Admin
 if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
   const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
