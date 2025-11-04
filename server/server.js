@@ -72,14 +72,20 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
         
         console.log('Determined tier:', tier);
         
+        // Get period dates from subscription items
+        const periodStart = subscription.items.data[0].current_period_start;
+        const periodEnd = subscription.items.data[0].current_period_end;
+        
+        console.log('Period start:', periodStart, 'Period end:', periodEnd);
+        
         // Update Firestore - store as JavaScript Date objects
         const subscriptionData = {
           tier: tier,
           status: 'active',
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscriptionId,
-          currentPeriodStart: new Date(subscription.current_period_start * 1000),
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          currentPeriodStart: new Date(periodStart * 1000),
+          currentPeriodEnd: new Date(periodEnd * 1000),
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         };
         
