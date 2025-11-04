@@ -29,7 +29,8 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
-// For webhook, we need raw body - add this before express.json()
+
+// Stripe webhook - MUST be before express.json() to get raw body
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
   console.log('🔔 Webhook received at', new Date().toISOString());
   const sig = req.headers['stripe-signature'];
@@ -65,7 +66,14 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           console.error('❌ No userId in session metadata!');
           return res.status(400).json({ error: 'No userId in metadata' });
         }
-        
+
+        // If the session doesn't include a subscription ID (rare), skip here
+        // and let the customer.subscription.created event handle creation.
+        if (!subscriptionId) {
+          console.warn('⚠️ No subscription ID on checkout.session.completed; waiting for customer.subscription.created event');
+          break;
+        }
+
         // Get subscription details to retrieve the price
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
         console.log('Subscription object:', JSON.stringify(subscription, null, 2));
@@ -142,6 +150,55 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
           });
           
           console.log(`✅ Updated subscription to ${newTier}, status: ${updatedSub.status}`);
+        }
+        break;
+
+      case 'customer.subscription.created':
+        const createdSub = event.data.object;
+        console.log('Subscription created:', createdSub.id);
+
+        // Try to get userId from subscription metadata (set during checkout)
+        const createdUserId = createdSub.metadata?.userId;
+        const createdCustomerId = createdSub.customer;
+
+        // Determine price and tier
+        const createdPriceId = createdSub.items?.data[0]?.price?.id;
+        let createdTier = 'free';
+        if (createdPriceId === process.env.STRIPE_BASIC_PRICE_ID) {
+          createdTier = 'basic';
+        } else if (createdPriceId === process.env.STRIPE_PREMIUM_PRICE_ID) {
+          createdTier = 'premium';
+        }
+
+        const createdPeriodStart = createdSub.items?.data[0]?.current_period_start;
+        const createdPeriodEnd = createdSub.items?.data[0]?.current_period_end;
+
+        const createdSubscriptionData = {
+          tier: createdTier,
+          status: createdSub.status || 'active',
+          stripeCustomerId: createdCustomerId,
+          stripeSubscriptionId: createdSub.id,
+          currentPeriodStart: createdPeriodStart ? new Date(createdPeriodStart * 1000) : null,
+          currentPeriodEnd: createdPeriodEnd ? new Date(createdPeriodEnd * 1000) : null,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        };
+
+        if (createdUserId) {
+          await db.collection('users').doc(createdUserId).collection('subscription').doc('current').set(createdSubscriptionData, { merge: true });
+          console.log(`✅ Created subscription record for user ${createdUserId} (tier: ${createdTier})`);
+        } else {
+          // Try to find user by customer id if metadata wasn't present
+          const custSnapshot = await db.collectionGroup('subscription')
+            .where('stripeCustomerId', '==', createdCustomerId)
+            .limit(1)
+            .get();
+
+          if (!custSnapshot.empty) {
+            await custSnapshot.docs[0].ref.update(createdSubscriptionData);
+            console.log(`✅ Updated existing subscription record for customer ${createdCustomerId}`);
+          } else {
+            console.warn('⚠️ Could not associate created subscription with a user (no metadata, no matching customer)');
+          }
         }
         break;
         
