@@ -1,40 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Church Explorer</title>
-    <script type="text/javascript">
-      // Single Page Apps for GitHub Pages
-      // MIT License
-      // https://github.com/rafgraph/spa-github-pages
-      // This script takes the current url and converts the path and query
-      // string into just a query string, and then redirects the browser
-      // to the new url with only a query string and hash fragment,
-      // e.g. https://www.foo.tld/one/two?a=b&c=d#qwe, becomes
-      // https://www.foo.tld/?/one/two&a=b~and~c=d#qwe
-      // Note: this 404.html file must be at least 512 bytes for it to work
-      // with Internet Explorer (it is currently > 512 bytes)
-
-      // If you're creating a Project Pages site and NOT using a custom domain,
-      // then set pathSegmentsToKeep to 1 (enterprise users may need to set it to > 1).
-      // This way the code will only replace the route part of the path, and not
-      // the real directory in which the app resides, for example:
-      // https://username.github.io/repo-name/one/two?a=b&c=d#qwe becomes
-      // https://username.github.io/repo-name/?/one/two&a=b~and~c=d#qwe
-      // Otherwise, leave pathSegmentsToKeep as 0.
-      var pathSegmentsToKeep = 1;
-
-      var l = window.location;
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash
-      );
-
-    </script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Page Not Found — Church Explorer</title>
+    <meta name="robots" content="noindex">
+    <style>
+      * { margin:0; padding:0; box-sizing:border-box }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #1a202c; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px }
+      .container { max-width: 600px; background: white; border-radius: 16px; padding: 48px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center }
+      h1 { font-size: 72px; font-weight: 700; color: #667eea; margin-bottom: 16px }
+      h2 { font-size: 24px; font-weight: 600; color: #2d3748; margin-bottom: 12px }
+      p { font-size: 16px; color: #4a5568; line-height: 1.6; margin-bottom: 32px }
+      a.btn { display: inline-block; padding: 14px 32px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: background 0.2s }
+      a.btn:hover { background: #5a67d8 }
+      .cache-bust { display: none }
+    </style>
   </head>
   <body>
+    <div class="container">
+      <h1>404</h1>
+      <h2>Page Not Found</h2>
+      <p>Sorry, we couldn't find the page you're looking for. It might have been moved or deleted.</p>
+      <a href="/" class="btn">Return to Home</a>
+      <span class="cache-bust">v2-20251106-2321</span>
+    </div>
   </body>
 </html>
