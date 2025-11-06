@@ -160,8 +160,7 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
 
       const result = await response.json();
       
-      // Refresh subscription data
-      await loadSubscription();
+      // Subscription data will auto-refresh via the useEffect listener
       
       alert('Subscription canceled successfully. You will retain access until ' + formatDate(subscription.currentPeriodEnd));
     } catch (error) {
