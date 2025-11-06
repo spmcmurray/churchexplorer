@@ -201,6 +201,28 @@ const Auth = ({ onSuccess, onClose }) => {
             </div>
           )}
 
+          {isSignUp && (
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  required 
+                  className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm text-slate-700 leading-relaxed">
+                  I agree to the{' '}
+                  <Link to="/legal" target="_blank" className="text-blue-600 hover:underline font-semibold">
+                    Terms of Service
+                  </Link>
+                  {' '}and{' '}
+                  <Link to="/legal" target="_blank" className="text-blue-600 hover:underline font-semibold">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </label>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}

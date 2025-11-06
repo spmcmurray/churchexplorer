@@ -34,7 +34,10 @@ export const signUp = async (email, password, firstName, lastName, country, init
       country: country,
       totalXP: initialXP, // Start with localStorage XP if provided
       createdAt: new Date().toISOString(),
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
+      termsAccepted: true,
+      termsVersion: '1.0',
+      termsAcceptedDate: new Date().toISOString()
     });
 
     return { success: true, user };

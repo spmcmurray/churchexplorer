@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Brain, 
   Lightbulb, 
   BookOpen, 
   Sparkles, 
@@ -250,7 +249,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
         <div className="relative max-w-5xl mx-auto z-10">
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-              <Brain className="w-10 h-10 text-white" />
+              <Sparkles className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl font-black">AI Lesson Creator</h1>
           </div>
@@ -352,7 +351,11 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-purple-500 focus:outline-none text-base transition"
                     maxLength={200}
                   />
-                  <p className="text-xs text-slate-500 mt-1">Be specific about what you want to learn</p>
+                  <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-900">
+                      <span className="font-semibold">💡 Topics we cover:</span> Bible study, church history, Christian theology, apologetics, denominational beliefs, biblical archaeology, and how Christianity addresses modern issues.
+                    </p>
+                  </div>
                 </div>
 
                 <div>
@@ -370,9 +373,44 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
                 </div>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-red-600 bg-red-50 border-2 border-red-200 p-4 rounded-xl">
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                    <span className="font-medium">{error}</span>
+                  <div className="flex flex-col gap-3 text-amber-900 bg-amber-50 border-2 border-amber-300 p-5 rounded-xl">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-6 h-6 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-bold text-lg mb-2">Topic Outside Our Scope</p>
+                        <p className="text-amber-800 leading-relaxed">{error}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-4 border border-amber-200 mt-2">
+                      <p className="font-semibold text-amber-900 mb-2">✨ Try These Topics Instead:</p>
+                      <div className="grid gap-2 text-sm">
+                        <button 
+                          onClick={() => { setTopic('What the Bible teaches about the Trinity'); setError(''); }}
+                          className="text-left px-3 py-2 bg-amber-50 hover:bg-amber-100 rounded-lg transition border border-amber-200"
+                        >
+                          <span className="font-medium text-amber-900">• What the Bible teaches about the Trinity</span>
+                        </button>
+                        <button 
+                          onClick={() => { setTopic('History and beliefs of the Catholic Church'); setError(''); }}
+                          className="text-left px-3 py-2 bg-amber-50 hover:bg-amber-100 rounded-lg transition border border-amber-200"
+                        >
+                          <span className="font-medium text-amber-900">• History and beliefs of the Catholic Church</span>
+                        </button>
+                        <button 
+                          onClick={() => { setTopic('Archaeological evidence for the Bible'); setError(''); }}
+                          className="text-left px-3 py-2 bg-amber-50 hover:bg-amber-100 rounded-lg transition border border-amber-200"
+                        >
+                          <span className="font-medium text-amber-900">• Archaeological evidence for the Bible</span>
+                        </button>
+                        <button 
+                          onClick={() => { setTopic('The Protestant Reformation explained'); setError(''); }}
+                          className="text-left px-3 py-2 bg-amber-50 hover:bg-amber-100 rounded-lg transition border border-amber-200"
+                        >
+                          <span className="font-medium text-amber-900">• The Protestant Reformation explained</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -453,7 +491,7 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl w-16 h-16 mx-auto mb-3 flex items-center justify-center">
-                    <Brain className="w-8 h-8 text-white" />
+                    <Sparkles className="w-8 h-8 text-white" />
                   </div>
                   <h4 className="font-bold mb-2">AI-Powered Research</h4>
                   <p className="text-sm text-purple-100">

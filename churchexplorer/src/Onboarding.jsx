@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Shield, Scroll, CheckCircle2, Sparkles, Users, Zap, Target, Brain } from 'lucide-react';
+import { BookOpen, Shield, Scroll, CheckCircle2, Sparkles, Users, Zap, Target } from 'lucide-react';
 
 const Onboarding = ({ onComplete, setShowAuth }) => {
   const handleGetStarted = () => {
@@ -74,7 +74,7 @@ const Onboarding = ({ onComplete, setShowAuth }) => {
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white/6 backdrop-blur rounded-2xl p-6 transition">
               <div className="bg-gradient-to-r from-yellow-400 to-orange-500 w-14 h-14 rounded-xl flex items-center justify-center mb-4">
-                <Brain className="w-7 h-7 text-slate-900" />
+                <Sparkles className="w-7 h-7 text-slate-900" />
               </div>
               <h3 className="text-xl font-black text-white mb-2">Generate Custom Lessons</h3>
               <p className="text-white/80">
@@ -117,30 +117,36 @@ const Onboarding = ({ onComplete, setShowAuth }) => {
         </div>
       </div>
 
-      {/* Tension Section */}
-      <div className="bg-gradient-to-br from-slate-100 to-blue-50 py-20">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="bg-white rounded-2xl p-8 md:p-10 shadow-lg border border-blue-100">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="bg-red-100 p-3 rounded-xl">
-                <Target className="w-8 h-8 text-red-600" />
+      {/* Creator Story Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-100 via-blue-50 to-purple-50 py-16">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-10 right-20 w-64 h-64 bg-blue-300/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-20 w-80 h-80 bg-purple-300/30 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="relative max-w-4xl mx-auto px-4">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 border-2 border-slate-200 shadow-xl">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-xl">
+                <Users className="w-7 h-7 text-white" />
               </div>
-              <div>
-                <h3 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
-                  Most Christians today want to go deeper…
-                </h3>
-                <p className="text-xl text-slate-600 mb-4">
-                  but end up scrolling <span className="line-through text-slate-400">debates</span>, <span className="line-through text-slate-400">conflicting videos</span>, and <span className="line-through text-slate-400">confusing opinions</span>.
-                </p>
-              </div>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900">Created by a Fellow Believer</h3>
             </div>
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-xl">
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-8 h-8 text-green-600 flex-shrink-0 mt-1" />
-                <p className="text-xl text-slate-900 font-bold">
-                  This app provides <span className="text-green-600 bg-green-100 px-2 py-1 rounded">theology rooted in history</span> through bite-sized micro-lessons designed to build your understanding without overwhelm.
-                </p>
+            
+            <div className="space-y-4">
+              <p className="text-lg md:text-xl text-slate-700 leading-relaxed text-center">
+                Church Explorer was built by a <span className="font-bold text-blue-700">Christian</span>, <span className="font-bold text-purple-700">husband</span>, and <span className="font-bold text-indigo-700">father</span> who wanted to understand more about church history—what <span className="font-semibold text-green-700">unites all Christians</span> across traditions, and where we <span className="font-semibold text-amber-700">respectfully differ</span>.
+              </p>
+              
+              <div className="flex items-center justify-center gap-2 my-6">
+                <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                <div className="h-1 w-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                <div className="h-1 w-12 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full"></div>
               </div>
+              
+              <p className="text-base md:text-lg text-slate-600 leading-relaxed text-center">
+                This isn't a corporate product. It's a labor of love from someone walking the same journey of faith, seeking to understand the roots of what we believe and why it matters.
+              </p>
             </div>
           </div>
         </div>
@@ -163,7 +169,7 @@ const Onboarding = ({ onComplete, setShowAuth }) => {
           {[
             { text: 'Where Scripture really came from', icon: Scroll, color: 'from-blue-500 to-indigo-600' },
             { text: 'What the early church believed before denominations', icon: BookOpen, color: 'from-purple-500 to-pink-600' },
-            { text: 'Why the Trinity formed historically', icon: Brain, color: 'from-amber-500 to-orange-600' },
+            { text: 'Why the Trinity formed historically', icon: Sparkles, color: 'from-amber-500 to-orange-600' },
             { text: 'How to recognize fringe teaching', icon: Shield, color: 'from-red-500 to-rose-600' },
             { text: 'What "gospel" meant in the first century', icon: Sparkles, color: 'from-green-500 to-emerald-600' }
           ].map((item, idx) => (
@@ -238,7 +244,7 @@ const Onboarding = ({ onComplete, setShowAuth }) => {
               </div>
             </div>
             <p className="text-2xl md:text-3xl text-slate-900 font-bold leading-relaxed text-center">
-              Believers are rediscovering{' '}
+              Believers are building{' '}
               <span className="text-blue-600 bg-blue-100 px-2 py-1 rounded-lg">clarity</span>,{' '}
               <span className="text-purple-600 bg-purple-100 px-2 py-1 rounded-lg">confidence</span>, and{' '}
               <span className="text-indigo-600 bg-indigo-100 px-2 py-1 rounded-lg">depth</span>{' '}

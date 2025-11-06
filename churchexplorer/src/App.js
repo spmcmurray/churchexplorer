@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HashRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import CookieConsent from "react-cookie-consent";
 import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
@@ -673,6 +674,40 @@ function App() {
   return (
     <Router>
       <AppContent />
+      <CookieConsent
+        location="bottom"
+        buttonText="Accept All"
+        declineButtonText="Decline"
+        enableDeclineButton
+        cookieName="churchExplorerCookieConsent"
+        style={{ 
+          background: "linear-gradient(to right, rgb(37, 99, 235), rgb(147, 51, 234))",
+          alignItems: "center"
+        }}
+        buttonStyle={{ 
+          background: "#fff",
+          color: "#1e293b",
+          fontSize: "14px",
+          fontWeight: "600",
+          borderRadius: "8px",
+          padding: "10px 24px"
+        }}
+        declineButtonStyle={{
+          background: "transparent",
+          border: "2px solid #fff",
+          color: "#fff",
+          fontSize: "14px",
+          fontWeight: "600",
+          borderRadius: "8px",
+          padding: "8px 24px"
+        }}
+        expires={365}
+      >
+        <span style={{ fontSize: "14px" }}>
+          We use cookies to keep you logged in and improve your experience. 
+          See our <Link to="/legal" style={{ color: "#fff", textDecoration: "underline" }}>Cookie Policy</Link> for details.
+        </span>
+      </CookieConsent>
     </Router>
   );
 }

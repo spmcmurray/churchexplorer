@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Calendar, CreditCard, Shield, Trash2, Save, AlertCircle, CheckCircle, Crown, Zap, Star, ExternalLink, Lock } from 'lucide-react';
+import { User, Mail, Calendar, CreditCard, Shield, Trash2, Save, AlertCircle, CheckCircle, Crown, Zap, Star, ExternalLink, Lock, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UsageDisplay from './UsageDisplay';
 import UpgradeModal from './UpgradeModal';
@@ -132,26 +132,47 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
   };
 
   const handleCancelSubscription = async () => {
-    if (!window.confirm('Are you sure you want to cancel your subscription? You will lose access to AI lessons at the end of your billing period.')) {
+    if (!window.confirm('Are you sure you want to cancel your subscription? You will retain access until the end of your billing period.')) {
       return;
     }
 
     try {
-      const { cancelSubscription } = await import('./firebase/subscriptionService');
-      const result = await cancelSubscription(currentUser.uid);
-      if (result.success) {
-        setSubscription(result.subscription);
-        alert('Subscription canceled. You will retain access until the end of your billing period.');
-      } else {
-        alert('Failed to cancel subscription. Please try again.');
+      if (!subscription?.stripeSubscriptionId) {
+        alert('No active subscription found.');
+        return;
       }
+
+      const apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT?.replace('/api/ai', '') || 
+                         'https://churchexplorer-hlo9hbs7g-scott-mcmurrays-projects.vercel.app';
+
+      const response = await fetch(`${apiEndpoint}/api/cancel-subscription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscriptionId: subscription.stripeSubscriptionId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to cancel subscription');
+      }
+
+      const result = await response.json();
+      
+      // Refresh subscription data
+      await loadSubscription();
+      
+      alert('Subscription canceled successfully. You will retain access until ' + formatDate(subscription.currentPeriodEnd));
     } catch (error) {
       console.error('Error canceling subscription:', error);
-      alert('An error occurred. Please try again.');
+      alert(`Failed to cancel subscription: ${error.message}`);
     }
   };
 
   const openCustomerPortal = async () => {
+    console.log('Opening customer portal...', { subscription });
+    
     if (!subscription?.stripeCustomerId) {
       alert('No payment method on file. Please upgrade to a paid plan first.');
       return;
@@ -161,6 +182,9 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
       const apiEndpoint = process.env.REACT_APP_AI_API_ENDPOINT?.replace('/api/ai', '') || 
                          'https://churchexplorer-hlo9hbs7g-scott-mcmurrays-projects.vercel.app';
 
+      console.log('API Endpoint:', apiEndpoint);
+      console.log('Customer ID:', subscription.stripeCustomerId);
+
       const response = await fetch(`${apiEndpoint}/api/create-portal-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -169,15 +193,20 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
         }),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to create portal session');
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        throw new Error(errorData.error || 'Failed to create portal session');
       }
 
       const { url } = await response.json();
+      console.log('Portal URL:', url);
       window.open(url, '_blank');
     } catch (error) {
       console.error('Error opening portal:', error);
-      alert('Failed to open customer portal. Please try again.');
+      alert(`Failed to open customer portal: ${error.message}`);
     }
   };
 
@@ -422,51 +451,137 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                       <h4 className="font-semibold text-slate-900 mb-2">Subscription Status</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-600">Plan:</span>
+                          <span className="text-slate-600">Current Plan:</span>
                           <span className="font-medium text-slate-900">{getTierName(subscription?.tier)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-600">Status:</span>
                           <span className={`font-medium ${
-                            subscription?.status === 'active' ? 'text-green-600' : 
-                            subscription?.status === 'canceled' ? 'text-orange-600' : 
+                            subscription?.status === 'active' && !subscription?.cancelAtPeriodEnd ? 'text-green-600' : 
+                            subscription?.status === 'canceled' || subscription?.cancelAtPeriodEnd ? 'text-orange-600' : 
                             'text-red-600'
                           }`}>
-                            {subscription?.status === 'active' ? 'Active' : 
-                             subscription?.status === 'canceled' ? 'Canceled (access until period end)' : 
-                             'Past Due'}
+                            {subscription?.status === 'active' && !subscription?.cancelAtPeriodEnd ? 'Active' : 
+                             subscription?.status === 'canceled' || subscription?.cancelAtPeriodEnd ? 'Canceling (access until period end)' : 
+                             subscription?.status === 'past_due' ? 'Past Due - Please Update Payment' :
+                             'Inactive'}
                           </span>
                         </div>
                         {subscription?.currentPeriodEnd && (
                           <div className="flex justify-between">
                             <span className="text-slate-600">
-                              {subscription.status === 'canceled' ? 'Access Until:' : 'Next Billing:'}
+                              {subscription.status === 'canceled' || subscription?.cancelAtPeriodEnd ? 'Access Until:' : 'Next Billing:'}
                             </span>
                             <span className="font-medium text-slate-900">{formatDate(subscription.currentPeriodEnd)}</span>
                           </div>
                         )}
+                        
+                        {/* Pending Plan Change Alert */}
+                        {subscription?.pendingTierChange && subscription?.pendingTierChangeDate && (
+                          <div className="bg-blue-50 border border-blue-200 rounded p-3 mt-3">
+                            <div className="flex items-start space-x-2">
+                              <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <div>
+                                <p className="text-sm font-semibold text-blue-900 mb-1">
+                                  Plan Change Scheduled
+                                </p>
+                                <p className="text-xs text-blue-800">
+                                  Your plan will change to <strong>{getTierName(subscription.pendingTierChange)}</strong> on{' '}
+                                  <strong>{formatDate(subscription.pendingTierChangeDate)}</strong>
+                                </p>
+                                <p className="text-xs text-blue-700 mt-1">
+                                  You'll keep your current <strong>{getTierName(subscription.tier)}</strong> features until then.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {subscription?.cancelAtPeriodEnd && (
+                          <div className="bg-orange-50 border border-orange-200 rounded p-2 mt-2">
+                            <p className="text-xs text-orange-800">
+                              Your subscription will not renew. You can reactivate anytime before {formatDate(subscription.currentPeriodEnd)}.
+                            </p>
+                          </div>
+                        )}
                       </div>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h4 className="font-semibold text-slate-900">Manage Your Subscription</h4>
+                          <p className="text-sm text-slate-600 mt-1">
+                            Update payment methods, view invoices, and manage your plan
+                          </p>
+                        </div>
+                        <Settings className="w-8 h-8 text-blue-600" />
+                      </div>
+                      <button
+                        onClick={openCustomerPortal}
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition shadow-md flex items-center justify-center space-x-2"
+                      >
+                        <span>Open Billing Portal</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
 
-                  {subscription?.status === 'active' && subscription?.tier !== 'free' && (
+                  {/* Cancellation / Reactivation Section */}
+                  {subscription?.tier !== 'free' && (
                     <div className="mt-6 pt-6 border-t border-slate-200">
-                      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h4 className="font-semibold text-orange-900 mb-1">Cancel Subscription</h4>
-                            <p className="text-sm text-orange-700">
-                              You will retain access until {formatDate(subscription.currentPeriodEnd)}
-                            </p>
+                      {subscription?.cancelAtPeriodEnd ? (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h4 className="font-semibold text-blue-900 mb-1">Reactivate Subscription</h4>
+                              <p className="text-sm text-blue-700">
+                                Your plan will not renew. Click to continue your subscription.
+                              </p>
+                            </div>
+                            <button
+                              onClick={openCustomerPortal}
+                              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition whitespace-nowrap ml-4"
+                            >
+                              Reactivate
+                            </button>
                           </div>
-                          <button
-                            onClick={handleCancelSubscription}
-                            className="bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition whitespace-nowrap ml-4"
-                          >
-                            Cancel Plan
-                          </button>
                         </div>
-                      </div>
+                      ) : subscription?.status === 'active' ? (
+                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h4 className="font-semibold text-orange-900 mb-1">Cancel Subscription</h4>
+                              <p className="text-sm text-orange-700">
+                                You will retain access until {formatDate(subscription.currentPeriodEnd)}
+                              </p>
+                            </div>
+                            <button
+                              onClick={handleCancelSubscription}
+                              className="bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition whitespace-nowrap ml-4"
+                            >
+                              Cancel Plan
+                            </button>
+                          </div>
+                        </div>
+                      ) : subscription?.status === 'past_due' ? (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h4 className="font-semibold text-red-900 mb-1">Payment Failed</h4>
+                              <p className="text-sm text-red-700">
+                                Please update your payment method to continue accessing AI lessons.
+                              </p>
+                            </div>
+                            <button
+                              onClick={openCustomerPortal}
+                              className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition whitespace-nowrap ml-4"
+                            >
+                              Update Payment
+                            </button>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </div>
@@ -556,6 +671,24 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
           {/* About / Our Approach Tab */}
           {activeTab === 'about' && (
             <div className="p-6 space-y-6">
+              {/* Creator Section */}
+              <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2.5 rounded-lg">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900">About the Creator</h3>
+                </div>
+                <div className="space-y-3">
+                  <p className="text-base text-slate-700 leading-relaxed">
+                    Church Explorer was built by a <span className="font-semibold text-blue-700">Christian</span>, <span className="font-semibold text-purple-700">husband</span>, and <span className="font-semibold text-indigo-700">father</span> who wanted to understand more about church history—what <span className="font-semibold text-green-700">unites all Christians</span> across traditions, and where we <span className="font-semibold text-amber-700">respectfully differ</span>.
+                  </p>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    This isn't a corporate product. It's a labor of love from someone walking the same journey of faith, seeking to understand the roots of what we believe and why it matters.
+                  </p>
+                </div>
+              </div>
+
               <div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-4">Our Guiding Principle</h3>
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-purple-200 rounded-xl p-6 mb-6">

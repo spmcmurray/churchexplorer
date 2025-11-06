@@ -17,8 +17,13 @@ const MASTERY_LEVELS = {
 
 /**
  * Get the review schedule key for a lesson
+ * For AI lessons, use format: ai-{lessonId}
+ * For curated lessons, use format: {path}-{lessonNumber}
  */
 export const getLessonKey = (path, lessonNumber) => {
+  if (path === 'ai_generated') {
+    return `ai-${lessonNumber}`; // lessonNumber is actually the lesson.id for AI lessons
+  }
   return `${path}-${lessonNumber}`;
 };
 

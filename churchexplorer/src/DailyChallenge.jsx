@@ -20,8 +20,12 @@ const DailyChallenge = ({ onNavigate, currentUser, onProgressUpdate, userProgres
   }, [userProgress]);
 
   const loadDailyChallenge = () => {
-    // Check if already completed today from Firestore
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // Check if already completed today from Firestore (using user's local timezone)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const today = `${year}-${month}-${day}`; // YYYY-MM-DD in local timezone
     
     if (userProgress?.dailyChallenges?.completedDates?.includes(today)) {
       setCompletedToday(true);

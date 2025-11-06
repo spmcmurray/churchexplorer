@@ -74,7 +74,7 @@ export default function Legal() {
 function TermsOfService() {
   return (
     <div className="p-8 prose prose-slate max-w-none">
-      <div className="text-sm text-slate-500 mb-6">Last Updated: November 3, 2025</div>
+      <div className="text-sm text-slate-500 mb-6">Last Updated: November 6, 2025 | Version 1.0</div>
       
       <h2 className="text-2xl font-bold text-slate-900 mb-4">Terms of Service</h2>
       
@@ -127,8 +127,8 @@ function TermsOfService() {
         <h4 className="font-semibold mb-2">4.1 Subscription Tiers</h4>
         <ul className="list-disc pl-6 mb-4">
           <li><strong>Free:</strong> Access to all curated lessons</li>
-          <li><strong>Basic ($4.99/month):</strong> 1 AI-generated lesson per month + curated content</li>
-          <li><strong>Premium ($9.99/month):</strong> Unlimited AI lessons + all features</li>
+          <li><strong>Basic ($2.99/month):</strong> 1 AI-generated lesson per month + curated content</li>
+          <li><strong>Premium ($5.99/month):</strong> Unlimited AI lessons + all features</li>
         </ul>
 
         <h4 className="font-semibold mb-2">4.2 Billing</h4>
@@ -231,19 +231,40 @@ function TermsOfService() {
 
       <Section title="11. Governing Law">
         <p>
-          These Terms are governed by the laws of [Your Jurisdiction], without regard to conflict of law principles. 
-          Any disputes shall be resolved in the courts of [Your Jurisdiction].
+          These Terms are governed by the laws of the State of Ohio, United States, without regard to conflict of law principles. 
+          Any disputes shall be resolved in the state or federal courts located in Ohio.
         </p>
       </Section>
 
-      <Section title="12. Changes to Terms">
+      <Section title="12. Business Information">
+        <p className="mb-4">
+          Church Explorer is operated as a sole proprietorship by:
+        </p>
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-4">
+          <ul className="list-none space-y-2">
+            <li><strong>Business Name:</strong> Church Explorer</li>
+            <li><strong>Type:</strong> Sole Proprietorship</li>
+            <li><strong>Location:</strong> Ohio, United States</li>
+            <li><strong>Contact Email:</strong> scottymcmurray@gmail.com</li>
+          </ul>
+        </div>
+        <p className="text-sm text-slate-600">
+          For payment processing, we use Stripe, Inc. as our third-party payment processor. 
+          Your payment information is processed securely by Stripe and is subject to their 
+          <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">
+            Privacy Policy
+          </a>.
+        </p>
+      </Section>
+
+      <Section title="13. Changes to Terms">
         <p>
           We may update these Terms from time to time. We will notify users of material changes via email or 
           in-app notification. Continued use after changes constitutes acceptance of modified Terms.
         </p>
       </Section>
 
-      <Section title="13. Contact Information">
+      <Section title="14. Contact Information">
         <p>
           For questions about these Terms, contact us at:
         </p>
@@ -265,7 +286,7 @@ function TermsOfService() {
 function PrivacyPolicy() {
   return (
     <div className="p-8 prose prose-slate max-w-none">
-      <div className="text-sm text-slate-500 mb-6">Last Updated: November 3, 2025</div>
+      <div className="text-sm text-slate-500 mb-6">Last Updated: November 6, 2025 | Version 1.0</div>
       
       <h2 className="text-2xl font-bold text-slate-900 mb-4">Privacy Policy</h2>
       
@@ -381,32 +402,67 @@ function PrivacyPolicy() {
         <p>To exercise these rights:</p>
         <ul className="list-disc pl-6 mb-4">
           <li>Visit your Profile page to update information or delete your account</li>
-          <li>Contact us at privacy@churchexplorer.org for data access or portability requests</li>
+          <li>Contact us at scottymcmurray@gmail.com for data access or portability requests</li>
           <li>Use preference toggles in your profile to manage email communications</li>
         </ul>
       </Section>
 
-      <Section title="6. Cookies and Tracking">
-        <p>
-          We use Firebase Authentication, which uses cookies for session management. See our Cookie Policy for 
-          full details. We do not use third-party advertising cookies or tracking pixels.
+      <Section title="6. International Data Transfers">
+        <p className="mb-3">
+          Church Explorer is operated from the United States. If you are accessing our service from outside the 
+          United States, please be aware that your information may be transferred to, stored, and processed in 
+          the United States where our servers and third-party service providers are located.
+        </p>
+        
+        <h4 className="font-semibold mb-2">For European Union Users:</h4>
+        <p className="mb-3">
+          When we transfer data from the EU to the United States, we rely on:
+        </p>
+        <ul className="list-disc pl-6 mb-4">
+          <li><strong>Standard Contractual Clauses (SCCs):</strong> Our service providers (Firebase/Google, Stripe, OpenAI) 
+          use EU-approved Standard Contractual Clauses to ensure adequate protection of your data.</li>
+          <li><strong>Data Processing Agreements:</strong> Our third-party processors have entered into Data Processing 
+          Agreements that comply with GDPR requirements.</li>
+        </ul>
+        
+        <p className="text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded p-3">
+          Learn more about our service providers' data protection measures:
+          <br />• Firebase: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer" 
+          className="text-blue-600 hover:underline">Firebase Privacy & Security</a>
+          <br />• Stripe: <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" 
+          className="text-blue-600 hover:underline">Stripe Privacy Policy</a>
+          <br />• OpenAI: <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener noreferrer" 
+          className="text-blue-600 hover:underline">OpenAI Privacy Policy</a>
         </p>
       </Section>
 
-      <Section title="7. Children's Privacy">
+      <Section title="7. Cookies and Tracking">
+        <p>We use cookies and similar technologies to:</p>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Keep you logged in to your account</li>
+          <li>Remember your preferences and settings</li>
+          <li>Analyze how users interact with our platform</li>
+          <li>Improve platform performance and user experience</li>
+        </ul>
+        
+        <h4 className="font-semibold mb-2">Types of Cookies We Use:</h4>
+        <ul className="list-disc pl-6 mb-4">
+          <li><strong>Essential Cookies:</strong> Required for authentication and basic platform functionality</li>
+          <li><strong>Analytics Cookies:</strong> Help us understand usage patterns (Firebase Analytics)</li>
+          <li><strong>Preference Cookies:</strong> Remember your settings and choices</li>
+        </ul>
+
+        <p>You can control cookies through your browser settings or our cookie consent banner. Note that disabling essential cookies may limit platform functionality.</p>
+        <p className="mt-2">See our <Link to="/legal" className="text-blue-600 hover:underline">Cookie Policy</Link> for full details. We do not use third-party advertising cookies or tracking pixels.</p>
+      </Section>
+
+      <Section title="8. Children's Privacy">
         <p className="mb-3">
           Church Explorer is not directed to children under 13. We do not knowingly collect information from 
           children under 13. If you believe a child has provided us with information, contact us immediately.
         </p>
         <p>
           Users aged 13-17 should obtain parental consent before using our service.
-        </p>
-      </Section>
-
-      <Section title="8. International Users">
-        <p>
-          Church Explorer is operated from the United States. If you are located outside the US, your information 
-          will be transferred to and processed in the US. By using our service, you consent to this transfer.
         </p>
       </Section>
 
@@ -445,7 +501,7 @@ function PrivacyPolicy() {
 function CookiePolicy() {
   return (
     <div className="p-8 prose prose-slate max-w-none">
-      <div className="text-sm text-slate-500 mb-6">Last Updated: November 3, 2025</div>
+      <div className="text-sm text-slate-500 mb-6">Last Updated: November 6, 2025 | Version 1.0</div>
       
       <h2 className="text-2xl font-bold text-slate-900 mb-4">Cookie Policy</h2>
       

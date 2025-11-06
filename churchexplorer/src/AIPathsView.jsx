@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Sparkles, BookOpen, CheckCircle2, ArrowLeft, Trash2, Play, ChevronDown, ChevronUp, Shuffle, Zap, Layers, Rocket, Lightbulb, TrendingUp, Star, BookMarked, AlertCircle } from 'lucide-react';
+import { Sparkles, BookOpen, CheckCircle2, ArrowLeft, Trash2, Play, ChevronDown, ChevronUp, Shuffle, Zap, Layers, Rocket, Lightbulb, TrendingUp, Star, BookMarked, AlertCircle } from 'lucide-react';
 import AIPathViewer from './AIPathViewer';
 import UpgradeModal from './UpgradeModal';
 import UsageDisplay from './UsageDisplay';
@@ -466,7 +466,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-white/20 backdrop-blur-md p-3 rounded-2xl shadow-lg">
-                <Brain className="w-10 h-10 text-white" />
+                <Sparkles className="w-10 h-10 text-white" />
               </div>
               <div>
                 <h1 className="text-4xl md:text-5xl font-black mb-2">AI Lessons</h1>
@@ -690,7 +690,7 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
         {!loading && aiPaths.length === 0 && (
           <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-sm p-12 text-center">
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <Brain className="w-10 h-10 text-white" />
+              <Sparkles className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">No AI Paths Yet</h2>
             <p className="text-slate-600 mb-6 max-w-md mx-auto">

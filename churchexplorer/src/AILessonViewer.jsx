@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Brain, 
+  Sparkles, 
   BookOpen, 
   Award, 
   ArrowLeft, 
@@ -14,6 +14,7 @@ import {
   Trophy
 } from 'lucide-react';
 import { completeCourseLesson } from './firebase/progressService';
+import { scheduleReviews } from './services/reviewService';
 
 // Helper function to parse and format text content
 const parseContent = (text) => {
@@ -74,8 +75,9 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
     content: [lesson.introduction]
   });
 
-  // Section cards
+  // Section cards with INTERLEAVED quizzes (new format)
   lesson.sections?.forEach((section, idx) => {
+    // Content card
     cards.push({
       type: 'content',
       title: section.title,
@@ -83,27 +85,29 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
       content: section.content.split('\n\n'),
       highlight: section.keyPoints?.length > 0 ? section.keyPoints.join(' • ') : null
     });
+    
+    // Quiz card immediately after content (if section has quiz)
+    if (section.quiz) {
+      cards.push({
+        type: 'quiz',
+        question: section.quiz.question,
+        options: section.quiz.options,
+        correctAnswer: section.quiz.correct,
+        explanation: section.quiz.explanation || 'Great job!'
+      });
+    }
   });
 
-  // Quiz cards
-  lesson.quiz?.forEach((question, idx) => {
-    cards.push({
-      type: 'quiz',
-      question: question.question,
-      options: question.options,
-      correctAnswer: question.correct,
-      explanation: question.explanation || 'Great job!'
-    });
-  });
-
-  // Memory verse card
-  if (lesson.memorizeVerse) {
-    cards.push({
-      type: 'content',
-      title: 'Memory Verse',
-      subtitle: lesson.memorizeVerse.reference,
-      content: [lesson.memorizeVerse.text],
-      highlight: `Memorize this verse: ${lesson.memorizeVerse.reference}`
+  // Legacy format support: separate quiz array (for old lessons)
+  if (lesson.quiz && Array.isArray(lesson.quiz)) {
+    lesson.quiz.forEach((question, idx) => {
+      cards.push({
+        type: 'quiz',
+        question: question.question,
+        options: question.options,
+        correctAnswer: question.correct,
+        explanation: question.explanation || 'Great job!'
+      });
     });
   }
 
@@ -172,6 +176,9 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
         );
         
         if (result.success) {
+          // Schedule spaced repetition reviews for this AI lesson
+          await scheduleReviews('ai_generated', lesson.id);
+          
           // If lesson belongs to an AI path, update path progress
           if (lesson.pathId) {
             const { saveAIPathProgressToFirestore, getAIPathProgressFromFirestore } = await import('./firebase/progressService');
@@ -266,7 +273,7 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
           <div className="flex items-center gap-2 mt-3">
             <div className="bg-gradient-to-r from-purple-500 to-blue-600 px-3 py-1 rounded-full">
               <div className="flex items-center gap-2 text-white text-xs font-semibold">
-                <Brain className="w-3 h-3" />
+                <Sparkles className="w-3 h-3" />
                 AI Generated
               </div>
             </div>
@@ -480,7 +487,7 @@ const CompletionCard = ({ card, xp, onComplete }) => {
           {/* AI Generated Badge */}
           <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 mb-8 border-2 border-purple-200 shadow-lg">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <Brain className="w-8 h-8 text-purple-600" />
+              <Sparkles className="w-8 h-8 text-purple-600" />
             </div>
             <p className="text-2xl font-black text-purple-700">AI-Generated Lesson</p>
             <p className="text-base text-gray-600 mt-2">You've completed a custom AI lesson!</p>

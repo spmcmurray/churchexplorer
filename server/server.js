@@ -123,6 +123,9 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
       case 'customer.subscription.updated':
         const updatedSub = event.data.object;
         console.log('Subscription updated:', updatedSub.id);
+        console.log('Cancel at period end:', updatedSub.cancel_at_period_end);
+        console.log('Status:', updatedSub.status);
+        console.log('Schedule:', updatedSub.schedule);
         
         // Find user by subscription ID
         const subSnapshot = await db.collectionGroup('subscription')
@@ -142,15 +145,57 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
             newTier = 'premium';
           }
           
-          await subSnapshot.docs[0].ref.update({
+          const updateData = {
             tier: newTier,
             status: updatedSub.status,
             currentPeriodStart: new Date(updatedSub.current_period_start * 1000),
             currentPeriodEnd: new Date(updatedSub.current_period_end * 1000),
+            cancelAtPeriodEnd: updatedSub.cancel_at_period_end || false,
             updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
+          };
+
+          // Check if there's a subscription schedule (plan change)
+          if (updatedSub.schedule) {
+            try {
+              const schedule = await stripe.subscriptionSchedules.retrieve(updatedSub.schedule);
+              console.log('Schedule phases:', schedule.phases);
+              
+              // Check if there's a future phase (downgrade/upgrade scheduled)
+              if (schedule.phases && schedule.phases.length > 1) {
+                const currentPhase = schedule.phases[0];
+                const nextPhase = schedule.phases[1];
+                
+                const nextPriceId = nextPhase.items[0].price;
+                let pendingTier = 'free';
+                if (nextPriceId === process.env.STRIPE_BASIC_PRICE_ID) {
+                  pendingTier = 'basic';
+                } else if (nextPriceId === process.env.STRIPE_PREMIUM_PRICE_ID) {
+                  pendingTier = 'premium';
+                }
+                
+                updateData.pendingTierChange = pendingTier;
+                updateData.pendingTierChangeDate = new Date(nextPhase.start_date * 1000);
+                
+                console.log(`📅 Scheduled plan change: ${newTier} → ${pendingTier} on ${new Date(nextPhase.start_date * 1000)}`);
+              }
+            } catch (scheduleError) {
+              console.error('Error fetching schedule:', scheduleError);
+            }
+          } else {
+            // No schedule, clear any pending changes
+            updateData.pendingTierChange = admin.firestore.FieldValue.delete();
+            updateData.pendingTierChangeDate = admin.firestore.FieldValue.delete();
+          }
+
+          // If subscription is set to cancel at period end, mark status as 'canceled'
+          if (updatedSub.cancel_at_period_end) {
+            updateData.status = 'canceled';
+            console.log(`⚠️ Subscription will cancel at ${new Date(updatedSub.current_period_end * 1000)}`);
+          }
           
-          console.log(`✅ Updated subscription to ${newTier}, status: ${updatedSub.status}`);
+          await subSnapshot.docs[0].ref.update(updateData);
+          
+          console.log(`✅ Updated subscription to ${newTier}, status: ${updateData.status}`);
         }
         break;
 
@@ -642,6 +687,33 @@ app.post('/api/create-portal-session', async (req, res) => {
     res.json({ url: session.url });
   } catch (error) {
     console.error('Error creating portal session:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Cancel subscription endpoint
+app.post('/api/cancel-subscription', async (req, res) => {
+  try {
+    const { subscriptionId } = req.body;
+
+    if (!subscriptionId) {
+      return res.status(400).json({ error: 'Missing subscriptionId' });
+    }
+
+    // Cancel at period end (not immediately) - user keeps access until billing period ends
+    const subscription = await stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true
+    });
+
+    console.log(`✅ Subscription ${subscriptionId} will cancel at period end:`, new Date(subscription.cancel_at * 1000));
+
+    res.json({ 
+      success: true, 
+      message: 'Subscription will cancel at period end',
+      cancelAt: subscription.cancel_at 
+    });
+  } catch (error) {
+    console.error('Error canceling subscription:', error);
     res.status(500).json({ error: error.message });
   }
 });

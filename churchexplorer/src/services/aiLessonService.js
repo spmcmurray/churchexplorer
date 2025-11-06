@@ -12,7 +12,7 @@ const AI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
 /**
  * Validate topic before generation using AI to analyze intent
- * Returns { valid: boolean, message: string }
+ * Returns { valid: boolean, message: string, reason: string }
  */
 const validateTopic = async (topic, additionalContext = '') => {
   const combinedText = `${topic} ${additionalContext}`.trim();
@@ -21,11 +21,32 @@ const validateTopic = async (topic, additionalContext = '') => {
   if (combinedText.length < 3) {
     return {
       valid: false,
-      message: 'Please enter a more specific topic for your lesson.'
+      message: 'Please enter a more specific topic for your lesson.',
+      reason: 'Topic too short'
     };
   }
 
-  // Use AI to validate the topic's alignment with orthodox Christian teaching
+  // Check for obviously inappropriate keywords (quick client-side filter)
+  const inappropriateKeywords = [
+    'porn', 'xxx', 'sex', 'explicit', 'violence', 'drugs',
+    'trump', 'biden', 'democrat', 'republican', 'election',
+    'cryptocurrency', 'bitcoin', 'stock market', 'investment'
+  ];
+  
+  const lowerTopic = combinedText.toLowerCase();
+  const hasInappropriate = inappropriateKeywords.some(keyword => 
+    lowerTopic.includes(keyword)
+  );
+  
+  if (hasInappropriate) {
+    return {
+      valid: false,
+      message: 'This topic is outside our educational scope. Church Explorer focuses on Bible study, church history, theology, apologetics, and Christian doctrine.',
+      reason: 'Topic outside scope'
+    };
+  }
+
+  // Use AI to validate the topic's alignment with our educational mission
   try {
     const response = await fetch(`${AI_API_ENDPOINT}/validate-topic`, {
       method: 'POST',
@@ -33,40 +54,14 @@ const validateTopic = async (topic, additionalContext = '') => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        topic: combinedText,
-        validationPrompt: `You are a content moderator for a Christian educational platform that teaches historic, orthodox Christian doctrine. 
-
-Your task is to evaluate if the following lesson topic request is appropriate for our platform.
-
-REJECT topics that:
-- Advocate for progressive theology or revisionist interpretations that contradict historic Christian teaching
-- Promote LGBTQ+ theology, gender identity ideology, or sexual ethics contrary to biblical teaching
-- Argue for women in senior pastoral roles (pastors, elders) or women's ordination
-- Advocate for political movements, social justice activism, or critical theory
-- Promote abortion, premarital sex, cohabitation, or other behaviors contrary to Christian ethics
-- Request content that undermines biblical authority or promotes theological liberalism
-- Seek to "make a case" for positions contrary to orthodox Christian teaching
-
-ACCEPT topics that:
-- Teach what the Bible says about various topics (even controversial ones)
-- Explain historic Christian positions on theology, doctrine, or ethics
-- Present apologetics defending the Christian faith
-- Explore church history, biblical history, or Christian doctrine
-- Discuss how Christians should think about modern issues from a biblical perspective
-
-Topic to evaluate: "${combinedText}"
-
-Respond with ONLY a JSON object in this exact format:
-{"approved": true/false, "reason": "brief explanation"}
-
-Do not include any other text or formatting.`
+        topic: combinedText
       })
     });
 
     if (!response.ok) {
       console.error('Topic validation API error:', response.status);
       // If validation fails, allow the topic (fail open to avoid blocking legitimate requests)
-      return { valid: true };
+      return { valid: true, message: '', reason: 'Validation service unavailable' };
     }
 
     const data = await response.json();
@@ -75,152 +70,45 @@ Do not include any other text or formatting.`
     let result;
     if (data.validationResult) {
       try {
-        // Try to parse the AI's response as JSON
+        // Parse the AI's JSON response
         const cleanedResponse = data.validationResult.trim();
         result = JSON.parse(cleanedResponse);
       } catch (e) {
         console.error('Failed to parse validation result:', e);
-        // If we can't parse, check for keywords in the response
-        const responseText = data.validationResult.toLowerCase();
-        result = {
-          approved: !responseText.includes('"approved": false') && !responseText.includes('not appropriate'),
-          reason: 'Unable to parse validation response'
-        };
+        console.error('Raw response:', data.validationResult);
+        // If we can't parse, fail safe and allow
+        return { valid: true, message: '', reason: 'Parse error' };
       }
     } else {
       console.error('No validation result in response');
-      return { valid: true }; // Fail open
+      return { valid: true, message: '', reason: 'No result' }; // Fail open
     }
 
     if (!result.approved) {
       return {
         valid: false,
-        message: 'This topic is outside our educational scope. Church Explorer focuses on historic Christian teaching and theology. Please try a different topic related to Bible study, church history, apologetics, or Christian doctrine.'
+        message: 'This topic is outside our educational scope. Church Explorer focuses on Bible study, church history, Christian theology, apologetics, and denominational studies. Please try a topic related to these areas.',
+        reason: result.reason || 'Topic not approved'
       };
     }
 
-    return { valid: true };
+    return {
+      valid: true,
+      message: '',
+      reason: result.reason || 'Approved'
+    };
 
   } catch (error) {
     console.error('Topic validation error:', error);
-    // Fail open - allow the topic if validation fails to avoid blocking legitimate requests
-    return { valid: true };
+    // On error, fail open (allow the topic) to avoid blocking legitimate requests
+    return { 
+      valid: true, 
+      message: '', 
+      reason: 'Validation error: ' + error.message 
+    };
   }
 };
 
-/**
- * Generate a system prompt for the AI based on existing lesson examples
- */
-const generateSystemPrompt = () => {
-  return `You are an expert Christian educator and theologian. Your task is to create comprehensive, educational lessons about Christian topics using a specific lesson structure.
-
-LESSON STRUCTURE TO FOLLOW:
-1. Title & Subtitle (engaging and descriptive)
-2. Introduction (2-3 paragraphs setting context)
-3. Main Sections (3-4 sections, each with title, content, and key points)
-4. Quiz Questions (5 multiple choice questions with explanations)
-5. Practical Application (how to apply this knowledge)
-6. Memory Verse (relevant Bible verse with reference)
-7. Further Reading (3-4 recommended resources)
-8. Reflection (thoughtful question for personal consideration)
-
-THEOLOGICAL GUARDRAILS - CRITICAL:
-You MUST remain neutral and objective on theologically disputed topics. Your audience includes Orthodox, Catholic, and Protestant Christians with conservative beliefs.
-
-REQUIRED NEUTRALITY on these topics:
-- Women in ministry/ordination (present all views objectively without advocacy)
-- Creation vs. evolution (respect literal interpretations)
-- End times theology (present views without favoring one)
-- Sacramental theology (respect differences between traditions)
-- Church governance structures (episcopal, presbyterian, congregational)
-- Charismatic gifts (tongues, prophecy, healing)
-- Mary and the saints (Catholic vs. Protestant views)
-- Salvation theology (faith alone, faith plus works, perseverance of saints)
-- Biblical interpretation methods (literal vs. allegorical)
-- Social and cultural issues (present traditional Christian perspectives)
-
-REQUIRED POSITIONS - NO DEVIATION:
-- Marriage and sexuality: Present only the historic Christian teaching that marriage is between one man and one woman
-- Sexual ethics: Present only traditional Christian sexual ethics (celibacy outside of heterosexual marriage)
-- Gender and identity: Present only the biblical teaching that God created humans male and female
-- NEVER advocate for or normalize LGBT behavior, relationships, or identity
-- Church leadership and gender roles: Present only historic Christian teaching on male headship and biblical gender roles
-  * Orthodox, Catholic, and most Protestant traditions teach male-only ordination/eldership
-  * Do NOT advocate for "gender equality" in church leadership
-  * Do NOT promote women pastors, elders, or priests as normative
-  * When discussing women in ministry, present only complementarian and traditional views
-  * You may mention egalitarian views exist, but do not advocate for them
-  * Focus on biblical teaching about distinct male and female roles
-- When these topics arise, present the consistent historic Christian position held by Orthodox, Catholic, and traditional Protestant churches
-- Do not present progressive Christian views on these topics as valid alternatives
-- Focus on God's design for sexuality, marriage, and church order as taught in Scripture
-
-BANNED TOPICS AND PHRASES:
-- DO NOT generate lessons titled or focused on "gender equality in church leadership"
-- DO NOT advocate for women's ordination or women as senior pastors/priests
-- DO NOT use phrases like "breaking barriers" or "empowering women in ministry" in an advocacy context
-- DO NOT frame complementarian theology as oppressive or outdated
-- DO NOT suggest the church needs to "progress" on gender roles
-- When discussing denominations that ordain women, present it factually without endorsement
-
-APPROACH FOR DISPUTED TOPICS:
-- State: "Christians hold different views on this topic"
-- Present multiple perspectives fairly and objectively
-- Cite which traditions hold which views (e.g., "Catholic teaching...", "Many Protestant denominations...", "Orthodox tradition...")
-- Do NOT advocate for progressive or liberal theological positions
-- Focus on historical orthodox Christian teaching as the baseline
-- Respect traditional interpretations of Scripture
-- When discussing denominations, present their official teachings accurately
-
-CONTENT REQUIREMENTS:
-- Theologically accurate according to historic Christian orthodoxy
-- Appropriate for adult learners with conservative Christian values
-- Rich with relevant Scripture references (use traditional translations)
-- Present denominational differences objectively and respectfully
-- Maintain an educational, not activist, tone
-- Respect the authority of Scripture as held by all major traditions
-- Each section should be 200-400 words
-- Quiz questions should test understanding, not memorization
-- Include both historical context and modern relevance
-
-CRITICAL: You must respond with a valid JSON object that matches this exact structure:
-{
-  "title": "string",
-  "subtitle": "string", 
-  "introduction": "string",
-  "sections": [
-    {
-      "title": "string",
-      "content": "string",
-      "keyPoints": ["string", "string", "string"]
-    }
-  ],
-  "quiz": [
-    {
-      "question": "string",
-      "options": ["string", "string", "string", "string"],
-      "correct": 0,
-      "explanation": "string"
-    }
-  ],
-  "practicalApplication": "string",
-  "memorizeVerse": {
-    "reference": "string",
-    "text": "string"
-  },
-  "furtherReading": ["string", "string", "string"],
-  "reflection": {
-    "question": "string",
-    "prompt": "string"
-  }
-}
-
-Do not include any text before or after the JSON object.`;
-};
-
-/**
- * Generate lesson content using AI
- */
 /**
  * Generate AI lesson with usage tracking
  * Now requires userId to check subscription limits
@@ -344,18 +232,36 @@ const validateAndEnhanceLesson = (lesson, originalTopic) => {
     xpReward: 50 // Standard XP for AI lessons
   };
 
-  // Validate sections
+  // Validate sections (preserve interleaved quiz structure)
   if (lesson.sections && Array.isArray(lesson.sections)) {
-    enhancedLesson.sections = lesson.sections.map((section, index) => ({
-      title: cleanText(section.title) || `Section ${index + 1}`,
-      content: cleanText(section.content) || '',
-      keyPoints: Array.isArray(section.keyPoints) 
-        ? section.keyPoints.map(point => cleanText(point))
-        : []
-    }));
+    enhancedLesson.sections = lesson.sections.map((section, index) => {
+      const enhancedSection = {
+        title: cleanText(section.title) || `Section ${index + 1}`,
+        content: cleanText(section.content) || '',
+        keyPoints: Array.isArray(section.keyPoints) 
+          ? section.keyPoints.map(point => cleanText(point))
+          : []
+      };
+      
+      // Preserve the quiz if it exists in the section (new interleaved format)
+      if (section.quiz) {
+        enhancedSection.quiz = {
+          question: cleanText(section.quiz.question) || `Question ${index + 1}`,
+          options: Array.isArray(section.quiz.options) && section.quiz.options.length === 4 
+            ? section.quiz.options.map(opt => cleanText(opt))
+            : ['Option A', 'Option B', 'Option C', 'Option D'],
+          correct: typeof section.quiz.correct === 'number' && section.quiz.correct >= 0 && section.quiz.correct <= 3 
+            ? section.quiz.correct 
+            : 0,
+          explanation: cleanText(section.quiz.explanation) || 'This is the correct answer.'
+        };
+      }
+      
+      return enhancedSection;
+    });
   }
 
-  // Validate quiz questions
+  // Validate quiz questions (legacy format support - separate quiz array)
   if (lesson.quiz && Array.isArray(lesson.quiz)) {
     enhancedLesson.quiz = lesson.quiz.map((question, index) => ({
       question: cleanText(question.question) || `Question ${index + 1}`,
