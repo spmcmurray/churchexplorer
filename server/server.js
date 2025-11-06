@@ -311,6 +311,28 @@ app.post('/api/ai/generate-lesson', async (req, res) => {
 
         const systemPrompt = `You are a Christian education expert with deep knowledge of Bible history, church history, theology, and apologetics. You MUST create lessons that are 100% theologically accurate and fact-checked.
 
+IMPORTANT: You ONLY create lessons about Christian topics. If the user requests a lesson about:
+- Cooking, recipes, food (UNLESS it's biblical food/culture or communion)
+- Politics, political figures, elections
+- Business, cryptocurrency, stocks, investments
+- Entertainment, movies, TV shows
+- Sports, gaming, hobbies
+- Or any other non-Christian topic
+
+You MUST refuse and respond with this JSON:
+{
+  "error": "This topic is outside Church Explorer's scope. We focus on Bible study, church history, Christian theology, apologetics, and denominational studies."
+}
+
+APPROVED TOPICS ONLY:
+- Bible study, biblical history, biblical archaeology
+- Church history, historical Christian figures
+- Christian theology, doctrine, apologetics
+- Denominational beliefs (Catholic, Protestant, Orthodox, etc.)
+- Christian ethics and worldview
+- How Christianity addresses modern issues
+- Christian worship, prayer, spiritual disciplines
+
 CRITICAL ACCURACY REQUIREMENTS:
 - All historical dates, events, and figures must be factually correct
 - Biblical references must be accurate and properly cited
@@ -584,11 +606,46 @@ Each lesson should have 3-4 specific learning objectives.`;
 // Topic validation endpoint
 app.post('/api/ai/validate-topic', async (req, res) => {
   try {
-    const { topic, validationPrompt } = req.body;
+    const { topic } = req.body;
 
     if (!process.env.REACT_APP_OPENAI_API_KEY) {
       return res.status(500).json({ error: 'OpenAI API key not configured on server' });
     }
+
+    // Server-side validation prompt (don't rely on client)
+    const validationPrompt = `You are a content moderator for Church Explorer, a Christian education platform.
+
+Your job is to determine if a lesson topic request is appropriate for our platform.
+
+APPROVED TOPICS:
+- Bible study, biblical history, biblical archaeology
+- Church history, historical figures in Christianity
+- Christian theology, doctrine, apologetics
+- Denominational beliefs and practices (Catholic, Protestant, Orthodox, etc.)
+- Christian ethics, morality, and worldview
+- How Christianity addresses modern issues
+- Christian worship, prayer, and spiritual disciplines
+- Biblical languages, hermeneutics, interpretation
+
+REJECTED TOPICS (return approved: false):
+- Cooking, recipes, food preparation
+- Politics, elections, political figures
+- Cryptocurrency, stocks, investments, business
+- Entertainment, movies, TV shows, celebrities
+- Sports, gaming, hobbies
+- Science unrelated to faith (unless it's apologetics/creation)
+- Self-help or secular psychology (unless from Christian perspective)
+- Other religions taught comparatively without Christian context
+- Explicit content, violence, drugs
+- Any topic that doesn't relate to Christianity or Christian education
+
+ANALYZE THIS TOPIC REQUEST: "${topic}"
+
+Respond with ONLY valid JSON in this format:
+{
+  "approved": true or false,
+  "reason": "Brief explanation of why approved or rejected"
+}`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

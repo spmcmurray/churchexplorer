@@ -28,9 +28,21 @@ const validateTopic = async (topic, additionalContext = '') => {
 
   // Check for obviously inappropriate keywords (quick client-side filter)
   const inappropriateKeywords = [
+    // Explicit content
     'porn', 'xxx', 'sex', 'explicit', 'violence', 'drugs',
-    'trump', 'biden', 'democrat', 'republican', 'election',
-    'cryptocurrency', 'bitcoin', 'stock market', 'investment'
+    // Politics
+    'trump', 'biden', 'democrat', 'republican', 'election', 'political',
+    // Finance
+    'cryptocurrency', 'bitcoin', 'stock market', 'investment', 'forex', 'trading',
+    // Cooking & Food (unless biblical context)
+    'recipe', 'cooking', 'baking', 'cuisine', 'meal prep', 'food prep',
+    // Entertainment
+    'movie', 'film', 'tv show', 'television', 'netflix', 'celebrity',
+    // Sports & Gaming
+    'football', 'basketball', 'soccer', 'gaming', 'video game', 'esports',
+    // Other non-Christian topics
+    'exercise', 'workout', 'fitness', 'diet', 'weight loss',
+    'fashion', 'makeup', 'style', 'shopping'
   ];
   
   const lowerTopic = combinedText.toLowerCase();
