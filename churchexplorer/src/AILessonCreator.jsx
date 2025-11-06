@@ -18,10 +18,10 @@ import {
   generateAILesson, 
   generateTopicSuggestions,
   generateLearningPathOutline,
-  generateCompleteLearningPath
+  generateCompleteLearningPath,
+  saveAILessonToLibrary
 } from './services/aiLessonService';
 import { canCreateAILesson } from './firebase/subscriptionService';
-import { startBackgroundLessonGeneration } from './services/backgroundLessonService';
 
 const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
   const [topic, setTopic] = useState('');
@@ -126,45 +126,30 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
     }
 
     if (pathType === 'quick') {
-      // Single lesson - use background generation
+      // Single lesson - generate immediately
       setGenerating(true);
       setError('');
       setGeneratedLesson(null);
 
       try {
-        // Start background generation
-        const result = await startBackgroundLessonGeneration(
-          currentUser?.uid,
-          topic,
-          additionalContext,
-          pathType
-        );
+  const result = await generateAILesson(topic, additionalContext, currentUser?.uid);
         
         if (result.success) {
-          // Show success message - the toast will notify when it's done
-          setError('');
-          setGenerating(false);
-          // Navigate user back or show confirmation
-          alert('✨ Your lesson is being generated in the background!\n\nYou can continue exploring and we\'ll notify you when it\'s ready.');
-          // Optionally navigate back to home or AI paths view
-          if (onGoBack) {
-            onGoBack();
-          }
+          // Save lesson to user's library
+          saveAILessonToLibrary(result.lesson);
+          setGeneratedLesson(result.lesson);
+          setEstimatedTime('3-5 minutes');
         } else {
-          setError(result.error || 'Failed to start lesson generation. Please try again.');
-          setGenerating(false);
+          setError(result.error || 'Failed to generate lesson. Please try again.');
         }
       } catch (error) {
-        if (error.upgradeNeeded) {
-          setError(error.message);
-        } else {
-          setError('An unexpected error occurred. Please try again.');
-        }
+        setError('An unexpected error occurred. Please try again.');
         console.error('Lesson generation error:', error);
+      } finally {
         setGenerating(false);
       }
     } else {
-      // Multi-lesson path - generate outline first (keep existing behavior for now)
+      // Multi-lesson path - generate outline first
       setGenerating(true);
       setError('');
       setPathOutline(null);
@@ -201,8 +186,20 @@ const AILessonCreator = ({ currentUser, onStartLesson, onGoBack }) => {
         // For now, start with the first lesson
         // In future, we can save the entire path and show a path navigator
         if (result.path.lessons && result.path.lessons.length > 0) {
-          // TODO: Save lessons to Firestore library (for now they're in memory)
-          // When we implement proper path library, we'll save these lessons
+          // Save all lessons to library with path metadata
+          result.path.lessons.forEach((lesson, index) => {
+            const lessonWithPath = {
+              ...lesson,
+              pathInfo: {
+                pathType: pathType,
+                pathTitle: pathOutline.pathTitle,
+                pathId: pathOutline.pathId,
+                lessonNumber: index + 1,
+                totalLessons: result.path.lessons.length
+              }
+            };
+            saveAILessonToLibrary(lessonWithPath);
+          });
           
           setGeneratedLesson(result.path.lessons[0]);
           setPathProgress(null);

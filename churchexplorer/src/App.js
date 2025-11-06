@@ -22,8 +22,6 @@ import Legal from './Legal';
 import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
 import { getUserProgress } from './firebase/progressService';
 import { notifyAchievement, onAchievement } from './services/progressService';
-import { ToastContainer, useToast } from './components/Toast';
-import { subscribeToBackgroundJobs } from './services/backgroundLessonService';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError, authLoading }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -333,7 +331,6 @@ function AIPathViewerWrapper({ currentUser }) {
 
 function AppContent() {
   const navigate = useNavigate();
-  const { showToast } = useToast();
   const [currentUser, setCurrentUser] = useState(null);
   const [userProgress, setUserProgress] = useState(null); // Store Firestore progress in state
   const [authLoading, setAuthLoading] = useState(true); // Track auth initialization
@@ -481,42 +478,6 @@ function AppContent() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showProfileMenu]);
-
-  // Subscribe to background lesson generation jobs
-  useEffect(() => {
-    if (!currentUser?.uid) return;
-
-    const unsubscribe = subscribeToBackgroundJobs(
-      currentUser.uid,
-      // On job complete
-      (completedJobs) => {
-        completedJobs.forEach((job) => {
-          if (job.status === 'completed' && job.lessonTitle) {
-            showToast({
-              title: '✨ Your AI Lesson is Ready!',
-              message: `"${job.lessonTitle}" has been generated and saved to your library.`,
-              type: 'success',
-              duration: 8000,
-              action: {
-                label: 'View Lesson',
-                onClick: () => {
-                  if (job.lessonId) {
-                    navigate(`/ai-lesson/${job.lessonId}`);
-                  } else {
-                    navigate('/ai-paths');
-                  }
-                }
-              }
-            });
-          }
-        });
-      }
-    );
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [currentUser, showToast, navigate]);
 
   const handleSignOut = async () => {
     await logOut();
@@ -712,7 +673,6 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <ToastContainer />
       <AppContent />
       <CookieConsent
         location="bottom"
