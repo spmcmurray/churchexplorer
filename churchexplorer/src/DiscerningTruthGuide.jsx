@@ -6,6 +6,16 @@ import ReviewSession from './ReviewSession';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 import { scheduleReviews } from './services/reviewService';
+import { 
+  lesson57Data, 
+  lesson58Data, 
+  lesson59Data, 
+  lesson60Data, 
+  lesson61Data, 
+  lesson62Data, 
+  lesson63Data, 
+  lesson64Data 
+} from './interactiveLessonData';
 
 const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
@@ -33,14 +43,14 @@ const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
   const getTotalXP = () => userProgress?.courses?.discerningTruth?.totalXP || 0;
 
   const lessons = [
-    { number: 57, title: 'Orthodox vs Heterodox: What\'s the Difference?', duration: '7 min', data: null },
-    { number: 58, title: 'Red Flags in Doctrine', duration: '8 min', data: null },
-    { number: 59, title: 'The Church Fathers as Guides', duration: '7 min', data: null },
-    { number: 60, title: 'Theological Triage', duration: '7 min', data: null },
-    { number: 61, title: 'Evaluating Modern Teachers', duration: '7 min', data: null },
-    { number: 62, title: 'When Good People Teach Bad Theology', duration: '7 min', data: null },
-    { number: 63, title: 'Building a Theology Toolkit', duration: '6 min', data: null },
-    { number: 64, title: 'Discernment with Grace', duration: '6 min', data: null },
+    { number: 57, title: 'Orthodox vs. Heterodox Teaching', duration: '8 min', data: lesson57Data },
+    { number: 58, title: 'Red Flags of False Teaching', duration: '9 min', data: lesson58Data },
+    { number: 59, title: 'Learning from the Church Fathers', duration: '8 min', data: lesson59Data },
+    { number: 60, title: 'Theological Triage', duration: '8 min', data: lesson60Data },
+    { number: 61, title: 'Evaluating Modern Teachers', duration: '9 min', data: lesson61Data },
+    { number: 62, title: 'Building Your Theology Toolkit', duration: '8 min', data: lesson62Data },
+    { number: 63, title: 'Discernment with Grace', duration: '8 min', data: lesson63Data },
+    { number: 64, title: 'Standing Firm in Truth', duration: '9 min', data: lesson64Data },
   ];
 
   const handleLessonComplete = async (lessonNumber, xp) => {
@@ -114,10 +124,6 @@ const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
           </div>
         </div>
 
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
-          <p className="text-yellow-800 font-semibold">🚧 Lesson content coming soon!</p>
-        </div>
-
         <div className="space-y-4">
           {lessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.number);
@@ -129,7 +135,7 @@ const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
                 isCompleted ? 'border-slate-400' : isLocked ? 'border-slate-200 opacity-60' : 'border-slate-200 hover:border-slate-400'
               }`}>
                 <div 
-                  className={`p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                  className={`p-6 rounded-t-2xl transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
                   onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}
                 >
                   <div className="flex items-center justify-between">
@@ -154,8 +160,8 @@ const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
                   </div>
                 </div>
                 {isExpanded && !isLocked && (
-                  <div className="border-t-2 border-slate-100 p-6">
-                    <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-slate-600 to-gray-600 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
+                  <div className="border-t-2 border-slate-100 p-6 rounded-b-2xl">
+                    <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-slate-600 to-slate-800 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                       {lesson.data ? (isCompleted ? 'Review Lesson' : 'Start Lesson') : 'Coming Soon'}
                     </button>
                   </div>

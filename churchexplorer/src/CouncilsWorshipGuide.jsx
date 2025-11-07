@@ -6,6 +6,7 @@ import ReviewSession from './ReviewSession';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 import { scheduleReviews } from './services/reviewService';
+import { lesson41Data, lesson42Data, lesson43Data, lesson44Data, lesson45Data, lesson46Data, lesson47Data, lesson48Data } from './interactiveLessonData';
 
 const CouncilsWorshipGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
@@ -33,14 +34,14 @@ const CouncilsWorshipGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
   const getTotalXP = () => userProgress?.courses?.councilsWorship?.totalXP || 0;
 
   const lessons = [
-    { number: 33, title: 'What Happened at Nicaea (and What Didn\'t)', duration: '8 min', data: null },
-    { number: 34, title: 'The First Seven Ecumenical Councils', duration: '8 min', data: null },
-    { number: 35, title: 'Council of Chalcedon and Christology', duration: '7 min', data: null },
-    { number: 36, title: 'From Sabbath Saturday to Sunday Worship', duration: '7 min', data: null },
-    { number: 37, title: 'Early Christian Worship Practices', duration: '7 min', data: null },
-    { number: 38, title: 'The Development of the Liturgy', duration: '6 min', data: null },
-    { number: 39, title: 'Regional Councils and Traditions', duration: '6 min', data: null },
-    { number: 40, title: 'Applying Council Wisdom Today', duration: '6 min', data: null },
+    { number: 41, title: 'What Happened at Nicaea (and What Didn\'t)', duration: '8 min', data: lesson41Data },
+    { number: 42, title: 'The First Seven Ecumenical Councils', duration: '8 min', data: lesson42Data },
+    { number: 43, title: 'Council of Chalcedon and Christology', duration: '7 min', data: lesson43Data },
+    { number: 44, title: 'From Sabbath Saturday to Sunday Worship', duration: '7 min', data: lesson44Data },
+    { number: 45, title: 'Early Christian Worship Practices', duration: '7 min', data: lesson45Data },
+    { number: 46, title: 'The Development of the Liturgy', duration: '6 min', data: lesson46Data },
+    { number: 47, title: 'Regional Councils and Traditions', duration: '6 min', data: lesson47Data },
+    { number: 48, title: 'Applying Council Wisdom Today', duration: '6 min', data: lesson48Data },
   ];
 
   const handleLessonComplete = async (lessonNumber, xp) => {
@@ -114,10 +115,6 @@ const CouncilsWorshipGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
           </div>
         </div>
 
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
-          <p className="text-yellow-800 font-semibold">🚧 Lesson content coming soon!</p>
-        </div>
-
         <div className="space-y-4">
           {lessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.number);
@@ -129,7 +126,7 @@ const CouncilsWorshipGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
                 isCompleted ? 'border-violet-400' : isLocked ? 'border-slate-200 opacity-60' : 'border-slate-200 hover:border-violet-300'
               }`}>
                 <div 
-                  className={`p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                  className={`p-6 rounded-t-2xl transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
                   onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}
                 >
                   <div className="flex items-center justify-between">
@@ -154,7 +151,7 @@ const CouncilsWorshipGuide = ({ userProgress, onNavigate, onGoBack, onProgressUp
                   </div>
                 </div>
                 {isExpanded && !isLocked && (
-                  <div className="border-t-2 border-slate-100 p-6">
+                  <div className="border-t-2 border-slate-100 p-6 rounded-b-2xl">
                     <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-violet-500 to-purple-500 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                       {lesson.data ? (isCompleted ? 'Review Lesson' : 'Start Lesson') : 'Coming Soon'}
                     </button>

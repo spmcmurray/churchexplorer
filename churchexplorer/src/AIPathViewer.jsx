@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, Award, ArrowLeft, Play, BookOpen, Sparkles, Lock, Trophy, Star } from 'lucide-react';
 import AILessonViewer from './AILessonViewer';
+import RatePathModal from './RatePathModal';
 
 /**
  * Dedicated viewer for a single AI-generated learning path
@@ -9,6 +10,7 @@ import AILessonViewer from './AILessonViewer';
 const AIPathViewer = ({ path, currentUser, onGoBack }) => {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [viewingLesson, setViewingLesson] = useState(null);
+  const [showRatingModal, setShowRatingModal] = useState(false);
 
   // Load progress from Firestore only
   useEffect(() => {
@@ -256,12 +258,47 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
           <div className="mt-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white text-center">
             <Trophy className="w-16 h-16 mx-auto mb-4" />
             <h3 className="text-3xl font-bold mb-2">Path Complete! 🎉</h3>
-            <p className="text-purple-100 text-lg">
+            <p className="text-purple-100 text-lg mb-6">
               Congratulations on completing this learning path!
             </p>
+            <button
+              onClick={() => setShowRatingModal(true)}
+              className="bg-white text-purple-600 font-semibold px-6 py-3 rounded-lg hover:bg-purple-50 transition-all inline-flex items-center gap-2"
+            >
+              <Star className="w-5 h-5" />
+              Rate This Path
+            </button>
+          </div>
+        )}
+
+        {/* Rate Path Button (always available, not just on completion) */}
+        {stats.completed > 0 && stats.percentage < 100 && (
+          <div className="mt-8 bg-white rounded-2xl shadow-lg p-6 text-center border-2 border-purple-100">
+            <p className="text-gray-700 mb-4">
+              Have feedback on this learning path?
+            </p>
+            <button
+              onClick={() => setShowRatingModal(true)}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all inline-flex items-center gap-2"
+            >
+              <Star className="w-5 h-5" />
+              Rate This Path
+            </button>
           </div>
         )}
       </div>
+
+      {/* Rating Modal */}
+      <RatePathModal
+        isOpen={showRatingModal}
+        onClose={() => setShowRatingModal(false)}
+        path={path}
+        currentUser={currentUser}
+        onSubmitRating={(rating) => {
+          console.log('Rating submitted:', rating);
+          // Optionally refresh path data to show updated rating
+        }}
+      />
     </div>
   );
 };

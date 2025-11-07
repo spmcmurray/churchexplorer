@@ -6,6 +6,16 @@ import ReviewSession from './ReviewSession';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 import { scheduleReviews } from './services/reviewService';
+import { 
+  lesson49Data, 
+  lesson50Data, 
+  lesson51Data, 
+  lesson52Data, 
+  lesson53Data, 
+  lesson54Data, 
+  lesson55Data, 
+  lesson56Data 
+} from './interactiveLessonData';
 
 const GospelMessageGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
@@ -33,14 +43,14 @@ const GospelMessageGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
   const getTotalXP = () => userProgress?.courses?.gospelMessage?.totalXP || 0;
 
   const lessons = [
-    { number: 49, title: 'The Gospel in First-Century Context', duration: '8 min', data: null },
-    { number: 50, title: 'What "Gospel" Meant to Ancient Ears', duration: '7 min', data: null },
-    { number: 51, title: 'The Kerygma: The Apostolic Proclamation', duration: '7 min', data: null },
-    { number: 52, title: 'Paul\'s Gospel: Grace and Faith', duration: '8 min', data: null },
-    { number: 53, title: 'The Gospel in the Four Gospels', duration: '7 min', data: null },
-    { number: 54, title: 'Essential Gospel Elements', duration: '7 min', data: null },
-    { number: 55, title: 'False Gospels and Galatians', duration: '7 min', data: null },
-    { number: 56, title: 'Proclaiming the Gospel Today', duration: '6 min', data: null },
+    { number: 49, title: 'The Gospel in First-Century Context', duration: '8 min', data: lesson49Data },
+    { number: 50, title: 'What "Gospel" Meant to Ancient Ears', duration: '7 min', data: lesson50Data },
+    { number: 51, title: 'Paul\'s Gospel Message', duration: '8 min', data: lesson51Data },
+    { number: 52, title: 'The Gospel in the Four Gospels', duration: '9 min', data: lesson52Data },
+    { number: 53, title: 'Essential Elements of the Gospel', duration: '8 min', data: lesson53Data },
+    { number: 54, title: 'False Gospels to Avoid', duration: '9 min', data: lesson54Data },
+    { number: 55, title: 'Galatians: Defending the True Gospel', duration: '8 min', data: lesson55Data },
+    { number: 56, title: 'Proclaiming the Gospel Today', duration: '9 min', data: lesson56Data },
   ];
 
   const handleLessonComplete = async (lessonNumber, xp) => {
@@ -114,10 +124,6 @@ const GospelMessageGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
           </div>
         </div>
 
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
-          <p className="text-yellow-800 font-semibold">🚧 Lesson content coming soon!</p>
-        </div>
-
         <div className="space-y-4">
           {lessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.number);
@@ -129,7 +135,7 @@ const GospelMessageGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
                 isCompleted ? 'border-red-400' : isLocked ? 'border-slate-200 opacity-60' : 'border-slate-200 hover:border-red-300'
               }`}>
                 <div 
-                  className={`p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                  className={`p-6 rounded-t-2xl transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
                   onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}
                 >
                   <div className="flex items-center justify-between">
@@ -154,7 +160,7 @@ const GospelMessageGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
                   </div>
                 </div>
                 {isExpanded && !isLocked && (
-                  <div className="border-t-2 border-slate-100 p-6">
+                  <div className="border-t-2 border-slate-100 p-6 rounded-b-2xl">
                     <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                       {lesson.data ? (isCompleted ? 'Review Lesson' : 'Start Lesson') : 'Coming Soon'}
                     </button>

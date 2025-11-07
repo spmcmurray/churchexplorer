@@ -398,10 +398,18 @@ export const migrateLocalProgressToFirestore = async (uid, localProgress) => {
  */
 export const saveAIPathToFirestore = async (uid, path) => {
   try {
-    const pathRef = doc(db, 'users', uid, 'aiPaths', path.id);
+    // Save to global aiPaths collection (not user subcollection)
+    const pathRef = doc(db, 'aiPaths', path.id);
     await setDoc(pathRef, {
       ...path,
-      savedAt: serverTimestamp(),
+      userId: uid,
+      isPublic: path.isPublic !== undefined ? path.isPublic : false, // Preserve if already set
+      averageRating: path.averageRating || 0,
+      ratingCount: path.ratingCount || 0,
+      ratingDistribution: path.ratingDistribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      cloneCount: path.cloneCount || 0,
+      savedAt: path.savedAt || serverTimestamp(),
+      createdAt: path.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp()
     });
     return { success: true };
@@ -412,40 +420,234 @@ export const saveAIPathToFirestore = async (uid, path) => {
 };
 
 /**
- * Get all AI paths for a user from Firestore
+ * Migrate a path from old location to new location
+ */
+export const migratePathToNewLocation = async (uid, pathId) => {
+  try {
+    console.log('🔄 Migrating path', pathId, 'from old to new location...');
+    
+    // Read from old location
+    const { getDoc: getDocFn } = await import('firebase/firestore');
+    const oldPathRef = doc(db, 'users', uid, 'aiPaths', pathId);
+    const oldPathDoc = await getDocFn(oldPathRef);
+    
+    if (!oldPathDoc.exists()) {
+      return { success: false, error: 'Path not found in old location' };
+    }
+    
+    const pathData = oldPathDoc.data();
+    
+    // Save to new location with rating fields initialized
+    const result = await saveAIPathToFirestore(uid, {
+      ...pathData,
+      id: pathId
+    });
+    
+    if (result.success) {
+      console.log('✅ Path migrated successfully');
+      // Optionally delete from old location after successful migration
+      // For now, we'll keep it in both places for safety
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error migrating path:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get all AI paths for a user from Firestore (REFERENCE MODEL)
+ * Fetches both owned paths and referenced community paths
  */
 export const getAIPathsFromFirestore = async (uid) => {
   try {
-    const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
-    const pathsRef = collection(db, 'users', uid, 'aiPaths');
-    const q = query(pathsRef, orderBy('savedAt', 'desc'));
-    const snapshot = await getDocs(q);
+    console.log('🔍 Loading AI paths for user:', uid);
+    const { collection, getDocs, query, where, orderBy, getDoc: getDocFn } = await import('firebase/firestore');
     
-    const paths = [];
-    snapshot.forEach((doc) => {
-      paths.push({
-        ...doc.data(),
-        id: doc.id
+    let paths = [];
+    
+    // 1. Get user's OWNED paths from OLD location (user subcollection) - backward compatibility
+    try {
+      console.log('📂 Checking OLD location: users/' + uid + '/aiPaths');
+      const oldPathsRef = collection(db, 'users', uid, 'aiPaths');
+      const oldQuery = query(oldPathsRef, orderBy('savedAt', 'desc'));
+      const oldSnapshot = await getDocs(oldQuery);
+      
+      console.log('📊 Found', oldSnapshot.size, 'paths in OLD location');
+      
+      oldSnapshot.forEach((doc) => {
+        const data = doc.data();
+        console.log('  ✓ Owned path (old):', doc.id, data.title);
+        paths.push({
+          ...data,
+          id: doc.id,
+          isOwned: true,
+          _fromOldLocation: true
+        });
       });
+    } catch (oldError) {
+      console.error('❌ Error reading OLD location:', oldError);
+    }
+    
+    // 2. Get user's OWNED paths from NEW location (global collection with userId)
+    // Also use this to update rating data for paths from old location
+    const newLocationPaths = new Map();
+    try {
+      console.log('📂 Checking NEW location: aiPaths where userId ==', uid);
+      const globalPathsRef = collection(db, 'aiPaths');
+      const globalQuery = query(globalPathsRef, where('userId', '==', uid), orderBy('savedAt', 'desc'));
+      const globalSnapshot = await getDocs(globalQuery);
+      
+      console.log('📊 Found', globalSnapshot.size, 'owned paths in NEW location');
+      
+      globalSnapshot.forEach((doc) => {
+        const data = doc.data();
+        newLocationPaths.set(doc.id, data);
+        
+        // Only add if not already in paths (avoid duplicates)
+        if (!paths.find(p => p.id === doc.id)) {
+          console.log('  ✓ Owned path (new):', doc.id, data.title);
+          paths.push({
+            ...data,
+            id: doc.id,
+            isOwned: true
+          });
+        }
+      });
+      
+      // Merge rating data from NEW location into OLD location paths
+      paths = paths.map(path => {
+        if (path._fromOldLocation && newLocationPaths.has(path.id)) {
+          const newData = newLocationPaths.get(path.id);
+          console.log('  🔄 Merging rating data for:', path.id, {
+            ratingCount: newData.ratingCount,
+            averageRating: newData.averageRating,
+            isPublic: newData.isPublic
+          });
+          return {
+            ...path,
+            averageRating: newData.averageRating || 0,
+            ratingCount: newData.ratingCount || 0,
+            ratingDistribution: newData.ratingDistribution || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+            isPublic: newData.isPublic || false,
+            cloneCount: newData.cloneCount || 0
+          };
+        }
+        return path;
+      });
+    } catch (globalError) {
+      console.error('❌ Error reading NEW location:', globalError);
+    }
+    
+    // 3. Get user's REFERENCED paths (community paths they've cloned)
+    try {
+      console.log('📂 Checking REFERENCES: users/' + uid + '/pathReferences');
+      const referencesRef = collection(db, 'users', uid, 'pathReferences');
+      const referencesSnapshot = await getDocs(referencesRef);
+      
+      console.log('📊 Found', referencesSnapshot.size, 'referenced paths');
+      
+      // Fetch the actual path data for each reference
+      for (const refDoc of referencesSnapshot.docs) {
+        const refData = refDoc.data();
+        const pathId = refData.pathId;
+        
+        // Fetch the actual path from aiPaths collection
+        const pathRef = doc(db, 'aiPaths', pathId);
+        const pathDoc = await getDocFn(pathRef);
+        
+        if (pathDoc.exists()) {
+          const pathData = pathDoc.data();
+          console.log('  ✓ Referenced path:', pathId, pathData.title);
+          paths.push({
+            ...pathData,
+            id: pathId,
+            isOwned: false,
+            isReference: true,
+            clonedAt: refData.clonedAt,
+            originalCreator: refData.originalCreator
+          });
+        } else {
+          console.warn('  ⚠️ Referenced path not found:', pathId);
+        }
+      }
+    } catch (refError) {
+      console.error('❌ Error reading REFERENCES:', refError);
+    }
+    
+    // Sort all paths by savedAt or clonedAt
+    paths.sort((a, b) => {
+      const aTime = a.clonedAt?.toMillis?.() || a.savedAt?.toMillis?.() || 0;
+      const bTime = b.clonedAt?.toMillis?.() || b.savedAt?.toMillis?.() || 0;
+      return bTime - aTime;
     });
+    
+    console.log('✅ Total paths loaded:', paths.length);
+    console.log('   - Owned:', paths.filter(p => p.isOwned).length);
+    console.log('   - Referenced:', paths.filter(p => p.isReference).length);
     
     return { success: true, paths };
   } catch (error) {
-    console.error('Error loading AI paths from Firestore:', error);
+    console.error('❌ Error loading AI paths from Firestore:', error);
     return { success: false, error: error.message, paths: [] };
   }
 };
 
 /**
- * Delete AI path from Firestore
+ * Delete AI path from Firestore (REFERENCE MODEL)
+ * Handles owned paths and referenced paths differently
  */
 export const deleteAIPathFromFirestore = async (uid, pathId) => {
   try {
-    const { deleteDoc } = await import('firebase/firestore');
-    const pathRef = doc(db, 'users', uid, 'aiPaths', pathId);
-    await deleteDoc(pathRef);
+    const { deleteDoc, getDoc: getDocFn } = await import('firebase/firestore');
     
-    // Also delete progress
+    // Check if this is a reference first
+    const referenceRef = doc(db, 'users', uid, 'pathReferences', pathId);
+    const referenceDoc = await getDocFn(referenceRef);
+    
+    if (referenceDoc.exists()) {
+      // This is a referenced path - just delete the reference
+      console.log('🗑️ Deleting path reference:', pathId);
+      await deleteDoc(referenceRef);
+      
+      // Delete progress for this reference
+      const progressRef = doc(db, 'users', uid, 'aiPathProgress', pathId);
+      await deleteDoc(progressRef);
+      
+      // Decrement clone count on original path
+      try {
+        const originalPathRef = doc(db, 'aiPaths', pathId);
+        await updateDoc(originalPathRef, {
+          cloneCount: increment(-1)
+        });
+      } catch (err) {
+        console.warn('Could not decrement clone count:', err);
+      }
+      
+      return { success: true };
+    }
+    
+    // Not a reference, so it's an owned path - delete the actual path
+    console.log('🗑️ Deleting owned path:', pathId);
+    
+    // Try to delete from global aiPaths collection (new location)
+    try {
+      const globalPathRef = doc(db, 'aiPaths', pathId);
+      await deleteDoc(globalPathRef);
+    } catch (err) {
+      console.log('Path not in global collection (might be in old location)');
+    }
+    
+    // Also try to delete from old location (user subcollection)
+    try {
+      const oldPathRef = doc(db, 'users', uid, 'aiPaths', pathId);
+      await deleteDoc(oldPathRef);
+    } catch (err) {
+      console.log('Path not in user subcollection (might be in new location)');
+    }
+    
+    // Delete progress (always in user subcollection)
     const progressRef = doc(db, 'users', uid, 'aiPathProgress', pathId);
     await deleteDoc(progressRef);
     

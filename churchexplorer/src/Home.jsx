@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, UserPlus, Award, Trophy } from 'lucide-react';
+import { Flame, PlayCircle, Sparkles, BookOpen, Calendar, UserPlus, Award, Trophy, Users } from 'lucide-react';
 import DailyChallenge from './DailyChallenge';
 import { getDueReviews } from './services/reviewService';
 

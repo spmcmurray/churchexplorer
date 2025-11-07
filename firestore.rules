@@ -31,8 +31,14 @@ service cloud.firestore {
         allow write: if isOwner(userId);
       }
       
-      // AI generated paths subcollection
+      // AI generated paths subcollection (OLD LOCATION - for backward compatibility)
       match /aiPaths/{pathId} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId);
+      }
+      
+      // Path references subcollection (NEW: lightweight references to community paths)
+      match /pathReferences/{pathId} {
         allow read: if isOwner(userId);
         allow write: if isOwner(userId);
       }
@@ -48,6 +54,32 @@ service cloud.firestore {
     match /leaderboard/{userId} {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId);
+    }
+    
+    // AI Paths collection (global) - for community sharing
+    match /aiPaths/{pathId} {
+      // Allow read if path is public OR if user owns it
+      allow read: if isAuthenticated() && 
+        (resource == null || resource.data.isPublic == true || resource.data.userId == request.auth.uid);
+      // Allow create if authenticated and user sets themselves as owner
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Allow update/delete only if user owns the path
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Path Ratings collection - for rating AI paths
+    match /pathRatings/{ratingId} {
+      // Anyone can read ratings for public paths
+      allow read: if isAuthenticated();
+      // Users can create/update their own ratings (ratingId format: userId_pathId)
+      allow create: if isAuthenticated() && 
+        request.resource.data.userId == request.auth.uid &&
+        ratingId.matches(request.auth.uid + '_.*');
+      allow update: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
+      // Users can delete their own ratings
+      allow delete: if isAuthenticated() && 
+        resource.data.userId == request.auth.uid;
     }
     
     // Deny all other access by default

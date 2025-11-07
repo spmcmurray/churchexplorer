@@ -6,6 +6,7 @@ import ReviewSession from './ReviewSession';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 import { scheduleReviews } from './services/reviewService';
+import { lesson17Data, lesson18Data, lesson19Data, lesson20Data, lesson21Data, lesson22Data, lesson23Data, lesson24Data } from './interactiveLessonData';
 
 const EarlyChristianityGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
@@ -36,14 +37,14 @@ const EarlyChristianityGuide = ({ userProgress, onNavigate, onGoBack, onProgress
   };
 
   const lessons = [
-    { number: 17, title: 'Before Denominations Existed', duration: '7 min', data: null },
-    { number: 18, title: 'The Apostolic Fathers', duration: '7 min', data: null },
-    { number: 19, title: 'How the Trinity Doctrine Formed', duration: '8 min', data: null },
-    { number: 20, title: 'The Nicene Creed', duration: '7 min', data: null },
-    { number: 21, title: 'Early Heresies and Why They Matter', duration: '7 min', data: null },
-    { number: 22, title: 'The Church Fathers', duration: '7 min', data: null },
-    { number: 23, title: 'Worship in the Early Church', duration: '6 min', data: null },
-    { number: 24, title: 'Lessons from Early Christianity', duration: '6 min', data: null },
+    { number: 17, title: 'Before Denominations Existed', duration: '7 min', data: lesson17Data },
+    { number: 18, title: 'The Apostolic Fathers', duration: '7 min', data: lesson18Data },
+    { number: 19, title: 'How the Trinity Doctrine Formed', duration: '8 min', data: lesson19Data },
+    { number: 20, title: 'The Nicene Creed', duration: '7 min', data: lesson20Data },
+    { number: 21, title: 'Early Heresies and Why They Matter', duration: '7 min', data: lesson21Data },
+    { number: 22, title: 'The Church Fathers', duration: '7 min', data: lesson22Data },
+    { number: 23, title: 'Worship in the Early Church', duration: '6 min', data: lesson23Data },
+    { number: 24, title: 'Lessons from Early Christianity', duration: '6 min', data: lesson24Data },
   ];
 
   const handleLessonComplete = async (lessonNumber, xp) => {
@@ -135,10 +136,6 @@ const EarlyChristianityGuide = ({ userProgress, onNavigate, onGoBack, onProgress
           </div>
         </div>
 
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
-          <p className="text-yellow-800 font-semibold">🚧 Lesson content coming soon! This path is currently under development.</p>
-        </div>
-
         <div className="space-y-4">
           {lessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.number);
@@ -153,7 +150,7 @@ const EarlyChristianityGuide = ({ userProgress, onNavigate, onGoBack, onProgress
                 }`}
               >
                 <div 
-                  className={`p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                  className={`p-6 rounded-t-2xl transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
                   onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}
                 >
                   <div className="flex items-center justify-between">
@@ -179,7 +176,7 @@ const EarlyChristianityGuide = ({ userProgress, onNavigate, onGoBack, onProgress
                 </div>
 
                 {isExpanded && !isLocked && (
-                  <div className="border-t-2 border-slate-100 p-6">
+                  <div className="border-t-2 border-slate-100 p-6 rounded-b-2xl">
                     <button
                       onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null}
                       disabled={!lesson.data}

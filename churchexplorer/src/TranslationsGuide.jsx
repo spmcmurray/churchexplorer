@@ -6,6 +6,7 @@ import ReviewSession from './ReviewSession';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 import { scheduleReviews } from './services/reviewService';
+import { lesson25Data, lesson26Data, lesson27Data, lesson28Data, lesson29Data, lesson30Data, lesson31Data, lesson32Data } from './interactiveLessonData';
 
 const TranslationsGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
@@ -33,14 +34,14 @@ const TranslationsGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdat
   const getTotalXP = () => userProgress?.courses?.translations?.totalXP || 0;
 
   const lessons = [
-    { number: 41, title: 'Why So Many Bible Translations?', duration: '7 min', data: null },
-    { number: 42, title: 'Translation History: From Latin to English', duration: '8 min', data: null },
-    { number: 43, title: 'Formal vs Dynamic Equivalence', duration: '7 min', data: null },
-    { number: 44, title: 'Understanding Paraphrases', duration: '6 min', data: null },
-    { number: 45, title: 'Choosing the Right Translation', duration: '7 min', data: null },
-    { number: 46, title: 'Textual Variants in Translations', duration: '7 min', data: null },
-    { number: 47, title: 'Red Letter Editions and Study Bibles', duration: '6 min', data: null },
-    { number: 48, title: 'Reading Multiple Translations', duration: '6 min', data: null },
+    { number: 25, title: 'Why So Many Bible Translations?', duration: '7 min', data: lesson25Data },
+    { number: 26, title: 'Translation History: From Latin to English', duration: '8 min', data: lesson26Data },
+    { number: 27, title: 'Formal vs Dynamic Equivalence', duration: '7 min', data: lesson27Data },
+    { number: 28, title: 'Understanding Paraphrases', duration: '6 min', data: lesson28Data },
+    { number: 29, title: 'Choosing the Right Translation', duration: '7 min', data: lesson29Data },
+    { number: 30, title: 'Textual Variants in Translations', duration: '7 min', data: lesson30Data },
+    { number: 31, title: 'Red Letter Editions and Study Bibles', duration: '6 min', data: lesson31Data },
+    { number: 32, title: 'Reading Multiple Translations', duration: '6 min', data: lesson32Data },
   ];
 
   const handleLessonComplete = async (lessonNumber, xp) => {
@@ -114,12 +115,7 @@ const TranslationsGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdat
           </div>
         </div>
 
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
-          <p className="text-yellow-800 font-semibold">🚧 Lesson content coming soon!</p>
-        </div>
-
-        <div className="space-y-4">
-          {lessons.map((lesson, index) => {
+        <div className="space-y-4">{lessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.number);
             const isLocked = index > 0 && !completedLessons.includes(lessons[index - 1].number);
             const isExpanded = expandedLesson === lesson.number;
@@ -129,7 +125,7 @@ const TranslationsGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdat
                 isCompleted ? 'border-fuchsia-400' : isLocked ? 'border-slate-200 opacity-60' : 'border-slate-200 hover:border-fuchsia-300'
               }`}>
                 <div 
-                  className={`p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                  className={`p-6 rounded-t-2xl transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
                   onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}
                 >
                   <div className="flex items-center justify-between">
@@ -154,7 +150,7 @@ const TranslationsGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdat
                   </div>
                 </div>
                 {isExpanded && !isLocked && (
-                  <div className="border-t-2 border-slate-100 p-6">
+                  <div className="border-t-2 border-slate-100 p-6 rounded-b-2xl">
                     <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                       {lesson.data ? (isCompleted ? 'Review Lesson' : 'Start Lesson') : 'Coming Soon'}
                     </button>

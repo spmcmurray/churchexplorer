@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, BookOpen, CheckCircle2, ArrowLeft, Trash2, Play, ChevronDown, ChevronUp, Shuffle, Zap, Layers, Rocket, Lightbulb, TrendingUp, Star, BookMarked, AlertCircle } from 'lucide-react';
+import { Sparkles, BookOpen, CheckCircle2, ArrowLeft, Trash2, Play, ChevronDown, ChevronUp, Shuffle, Zap, Layers, Rocket, Lightbulb, TrendingUp, Star, BookMarked, AlertCircle, Lock, Unlock, Globe } from 'lucide-react';
 import AIPathViewer from './AIPathViewer';
 import UpgradeModal from './UpgradeModal';
 import UsageDisplay from './UsageDisplay';
+import RatePathModal from './RatePathModal';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase/config';
+import { togglePathPublicStatus, submitPathRating } from './firebase/ratingService';
 import { 
   generateAILesson, 
   generateTopicSuggestions,
@@ -22,10 +24,14 @@ import {
 const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
   const [aiPaths, setAiPaths] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showCreator, setShowCreator] = useState(false);
+  const [activeTab, setActiveTab] = useState('library'); // 'library' or 'create'
   const [viewingPath, setViewingPath] = useState(null); // For conditional rendering of path viewer
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [subscription, setSubscription] = useState(null);
+  const [showPublicModal, setShowPublicModal] = useState(false);
+  const [pendingTogglePath, setPendingTogglePath] = useState(null);
+  const [ratingPath, setRatingPath] = useState(null);
+  const [hoverRating, setHoverRating] = useState({});
   
   // Creator states
   const [topic, setTopic] = useState('');
@@ -100,7 +106,74 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
       const result = await deleteAIPath(pathId, currentUser);
       if (result.success) {
         await loadAIPaths();
+      } else {
+        alert(result.error || 'Failed to delete path');
       }
+    }
+  };
+
+  const handleTogglePublic = async (pathId, currentStatus) => {
+    // If making public, show confirmation modal
+    if (!currentStatus) {
+      const path = aiPaths.find(p => p.id === pathId);
+      setPendingTogglePath({ id: pathId, title: path?.title || 'this path', currentStatus });
+      setShowPublicModal(true);
+    } else {
+      // Making private - no confirmation needed
+      await performToggle(pathId, currentStatus);
+    }
+  };
+
+  const performToggle = async (pathId, currentStatus) => {
+    try {
+      const result = await togglePathPublicStatus(currentUser.uid, pathId, !currentStatus);
+      if (result.success) {
+        // Update state directly without scrolling
+        setAiPaths(prevPaths => prevPaths.map(path => {
+          if (path.id === pathId) {
+            return {
+              ...path,
+              isPublic: !currentStatus
+            };
+          }
+          return path;
+        }));
+      } else {
+        alert(result.error || 'Failed to update path visibility');
+      }
+    } catch (error) {
+      console.error('Error toggling public status:', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
+
+  const confirmMakePublic = async () => {
+    if (pendingTogglePath) {
+      await performToggle(pendingTogglePath.id, pendingTogglePath.currentStatus);
+      setShowPublicModal(false);
+      setPendingTogglePath(null);
+    }
+  };
+
+  const handleQuickRate = async (pathId, rating) => {
+    try {
+      const result = await submitPathRating(currentUser.uid, pathId, rating, '');
+      if (result.success) {
+        // Update state directly without scrolling
+        setAiPaths(prevPaths => prevPaths.map(path => {
+          if (path.id === pathId) {
+            return {
+              ...path,
+              averageRating: result.averageRating || rating,
+              ratingCount: result.ratingCount || 1,
+              ratingDistribution: result.ratingDistribution || { [rating]: 1 }
+            };
+          }
+          return path;
+        }));
+      }
+    } catch (error) {
+      console.error('Error submitting rating:', error);
     }
   };
 
@@ -455,164 +528,155 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
         </div>
       )}
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden text-white py-12 px-4">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-blue-500 to-indigo-700 animate-gradient-shift"></div>
-        <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500 via-purple-500 to-blue-700 opacity-60 animate-gradient-shift-reverse"></div>
-        
-        {/* Content */}
-        <div className="relative max-w-6xl mx-auto z-10">
+      {/* Compact Hero Section */}
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-6 px-4">
+        <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-white/20 backdrop-blur-md p-3 rounded-2xl shadow-lg">
-                <Sparkles className="w-10 h-10 text-white" />
-              </div>
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-8 h-8" />
               <div>
-                <h1 className="text-4xl md:text-5xl font-black mb-2">AI Lessons</h1>
-                <p className="text-purple-100 text-lg">Create & manage your personalized learning</p>
+                <h1 className="text-2xl md:text-3xl font-bold">AI Learning Paths</h1>
+                <p className="text-purple-100 text-sm">Personalized lessons on any topic</p>
               </div>
             </div>
             <button
               onClick={() => onGoBack ? onGoBack() : onNavigate('home')}
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 transition font-semibold rounded-xl"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 transition rounded-lg text-sm font-medium"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              Back
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Usage Display */}
-        <div className="mb-6">
-          <UsageDisplay 
-            userId={currentUser?.uid} 
-            onUpgradeClick={() => setShowUpgradeModal(true)}
-          />
-        </div>
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        {/* Simplified Usage Display */}
+        <UsageDisplay 
+          userId={currentUser?.uid} 
+          onUpgradeClick={() => setShowUpgradeModal(true)}
+        />
         
         {/* Mobile Back Button */}
         <button
           onClick={() => onGoBack ? onGoBack() : onNavigate('home')}
-          className="sm:hidden inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition font-semibold"
+          className="sm:hidden inline-flex items-center gap-2 px-4 py-2 mt-4 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back</span>
+          Back
         </button>
 
-        {/* AI Creator Section - Collapsible */}
-        <div className="mb-8" ref={creatorSectionRef}>
-          <button
-            onClick={() => setShowCreator(!showCreator)}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-between group"
-          >
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-6 h-6" />
-              <div className="text-left">
-                <h2 className="text-2xl font-bold">Create New AI Path</h2>
-                <p className="text-purple-100 text-sm mt-1">Generate personalized learning paths on any topic</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {!showCreator && (
-                <span className="text-sm font-semibold bg-white/20 px-3 py-1 rounded-full">Create</span>
+        {/* Cleaner Tab Navigation */}
+        <div className="mt-6 mb-6">
+          <div className="flex gap-3 border-b-2 border-slate-200">
+            <button
+              onClick={() => setActiveTab('library')}
+              className={`flex items-center gap-2 px-4 py-3 font-semibold transition-all relative ${
+                activeTab === 'library'
+                  ? 'text-purple-600'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <BookMarked className="w-5 h-5" />
+              <span>My Library</span>
+              {activeTab === 'library' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600"></div>
               )}
-              {showCreator ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
-            </div>
-          </button>
+            </button>
+            <button
+              onClick={() => setActiveTab('create')}
+              className={`flex items-center gap-2 px-4 py-3 font-semibold transition-all relative ${
+                activeTab === 'create'
+                  ? 'text-purple-600'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <Sparkles className="w-5 h-5" />
+              <span>Create New</span>
+              {activeTab === 'create' && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600"></div>
+              )}
+            </button>
+          </div>
+        </div>
 
-          {showCreator && (
-            <div className="mt-4 bg-white rounded-2xl shadow-lg p-6 md:p-8 border-2 border-slate-100">
+        {/* Create Path Tab - Simplified */}
+        {activeTab === 'create' && (
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+            <h2 className="text-xl font-bold text-slate-800 mb-6">Create a Learning Path</h2>
               
-              {/* Step 1: Path Type Selection */}
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</div>
-                  <h3 className="text-lg font-bold text-slate-800">Choose Your Learning Path</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {pathTypes.map((type) => (
-                    <button
-                      key={type.id}
-                      onClick={() => setPathType(type.id)}
-                      className={`p-5 rounded-xl border-2 transition-all duration-200 ${
-                        pathType === type.id
-                          ? 'border-purple-500 bg-purple-50 shadow-md ring-2 ring-purple-200'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-purple-300 hover:shadow-sm'
-                      }`}
-                    >
-                      <div className="flex flex-col items-center text-center gap-3">
-                        <div className={`p-3 rounded-xl ${pathType === type.id ? 'bg-gradient-to-r ' + type.color : 'bg-slate-100'}`}>
-                          <type.icon className={`w-6 h-6 ${pathType === type.id ? 'text-white' : 'text-slate-400'}`} />
-                        </div>
-                        <div>
-                          <div className={`font-bold text-base mb-1 ${pathType === type.id ? 'text-purple-900' : 'text-slate-700'}`}>
-                            {type.name}
-                          </div>
-                          <div className="text-xs text-slate-500 mb-1">
-                            {type.lessons} lesson{type.lessons > 1 ? 's' : ''} • {type.time}
-                          </div>
-                          <div className={`text-sm ${pathType === type.id ? 'text-purple-700' : 'text-slate-500'}`}>
-                            {type.description}
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Step 2: Topic Input */}
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">2</div>
-                  <h3 className="text-lg font-bold text-slate-800">Enter Your Topic</h3>
-                </div>
+              {/* Simplified Topic Input */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  What do you want to learn about?
+                </label>
                 <textarea
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   placeholder="e.g., The Armor of God, Biblical Prayer, Fruits of the Spirit..."
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all text-base resize-none overflow-hidden"
+                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-base resize-none"
                   disabled={generating}
-                  rows="1"
+                  rows="2"
                   onInput={(e) => {
                     e.target.style.height = 'auto';
                     e.target.style.height = e.target.scrollHeight + 'px';
                   }}
                 />
                 
-                {/* Topic Randomizer */}
-                <div className="mt-3">
-                  <button
-                    onClick={randomizeTopic}
-                    className="w-full py-3 rounded-xl font-semibold text-base transition-all duration-200 bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 hover:shadow-md flex items-center justify-center gap-2"
-                    disabled={generating}
-                  >
-                    <Shuffle className="w-4 h-4" />
-                    Surprise Me
-                  </button>
+                {/* Inline suggestion button */}
+                <button
+                  onClick={randomizeTopic}
+                  className="mt-2 text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                  disabled={generating}
+                >
+                  <Shuffle className="w-4 h-4" />
+                  Need inspiration? Get a random topic
+                </button>
+              </div>
+
+              {/* Compact Path Type Selection */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-3">
+                  Choose path length
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {pathTypes.map((type) => (
+                    <button
+                      key={type.id}
+                      onClick={() => setPathType(type.id)}
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        pathType === type.id
+                          ? 'border-purple-500 bg-purple-50'
+                          : 'border-slate-200 hover:border-purple-300'
+                      }`}
+                    >
+                      <type.icon className={`w-5 h-5 mx-auto mb-2 ${pathType === type.id ? 'text-purple-600' : 'text-slate-400'}`} />
+                      <div className={`font-semibold text-sm mb-1 ${pathType === type.id ? 'text-purple-900' : 'text-slate-700'}`}>
+                        {type.name}
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {type.lessons} lesson{type.lessons > 1 ? 's' : ''}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Step 3: Additional Context (Optional) */}
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-slate-400 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">3</div>
-                  <h3 className="text-lg font-bold text-slate-800">
-                    Add Context <span className="text-sm font-normal text-slate-500">(Optional)</span>
-                  </h3>
-                </div>
+              {/* Collapsible Additional Context */}
+              <details className="mb-6 group">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-700 flex items-center gap-2 hover:text-purple-600 transition">
+                  <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform" />
+                  Add specific context or questions (optional)
+                </summary>
                 <textarea
                   value={additionalContext}
                   onChange={(e) => setAdditionalContext(e.target.value)}
-                  placeholder="Any specific aspects you want to focus on or questions you have..."
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 transition-all"
+                  placeholder="Any specific aspects you want to focus on..."
+                  className="w-full px-4 py-3 mt-3 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                   rows="3"
                   disabled={generating}
                 />
-              </div>
+              </details>
 
               {/* Path Outline Preview */}
               {pathOutline && pathOutline.length > 0 && (
@@ -634,81 +698,62 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
 
               {/* Error Display */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl text-red-700">
-                  <div className="flex items-center gap-2 font-semibold mb-1">
-                    <AlertCircle className="w-5 h-5" />
-                    Error
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  <div className="flex items-center gap-2 font-semibold">
+                    <AlertCircle className="w-4 h-4" />
+                    {error}
                   </div>
-                  <p className="text-sm">{error}</p>
                 </div>
               )}
 
-              {/* Generate Button */}
-              <div className="pt-4 border-t-2 border-slate-100">
-                <button
-                  onClick={handleGenerateLesson}
-                  disabled={!topic.trim() || generating}
-                  className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-200 ${
-                    !topic.trim() || generating
-                      ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-xl hover:scale-[1.02] shadow-lg'
-                  }`}
-                >
-                  {generating ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      {generatingPath && pathProgress && typeof pathProgress === 'object' 
-                        ? `Generating ${pathProgress.current}/${pathProgress.total}...`
-                        : generatingPath && pathProgress 
-                        ? pathProgress 
-                        : 'Generating...'}
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2">
-                      <Sparkles className="w-5 h-5" />
-                      Generate {pathType === 'quick' ? 'Lesson' : pathType === 'deep-dive' ? 'Deep Dive' : 'Complete Path'}
-                    </span>
-                  )}
-                </button>
-                {!topic.trim() && (
-                  <p className="text-center text-sm text-slate-500 mt-3">Enter a topic to get started</p>
+              {/* Simplified Generate Button */}
+              <button
+                onClick={handleGenerateLesson}
+                disabled={!topic.trim() || generating}
+                className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                  !topic.trim() || generating
+                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg'
+                }`}
+              >
+                {generating ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Generating...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Generate Learning Path
+                  </span>
                 )}
-              </div>
+              </button>
+          </div>
+        )}
+
+        {/* My Library Tab - Simplified */}
+        {activeTab === 'library' && (
+          <>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-slate-800">
+                My Learning Paths
+              </h2>
             </div>
-          )}
-        </div>
 
-        {/* My Lessons Section */}
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <BookMarked className="w-7 h-7 text-purple-600" />
-            My Learning Paths
-          </h2>
-        </div>
-
-        {/* Empty State */}
+        {/* Simplified Empty State */}
         {!loading && aiPaths.length === 0 && (
-          <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-sm p-12 text-center">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-2xl w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <Sparkles className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">No AI Paths Yet</h2>
-            <p className="text-slate-600 mb-6 max-w-md mx-auto">
-              Create your first personalized learning path using the AI Creator button above!
+          <div className="bg-slate-50 rounded-lg p-12 text-center border border-slate-200">
+            <Sparkles className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-slate-900 mb-2">No paths yet</h3>
+            <p className="text-slate-600 mb-6 text-sm max-w-md mx-auto">
+              Create your first AI-powered learning path to get started!
             </p>
             <button
-              onClick={() => {
-                setShowCreator(true);
-                setTimeout(() => {
-                  if (creatorSectionRef.current) {
-                    creatorSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }
-                }, 100);
-              }}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 transition shadow-lg hover:shadow-xl"
+              onClick={() => setActiveTab('create')}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold px-5 py-2.5 rounded-lg hover:shadow-md transition"
             >
-              <Sparkles className="w-5 h-5" />
-              Create Your First Path
+              <Sparkles className="w-4 h-4" />
+              Create Path
             </button>
           </div>
         )}
@@ -728,44 +773,45 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
                 return (
                   <div
                     key={path.id}
-                    className="bg-white rounded-2xl border-2 border-slate-200 p-6 hover:shadow-lg transition cursor-pointer"
+                    className="bg-gradient-to-br from-white to-purple-50/30 rounded-xl border-2 border-purple-100 p-5 hover:border-purple-300 hover:shadow-lg transition cursor-pointer group"
                     onClick={() => setViewingPath(path)}
                   >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start gap-3 flex-1">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white flex items-center justify-center flex-shrink-0">
-                          <Sparkles className="w-6 h-6" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-slate-900 text-lg mb-1 line-clamp-2">
-                            {path.title}
-                          </h3>
-                          {path.description && (
-                            <p className="text-sm text-slate-600 mb-2 line-clamp-2">{path.description}</p>
-                          )}
-                          <div className="flex items-center gap-2 text-xs text-purple-700 bg-purple-100 px-2 py-1 rounded-full inline-flex">
-                            <Layers className="w-3 h-3" />
-                            {totalLessons} {totalLessons === 1 ? 'Lesson' : 'Lessons'}
-                          </div>
-                        </div>
-                      </div>
+                    {/* Header with title and delete */}
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <h3 className="font-bold text-lg text-slate-900 line-clamp-2 flex-1">
+                        {path.title}
+                      </h3>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeletePath(path.id);
                         }}
-                        className="text-slate-400 hover:text-red-600 transition p-2 -mr-2"
-                        title="Delete path"
+                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-600 transition"
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-slate-600 font-medium">Progress</span>
-                        <span className="text-purple-600 font-bold">{progressPercent}%</span>
+                    {/* Metadata with icons */}
+                    <div className="flex items-center gap-3 text-sm text-slate-600 mb-3">
+                      <div className="flex items-center gap-1.5">
+                        <BookOpen className="w-4 h-4 text-purple-500" />
+                        <span>{totalLessons} lesson{totalLessons !== 1 ? 's' : ''}</span>
+                      </div>
+                      {path.averageRating > 0 && (
+                        <div className="flex items-center gap-1.5">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-medium">{path.averageRating.toFixed(1)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Progress section with background */}
+                    <div className="bg-white/80 rounded-lg p-3 mb-3">
+                      <div className="flex items-center justify-between text-xs font-medium text-slate-700 mb-2">
+                        <span>Progress</span>
+                        <span className="text-purple-600">{progressPercent}%</span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
                         <div 
@@ -773,31 +819,39 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
                           style={{ width: `${progressPercent}%` }}
                         />
                       </div>
-                      <div className="text-xs text-slate-500 mt-1">
-                        {completedCount} of {totalLessons} lessons completed
-                      </div>
                     </div>
 
-                    {/* View Button */}
+                    {/* Start/Continue button */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setViewingPath(path);
                       }}
-                      className="w-full font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-md hover:shadow-lg"
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transition flex items-center justify-center gap-2 shadow-md"
                     >
-                      {completedCount > 0 ? (
-                        <>
-                          <Play className="w-4 h-4" />
-                          Continue Learning
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-4 h-4" />
-                          Start Path
-                        </>
-                      )}
+                      <Play className="w-4 h-4" />
+                      {completedCount > 0 ? 'Continue Learning' : 'Start Path'}
                     </button>
+
+                    {/* Simplified sharing toggle - just icon button */}
+                    {path.isOwned && path.ratingCount >= 1 && (
+                      <div className="mt-3 pt-3 border-t border-purple-100">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTogglePublic(path.id, path.isPublic);
+                          }}
+                          className="flex items-center gap-2 text-xs text-slate-600 hover:text-purple-600 transition"
+                          title={path.isPublic ? 'Make private' : 'Share with community'}
+                        >
+                          {path.isPublic ? (
+                            <><Globe className="w-3.5 h-3.5" /> Shared publicly</>
+                          ) : (
+                            <><Lock className="w-3.5 h-3.5" /> Private</>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -829,30 +883,146 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
                 </button>
 
                 {showCompletedPaths && (
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-4 space-y-4">
                     {aiPaths.filter(path => path.completed === true).map((path) => (
                       <div
                         key={path.id}
-                        className="bg-white rounded-lg border border-slate-200 p-4 hover:bg-slate-50 transition cursor-pointer flex items-center justify-between gap-3"
-                        onClick={() => setViewingPath(path)}
+                        className="bg-white rounded-xl border-2 border-slate-200 overflow-hidden hover:border-slate-300 transition"
                       >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-slate-900 break-words">{path.title}</h4>
-                            <p className="text-sm text-green-600">Complete</p>
+                        {/* Path Header - Clickable */}
+                        <div
+                          className="p-4 cursor-pointer hover:bg-slate-50 transition"
+                          onClick={() => setViewingPath(path)}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                              <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-slate-900 break-words mb-1">{path.title}</h4>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-sm text-green-600 font-medium">✓ Complete</span>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeletePath(path.id);
+                              }}
+                              className="text-slate-400 hover:text-red-600 transition p-2 flex-shrink-0"
+                              title="Delete path"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeletePath(path.id);
-                          }}
-                          className="text-slate-400 hover:text-red-600 transition p-2 flex-shrink-0"
-                          title="Delete path"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+
+                        {/* Rating Section */}
+                        {path.isOwned && (
+                          <div className="px-4 pb-3 border-b border-slate-200">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-slate-700">Rate this path:</span>
+                                {path.averageRating > 0 && (
+                                  <span className="text-xs text-slate-500">({path.averageRating.toFixed(1)} avg)</span>
+                                )}
+                              </div>
+                              <div 
+                                className="flex items-center gap-1"
+                                onMouseLeave={() => setHoverRating(prev => ({...prev, [path.id]: 0}))}
+                              >
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <button
+                                    key={star}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleQuickRate(path.id, star);
+                                    }}
+                                    onMouseEnter={() => setHoverRating(prev => ({...prev, [path.id]: star}))}
+                                    className="p-1 hover:scale-110 transition-transform"
+                                    title={`${star} star${star !== 1 ? 's' : ''}`}
+                                  >
+                                    <Star 
+                                      className={`w-5 h-5 transition-colors ${
+                                        star <= (hoverRating[path.id] || path.ratingCount ? path.averageRating : 0)
+                                          ? 'fill-yellow-400 text-yellow-400'
+                                          : 'text-slate-300'
+                                      }`}
+                                    />
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Community Sharing Toggle - Always visible for owned paths */}
+                        {path.isOwned && (
+                          <div className="px-4 pb-4 pt-3">
+                            <div className={`p-3 rounded-lg border transition-all ${
+                              path.ratingCount >= 1
+                                ? 'bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200'
+                                : 'bg-slate-50 border-slate-200'
+                            }`}>
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 flex-1">
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                    path.ratingCount >= 1
+                                      ? (path.isPublic ? 'bg-purple-100' : 'bg-slate-100')
+                                      : 'bg-slate-100'
+                                  }`}>
+                                    {path.isPublic ? (
+                                      <Globe className="w-5 h-5 text-purple-600" />
+                                    ) : (
+                                      <Lock className="w-5 h-5 text-slate-500" />
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-sm font-semibold text-slate-800 mb-0.5">
+                                      Community Sharing
+                                    </div>
+                                    <p className="text-xs text-slate-600 leading-relaxed">
+                                      {path.ratingCount >= 1
+                                        ? (path.isPublic 
+                                            ? 'Visible in Community Paths' 
+                                            : 'Ready to share - toggle to make public')
+                                        : 'Rate this path first to enable sharing'}
+                                    </p>
+                                  </div>
+                                </div>
+                                
+                                {/* Toggle Switch */}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (path.ratingCount >= 1) {
+                                      handleTogglePublic(path.id, path.isPublic);
+                                    }
+                                  }}
+                                  disabled={!path.ratingCount || path.ratingCount < 1}
+                                  className={`relative inline-flex items-center h-7 w-12 rounded-full transition-colors duration-300 ease-in-out focus:outline-none flex-shrink-0 ${
+                                    path.ratingCount >= 1
+                                      ? (path.isPublic 
+                                          ? 'bg-gradient-to-r from-purple-600 to-blue-600 cursor-pointer focus:ring-2 focus:ring-purple-500 focus:ring-offset-2' 
+                                          : 'bg-slate-300 cursor-pointer hover:bg-slate-400 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2')
+                                      : 'bg-slate-200 cursor-not-allowed opacity-50'
+                                  }`}
+                                  title={
+                                    path.ratingCount >= 1
+                                      ? (path.isPublic ? 'Make Private' : 'Make Public')
+                                      : 'Rate this path to enable sharing'
+                                  }
+                                >
+                                  <span
+                                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ease-in-out ${
+                                      path.isPublic ? 'translate-x-6' : 'translate-x-1'
+                                    }`}
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -861,7 +1031,82 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
             )}
           </>
         )}
+          </>
+        )}
+        {/* End of Library Tab */}
       </div>
+      
+      {/* Make Public Confirmation Modal */}
+      {showPublicModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-white">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Globe className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-bold">Share with Community</h3>
+              </div>
+              <p className="text-purple-100 text-sm">
+                Make your learning path discoverable by others
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <div className="mb-6">
+                <h4 className="font-semibold text-slate-900 mb-2">
+                  "{pendingTogglePath?.title}"
+                </h4>
+                <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                  By making this path public, other users will be able to:
+                </p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Discover and browse your path in Community Paths</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Clone it to their own library to learn from</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span>Rate and provide feedback on your path</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-800 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>You can make it private again at any time using the toggle switch.</span>
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowPublicModal(false);
+                    setPendingTogglePath(null);
+                  }}
+                  className="flex-1 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmMakePublic}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-xl"
+                >
+                  Make Public
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Upgrade Modal */}
       <UpgradeModal

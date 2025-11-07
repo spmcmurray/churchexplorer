@@ -6,6 +6,7 @@ import ReviewSession from './ReviewSession';
 import { completeCourseLesson } from './firebase/progressService';
 import { getCurrentUser } from './firebase/authService';
 import { scheduleReviews } from './services/reviewService';
+import { lesson33Data, lesson34Data, lesson35Data, lesson36Data, lesson37Data, lesson38Data, lesson39Data, lesson40Data } from './interactiveLessonData';
 
 const InterpretationGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
   const location = useLocation();
@@ -33,14 +34,14 @@ const InterpretationGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpd
   const getTotalXP = () => userProgress?.courses?.interpretation?.totalXP || 0;
 
   const lessons = [
-    { number: 25, title: 'Introduction to Hermeneutics', duration: '7 min', data: null },
-    { number: 26, title: 'Why Denominations Interpret Differently', duration: '8 min', data: null },
-    { number: 27, title: 'Literal vs Allegorical Reading', duration: '7 min', data: null },
-    { number: 28, title: 'Context is King', duration: '7 min', data: null },
-    { number: 29, title: 'Genre Matters', duration: '6 min', data: null },
-    { number: 30, title: 'Orthodox Interpretation Principles', duration: '7 min', data: null },
-    { number: 31, title: 'Spotting Fringe Interpretations', duration: '7 min', data: null },
-    { number: 32, title: 'Becoming a Better Interpreter', duration: '6 min', data: null },
+    { number: 33, title: 'Introduction to Hermeneutics', duration: '7 min', data: lesson33Data },
+    { number: 34, title: 'Why Denominations Interpret Differently', duration: '8 min', data: lesson34Data },
+    { number: 35, title: 'Literal vs Allegorical Reading', duration: '7 min', data: lesson35Data },
+    { number: 36, title: 'Context is King', duration: '7 min', data: lesson36Data },
+    { number: 37, title: 'Genre Matters', duration: '6 min', data: lesson37Data },
+    { number: 38, title: 'Orthodox Interpretation Principles', duration: '7 min', data: lesson38Data },
+    { number: 39, title: 'Spotting Fringe Interpretations', duration: '7 min', data: lesson39Data },
+    { number: 40, title: 'Becoming a Better Interpreter', duration: '6 min', data: lesson40Data },
   ];
 
   const handleLessonComplete = async (lessonNumber, xp) => {
@@ -114,10 +115,6 @@ const InterpretationGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpd
           </div>
         </div>
 
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 mb-8">
-          <p className="text-yellow-800 font-semibold">🚧 Lesson content coming soon!</p>
-        </div>
-
         <div className="space-y-4">
           {lessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.number);
@@ -129,7 +126,7 @@ const InterpretationGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpd
                 isCompleted ? 'border-cyan-400' : isLocked ? 'border-slate-200 opacity-60' : 'border-slate-200 hover:border-cyan-300'
               }`}>
                 <div 
-                  className={`p-6 transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
+                  className={`p-6 rounded-t-2xl transition ${isLocked ? 'cursor-not-allowed' : 'hover:bg-slate-50 cursor-pointer'}`}
                   onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}
                 >
                   <div className="flex items-center justify-between">
@@ -154,7 +151,7 @@ const InterpretationGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpd
                   </div>
                 </div>
                 {isExpanded && !isLocked && (
-                  <div className="border-t-2 border-slate-100 p-6">
+                  <div className="border-t-2 border-slate-100 p-6 rounded-b-2xl">
                     <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
                       {lesson.data ? (isCompleted ? 'Review Lesson' : 'Start Lesson') : 'Coming Soon'}
                     </button>

@@ -612,6 +612,19 @@ export const getSavedAIPaths = async (currentUser = null) => {
             };
           })
         );
+        console.log('📦 getSavedAIPaths returning', pathsWithProgress.length, 'paths');
+        const pathWithRating = pathsWithProgress.find(p => p.ratingCount > 0);
+        if (pathWithRating) {
+          console.log('📦 Path with rating data found:', {
+            id: pathWithRating.id,
+            title: pathWithRating.title,
+            ratingCount: pathWithRating.ratingCount,
+            averageRating: pathWithRating.averageRating,
+            isPublic: pathWithRating.isPublic
+          });
+        } else {
+          console.log('📦 No paths with ratingCount > 0 found');
+        }
         return pathsWithProgress;
       }
     }

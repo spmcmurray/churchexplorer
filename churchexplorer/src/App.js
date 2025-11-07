@@ -12,7 +12,7 @@ import CouncilsWorshipGuide from "./CouncilsWorshipGuide";
 import TranslationsGuide from "./TranslationsGuide";
 import GospelMessageGuide from "./GospelMessageGuide";
 import DiscerningTruthGuide from "./DiscerningTruthGuide";
-import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Menu, X, Sparkles, Settings } from 'lucide-react';
+import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Menu, X, Sparkles, Settings, Users } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
 import Onboarding from './Onboarding';
@@ -24,12 +24,15 @@ import SignUpPrompt from './SignUpPrompt';
 import AIPathsView from './AIPathsView';
 import AIPathViewer from './AIPathViewer';
 import AILessonViewerPage from './AILessonViewerPage';
+import CommunityPaths from './CommunityPaths';
 import Profile from './Profile';
 import Legal from './Legal';
 import StudyBuddy from './StudyBuddy';
 import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
 import { getUserProgress } from './firebase/progressService';
 import { notifyAchievement, onAchievement } from './services/progressService';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase/config';
 
 function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowAuth, handleSignOut, setShowDeleteConfirm, setDeletePassword, setDeleteError, authLoading }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -99,18 +102,6 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
                       >
                         <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowDeleteConfirm(true);
-                          setShowProfileMenu(false);
-                          setDeletePassword('');
-                          setDeleteError('');
-                        }}
-                        className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition border-t border-gray-100"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Delete Account</span>
                       </button>
                     </div>
                   )}
@@ -183,6 +174,15 @@ function Navigation({ currentUser, showProfileMenu, setShowProfileMenu, setShowA
               >
                 <Sparkles className="w-5 h-5 mr-3" />
                 <span>AI Learning</span>
+              </Link>
+
+              <Link
+                to="/community-paths"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-lg transition text-left bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+              >
+                <Users className="w-5 h-5 mr-3" />
+                <span>Community Paths</span>
               </Link>
 
               <Link
@@ -372,10 +372,16 @@ function AIPathViewerWrapper({ currentUser }) {
   return <AIPathViewer path={path} currentUser={currentUser} onGoBack={() => navigate('/ai-paths')} />;
 }
 
+function CommunityPathsWrapper({ currentUser, subscription }) {
+  const navigate = useNavigate();
+  return <CommunityPaths currentUser={currentUser} subscription={subscription} onNavigate={(path) => navigate(`/${path}`)} />;
+}
+
 function AppContent() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [userProgress, setUserProgress] = useState(null); // Store Firestore progress in state
+  const [subscription, setSubscription] = useState(null); // Track user subscription
   const [authLoading, setAuthLoading] = useState(true); // Track auth initialization
   const [showAuth, setShowAuth] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -511,6 +517,26 @@ function AppContent() {
     return () => unsubscribe();
   }, [showAuth]);
 
+  // Listen for subscription changes
+  useEffect(() => {
+    if (!currentUser) {
+      setSubscription(null);
+      return;
+    }
+
+    const subscriptionRef = doc(db, 'users', currentUser.uid, 'subscription', 'current');
+    const unsubscribe = onSnapshot(subscriptionRef, (doc) => {
+      if (doc.exists()) {
+        setSubscription(doc.data());
+      } else {
+        // Default to free tier if no subscription document exists
+        setSubscription({ tier: 'free', status: 'active' });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
   // Close profile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -617,6 +643,7 @@ function AppContent() {
           <Route path="/profile" element={<ProfileWrapper currentUser={currentUser} onDeleteAccount={() => setShowDeleteConfirm(true)} onSignOut={handleSignOut} />} />
           <Route path="/legal" element={<Legal />} />
           <Route path="/ai-paths" element={<AIPathsView currentUser={currentUser} />} />
+          <Route path="/community-paths" element={<CommunityPathsWrapper currentUser={currentUser} subscription={subscription} />} />
           <Route path="/ai-path/:pathId" element={<AIPathViewerWrapper currentUser={currentUser} />} />
           <Route path="/ai-lesson/:lessonId" element={<AILessonViewerPage currentUser={currentUser} onProgressUpdate={refreshUserProgress} />} />
         </Routes>

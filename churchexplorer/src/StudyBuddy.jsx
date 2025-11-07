@@ -36,15 +36,30 @@ const Scribe = ({ currentUser }) => {
   const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
   const [lastPath, setLastPath] = useState(location.pathname);
   const messagesEndRef = useRef(null);
+  const lastAssistantMessageRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToLastAssistantMessage = () => {
+    lastAssistantMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      // If the last message is from assistant, scroll to top of that message
+      if (lastMessage.role === 'assistant') {
+        scrollToLastAssistantMessage();
+      } else {
+        // If it's a user message, scroll to bottom as usual
+        scrollToBottom();
+      }
+    }
+    
     // Mark as read when chat is open
     if (isOpen) {
       setHasUnreadMessage(false);
@@ -430,10 +445,16 @@ const Scribe = ({ currentUser }) => {
                 {/* Messages Area */}
        <div className="flex-1 overflow-y-auto p-4 space-y-3"
          style={{background: 'linear-gradient(180deg, rgba(250,250,255,0.55), rgba(245,246,255,0.25))', backdropFilter: 'blur(15px) saturate(160%)', WebkitBackdropFilter: 'blur(15px) saturate(160%)'}}>
-                  {messages.map((message, index) => (
+                  {messages.map((message, index) => {
+                    // Check if this is the last assistant message
+                    const isLastAssistantMessage = message.role === 'assistant' && 
+                      index === messages.length - 1;
+                    
+                    return (
                     <div
                       key={index}
                       className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      ref={isLastAssistantMessage ? lastAssistantMessageRef : null}
                     >
                       <div
                         className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
@@ -458,7 +479,8 @@ const Scribe = ({ currentUser }) => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
 
                   {isLoading && (
                     <div className="flex justify-start">
