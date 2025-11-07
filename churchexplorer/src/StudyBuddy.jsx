@@ -3,16 +3,31 @@ import { MessageCircle, Send, Loader, Sparkles, X, Minimize2 } from 'lucide-reac
 import UpgradeModal from './UpgradeModal';
 import { useLocation } from 'react-router-dom';
 
-const StudyBuddy = ({ currentUser }) => {
+const Scribe = ({ currentUser }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm your Study Buddy. Ask me anything about Christianity, the Bible, theology, or church history!"
+      content: "Hi! I'm Scribe — your study companion. Ask me anything about Christianity, the Bible, theology, or church history!"
     }
   ]);
+  useEffect(() => {
+    try {
+      document.documentElement.style.webkitTextSizeAdjust = '100%';
+      document.body.style.webkitTextSizeAdjust = '100%';
+    } catch (e) {
+      // ignore in non-browser environments
+    }
+
+    return () => {
+      try {
+        document.documentElement.style.webkitTextSizeAdjust = '';
+        document.body.style.webkitTextSizeAdjust = '';
+      } catch (e) {}
+    };
+  }, []);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -48,14 +63,14 @@ const StudyBuddy = ({ currentUser }) => {
       try {
         const { getUserSubscription } = await import('./firebase/subscriptionService');
         const result = await getUserSubscription(currentUser.uid);
-        console.log('Study Buddy - getUserSubscription result:', result);
+        console.log('Scribe - getUserSubscription result:', result);
         
         if (result.success && result.subscription) {
-          console.log('Study Buddy - Subscription tier:', result.subscription.tier);
-          console.log('Study Buddy - Subscription status:', result.subscription.status);
+          console.log('Scribe - Subscription tier:', result.subscription.tier);
+          console.log('Scribe - Subscription status:', result.subscription.status);
           setSubscription(result.subscription);
         } else {
-          console.error('Study Buddy - Failed to load subscription:', result.error);
+          console.error('Scribe - Failed to load subscription:', result.error);
           setSubscription(null);
         }
       } catch (error) {
@@ -76,7 +91,7 @@ const StudyBuddy = ({ currentUser }) => {
       setMessages([
         {
           role: 'assistant',
-          content: "Hi! I'm your Study Buddy. Ask me anything about Christianity, the Bible, theology, or church history!"
+          content: "Hi! I'm Scribe, your AI study companion. Ask me anything about Christianity, the Bible, theology, or church history!"
         }
       ]);
       setLastPath(location.pathname);
@@ -195,7 +210,7 @@ const StudyBuddy = ({ currentUser }) => {
 
     // Check if user is authenticated
     if (!currentUser?.uid) {
-      alert('Please sign in to use Study Buddy');
+      alert('Please sign in to use Scribe');
       return;
     }
 
@@ -289,7 +304,12 @@ const StudyBuddy = ({ currentUser }) => {
       }]);
     } finally {
       setIsLoading(false);
-      inputRef.current?.focus();
+      // Blur the input after sending on mobile to close the keyboard and avoid persistent zoom
+      try {
+        inputRef.current?.blur();
+      } catch (e) {
+        // ignore
+      }
     }
   };
 
@@ -315,7 +335,7 @@ const StudyBuddy = ({ currentUser }) => {
 
   const handleToggleChat = () => {
     if (!currentUser?.uid) {
-      alert('Please sign in to use Study Buddy');
+      alert('Please sign in to use Scribe');
       return;
     }
     setIsOpen(!isOpen);
@@ -344,14 +364,14 @@ const StudyBuddy = ({ currentUser }) => {
         <button
           onClick={handleToggleChat}
           className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full p-4 shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
-          aria-label="Open Study Buddy"
+          aria-label="Open Scribe"
         >
           <MessageCircle className="w-6 h-6" />
           {hasUnreadMessage && (
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
           )}
           <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-900 text-white text-sm px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            Study Buddy
+            Scribe
           </span>
         </button>
       )}
@@ -363,17 +383,25 @@ const StudyBuddy = ({ currentUser }) => {
             ? 'bottom-6 sm:w-80' 
             : 'bottom-6 sm:w-96 h-[600px] max-h-[calc(100vh-8rem)]'
         }`}>
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 flex flex-col h-full overflow-hidden">
+    <div className="rounded-2xl flex flex-col h-full overflow-hidden shadow-2xl"
+         style={{
+           background: 'linear-gradient(135deg, rgba(255,255,255,0.20) 0%, rgba(240,246,255,0.08) 60%)',
+           backdropFilter: 'blur(25px) saturate(180%)',
+           WebkitBackdropFilter: 'blur(25px) saturate(180%)',
+           border: '1px solid rgba(255,255,255,0.18)',
+           boxShadow: '0 12px 48px rgba(12,18,40,0.45), inset 0 1px 0 rgba(255,255,255,0.05)'
+         }}>
             
             {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-3 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-purple-600/90 to-blue-600/90 text-white px-4 py-3 flex items-center justify-between"
+        style={{backdropFilter: 'blur(15px) saturate(150%)', WebkitBackdropFilter: 'blur(15px) saturate(150%)'}}>
               <div className="flex items-center gap-2">
-                <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
+                <div className="bg-white/25 p-2 rounded-lg shadow-md border border-white/20" style={{backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)'}}>
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm">
-                    Study Buddy
+                    Scribe
                   </h3>
                   <p className="text-xs text-purple-100">Ask me anything!</p>
                 </div>
@@ -400,7 +428,8 @@ const StudyBuddy = ({ currentUser }) => {
             {!isMinimized && (
               <>
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+       <div className="flex-1 overflow-y-auto p-4 space-y-3"
+         style={{background: 'linear-gradient(180deg, rgba(250,250,255,0.55), rgba(245,246,255,0.25))', backdropFilter: 'blur(15px) saturate(160%)', WebkitBackdropFilter: 'blur(15px) saturate(160%)'}}>
                   {messages.map((message, index) => (
                     <div
                       key={index}
@@ -409,17 +438,22 @@ const StudyBuddy = ({ currentUser }) => {
                       <div
                         className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
                           message.role === 'user'
-                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                            : 'bg-white text-slate-900 border border-slate-200'
+                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
+                            : 'text-slate-900 shadow-sm'
                         }`}
+                        style={
+                          message.role === 'assistant'
+                            ? { background: 'rgba(255,255,255,0.78)', backdropFilter: 'blur(15px) saturate(160%)', WebkitBackdropFilter: 'blur(15px) saturate(160%)', border: '1px solid rgba(255,255,255,0.45)' }
+                            : undefined
+                        }
                       >
                         {message.role === 'assistant' && (
                           <div className="flex items-center gap-1 mb-1">
                             <Sparkles className="w-3 h-3 text-purple-600" />
-                            <span className="text-xs font-semibold text-purple-600">Study Buddy</span>
+                            <span className="text-xs font-semibold text-purple-600">Scribe</span>
                           </div>
                         )}
-                        <div className="whitespace-pre-wrap leading-relaxed">
+                        <div className="whitespace-pre-wrap leading-relaxed" style={{backdropFilter: 'blur(6px)'}}>
                           {message.content}
                         </div>
                       </div>
@@ -428,10 +462,10 @@ const StudyBuddy = ({ currentUser }) => {
 
                   {isLoading && (
                     <div className="flex justify-start">
-                      <div className="bg-white rounded-xl px-3 py-2 border border-slate-200">
+                      <div className="rounded-xl px-3 py-2 border shadow-sm" style={{background: 'rgba(255,255,255,0.65)', backdropFilter: 'blur(15px) saturate(140%)', WebkitBackdropFilter: 'blur(15px) saturate(140%)', borderColor: 'rgba(255,255,255,0.35)'}}>
                         <div className="flex items-center gap-2">
                           <Loader className="w-3 h-3 animate-spin text-purple-600" />
-                          <span className="text-xs text-slate-600">Thinking...</span>
+                          <span className="text-xs text-slate-700">Thinking...</span>
                         </div>
                       </div>
                     </div>
@@ -442,14 +476,15 @@ const StudyBuddy = ({ currentUser }) => {
 
                 {/* Suggested Questions (only show at start) */}
                 {messages.length === 1 && !isLoading && (
-                  <div className="px-4 py-2 bg-slate-50 border-t border-slate-200">
+                  <div className="px-4 py-2 border-t border-white/40" style={{background: 'rgba(255,255,255,0.65)', backdropFilter: 'blur(12px) saturate(150%)', WebkitBackdropFilter: 'blur(12px) saturate(150%)'}}>
                     <p className="text-xs font-semibold text-slate-600 mb-2">Try asking:</p>
                     <div className="flex flex-col gap-1">
                       {suggestedQuestions.slice(0, 2).map((question, index) => (
                         <button
                           key={index}
                           onClick={() => handleSuggestionClick(question)}
-                          className="text-xs px-2 py-1.5 bg-white text-purple-700 rounded-lg hover:bg-purple-50 transition border border-purple-200 text-left"
+                          className="text-xs px-2 py-1.5 text-purple-700 rounded-lg hover:bg-purple-50 transition border border-purple-200/50 text-left shadow-sm"
+                          style={{background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)'}}
                         >
                           {question}
                         </button>
@@ -459,23 +494,38 @@ const StudyBuddy = ({ currentUser }) => {
                 )}
 
                 {/* Input Area */}
-                <div className="border-t-2 border-slate-200 p-3 bg-white">
+                <div className="border-t-2 border-white/25 p-3"
+                     style={{background: 'linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.10))', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)'}}>
                   <div className="flex gap-2">
                     <input
                       ref={inputRef}
                       type="text"
+                      inputMode="text"
+                      autoCorrect="on"
+                      autoCapitalize="sentences"
+                      spellCheck={true}
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyDown={handleKeyPress}
                       placeholder="Ask about Christianity..."
-                      className="flex-1 px-3 py-2 text-sm border-2 border-slate-200 rounded-lg focus:border-purple-500 focus:outline-none transition"
+                      className="flex-1 px-3 py-3 text-base border-2 border-slate-200/50 rounded-lg focus:border-purple-500 focus:outline-none transition shadow-sm"
+                      style={{ 
+                        fontSize: '16px', 
+                        minWidth: '100px',
+                        WebkitTextSizeAdjust: '100%', 
+                        textSizeAdjust: '100%',
+                        WebkitTapHighlightColor: 'transparent', 
+                        background: 'rgba(255,255,255,0.85)',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)'
+                      }}
                       disabled={isLoading}
                     />
                     <button
                       type="button"
                       onClick={(e) => handleSendMessage(e)}
                       disabled={!inputMessage.trim() || isLoading}
-                      className="px-3 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-3 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                       aria-label="Send message"
                     >
                       <Send className="w-4 h-4" />
@@ -493,12 +543,12 @@ const StudyBuddy = ({ currentUser }) => {
         <UpgradeModal
           currentUser={currentUser}
           onClose={() => setShowUpgradeModal(false)}
-          feature="Study Buddy"
-          description="Get unlimited AI-powered chat to explore the Bible, theology, church history, and deepen your faith while you learn."
+          feature="Scribe"
+          description="Unlock Scribe — unlimited AI chat to explore the Bible, theology, church history, and deepen your faith while you learn."
         />
       )}
     </>
   );
 };
 
-export default StudyBuddy;
+export default Scribe;
