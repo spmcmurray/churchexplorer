@@ -480,7 +480,7 @@ app.post('/api/ai/suggest-topics', async (req, res) => {
         'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are a Christian education expert. Provide topic suggestions as a JSON array.' },
           { role: 'user', content: prompt }
