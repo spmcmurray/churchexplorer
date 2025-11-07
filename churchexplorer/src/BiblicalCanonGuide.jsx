@@ -88,7 +88,7 @@ const BiblicalCanonGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
       <InteractiveLesson
         lessonData={lesson.data}
         onComplete={(xp) => handleLessonComplete(interactiveMode, xp)}
-        onBack={() => {
+        onExit={() => {
           setInteractiveMode(null);
           setExpandedLesson(null);
         }}

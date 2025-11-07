@@ -83,16 +83,7 @@ const EarlyChristianityGuide = ({ userProgress, onNavigate, onGoBack, onProgress
   if (interactiveMode !== null) {
     const lesson = lessons.find(l => l.number === interactiveMode);
     if (lesson?.data) {
-      return (
-        <InteractiveLesson
-          lessonData={lesson.data}
-          onComplete={(xp) => handleLessonComplete(interactiveMode, xp)}
-          onBack={() => {
-            setInteractiveMode(null);
-            setExpandedLesson(null);
-          }}
-        />
-      );
+      return <InteractiveLesson lessonData={lesson.data} onComplete={(xp) => handleLessonComplete(interactiveMode, xp)} onExit={() => { setInteractiveMode(null); setExpandedLesson(null); }} />;
     }
   }
 
