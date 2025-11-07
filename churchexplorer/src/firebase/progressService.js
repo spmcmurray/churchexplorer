@@ -19,7 +19,14 @@ import { db } from './config';
  *   courses: {
  *     bible: { completedLessons: [1,2,3], totalXP: 150, lastCompleted: timestamp },
  *     church: { completedLessons: [1,2], totalXP: 100, lastCompleted: timestamp },
- *     apologetics: { completedLessons: [1], totalXP: 50, lastCompleted: timestamp }
+ *     apologetics: { completedLessons: [1], totalXP: 50, lastCompleted: timestamp },
+ *     biblicalCanon: { completedLessons: [], totalXP: 0, lastCompleted: null },
+ *     earlyChristianity: { completedLessons: [], totalXP: 0, lastCompleted: null },
+ *     interpretation: { completedLessons: [], totalXP: 0, lastCompleted: null },
+ *     councilsWorship: { completedLessons: [], totalXP: 0, lastCompleted: null },
+ *     translations: { completedLessons: [], totalXP: 0, lastCompleted: null },
+ *     gospelMessage: { completedLessons: [], totalXP: 0, lastCompleted: null },
+ *     discerningTruth: { completedLessons: [], totalXP: 0, lastCompleted: null }
  *   },
  *   dailyChallenges: {
  *     totalCompleted: number,
@@ -51,7 +58,14 @@ export const initializeUserProgress = async (uid) => {
         courses: {
           bible: { completedLessons: [], totalXP: 0, lastCompleted: null },
           church: { completedLessons: [], totalXP: 0, lastCompleted: null },
-          apologetics: { completedLessons: [], totalXP: 0, lastCompleted: null }
+          apologetics: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          biblicalCanon: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          earlyChristianity: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          interpretation: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          councilsWorship: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          translations: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          gospelMessage: { completedLessons: [], totalXP: 0, lastCompleted: null },
+          discerningTruth: { completedLessons: [], totalXP: 0, lastCompleted: null }
         },
         dailyChallenges: {
           totalCompleted: 0,

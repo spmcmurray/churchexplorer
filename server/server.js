@@ -687,6 +687,150 @@ Respond with ONLY valid JSON in this format:
   }
 });
 
+// Study Buddy Chat - AI assistant for premium users
+app.post('/api/ai/study-buddy', async (req, res) => {
+  try {
+    const { messages, userId, pageContext } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID required' });
+    }
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: 'Messages array required' });
+    }
+
+    if (!process.env.REACT_APP_OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'OpenAI API key not configured on server' });
+    }
+
+    // Check subscription tier - only Premium users can use Study Buddy
+    const userDoc = await db.collection('users').doc(userId).get();
+    if (!userDoc.exists) {
+      return res.status(403).json({ error: 'User not found' });
+    }
+
+    const subscriptionDoc = await db.collection('users').doc(userId).collection('subscription').doc('current').get();
+    const subscription = subscriptionDoc.exists ? subscriptionDoc.data() : null;
+    const tier = subscription?.tier || 'free';
+
+    if (tier !== 'premium') {
+      return res.status(403).json({ 
+        error: 'Study Buddy is only available for Premium subscribers',
+        upgradeNeeded: true,
+        currentTier: tier
+      });
+    }
+
+    // Build context-aware system prompt
+    let contextInfo = '';
+    console.log('Study Buddy - Received page context:', pageContext);
+    
+    if (pageContext) {
+      if (pageContext.lessonTitle) {
+        contextInfo += `\n\nCURRENT LESSON CONTEXT:\nLesson: "${pageContext.lessonTitle}"`;
+        console.log('Adding lesson title to context:', pageContext.lessonTitle);
+      }
+      if (pageContext.lessonContent) {
+        contextInfo += `\nContent: ${pageContext.lessonContent.substring(0, 2000)}`; // Limit to 2000 chars
+        console.log('Adding lesson content to context, length:', pageContext.lessonContent.length);
+      }
+      if (pageContext.currentSlide) {
+        contextInfo += `\nCurrent slide: ${pageContext.currentSlide}`;
+        console.log('Adding current slide to context');
+      }
+      if (pageContext.pageType) {
+        contextInfo += `\nPage: ${pageContext.pageType}`;
+        console.log('Adding page type to context:', pageContext.pageType);
+      }
+      contextInfo += `\n\nWhen the user asks questions, consider this context. If they ask "what does this mean?" or refer to concepts from the lesson, use the lesson content above to provide specific, relevant answers.`;
+      console.log('Final context info length:', contextInfo.length);
+    } else {
+      console.log('No page context provided');
+    }
+
+    // System prompt for the Study Buddy
+    const systemPrompt = `You are a knowledgeable and encouraging Christian study companion for Church Explorer users. Your role is to help users deepen their understanding of the Bible, Christian theology, church history, apologetics, and denominational beliefs.
+
+IMPORTANT GUIDELINES:
+1. ONLY discuss Christian topics:
+   - Bible study, biblical interpretation, Scripture
+   - Christian theology, doctrine, and apologetics
+   - Church history and historical Christian figures
+   - Denominational beliefs and practices
+   - Christian ethics, morality, and worldview
+   - Prayer, worship, and spiritual disciplines
+   - How Christianity addresses modern issues
+
+2. REJECT non-Christian topics politely:
+   - If asked about cooking, recipes, politics, entertainment, sports, business, etc., respond:
+   "I'm here to help you explore Christian faith, the Bible, theology, and church history. Let's talk about your faith journey instead! What would you like to learn about Christianity?"
+
+3. RESPONSE LENGTH - Be naturally concise and match your depth to the question:
+   - Simple factual questions ("Who was Paul?", "What is baptism?"): Answer briefly in 1-3 clear sentences
+   - Moderate questions ("Explain justification by faith"): Provide a focused explanation in 1-2 paragraphs
+   - Complex/theological questions ("How do denominations differ on..."): Give a thorough but concise answer in 2-3 paragraphs
+   - Discussion questions: Respond thoughtfully in 2-3 paragraphs and invite further reflection
+   
+   Don't pad your answers. Be clear, direct, and stop when you've answered the question fully.
+
+4. Teaching style:
+   - Be warm, encouraging, and patient
+   - Cite Scripture when relevant (include references)
+   - Present different theological perspectives fairly when denominational views differ
+   - Encourage deeper study and personal reflection
+   - Ask thought-provoking questions when appropriate
+
+5. Tone: Friendly, knowledgeable, non-judgmental, and Christ-centered${contextInfo}
+
+Remember: You're a study companion, not a replacement for church community, pastoral counsel, or medical/legal advice. Encourage users to seek appropriate help when needed.`;
+
+    // Use a consistent token limit and let the AI decide appropriate length based on prompt instructions
+    // 600 tokens gives plenty of room (~400-500 words) while preventing extremely long responses
+    const maxTokens = 600;
+    
+    console.log(`Max tokens set to: ${maxTokens}`);
+
+    // Call OpenAI API
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages
+        ],
+        temperature: 0.7,
+        max_tokens: maxTokens
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'OpenAI API request failed');
+    }
+
+    const data = await response.json();
+    const assistantMessage = data.choices[0].message.content;
+
+    res.json({
+      message: assistantMessage,
+      usage: data.usage
+    });
+
+  } catch (error) {
+    console.error('Error in study buddy chat:', error);
+    res.status(500).json({ 
+      error: 'Failed to process chat message',
+      message: error.message 
+    });
+  }
+});
+
 // Stripe Checkout Session - Create subscription checkout
 app.post('/api/create-checkout-session', async (req, res) => {
   try {

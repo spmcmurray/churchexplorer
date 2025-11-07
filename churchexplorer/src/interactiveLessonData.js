@@ -1634,3 +1634,1166 @@ export const lesson8Data = {
     }
   ]
 };
+
+// ============================================
+// PATH 4: BIBLICAL CANON (Lessons 9-16)
+// ============================================
+
+// Lesson 9: What is the Canon?
+
+export const lesson9Data = {
+  id: 9,
+  title: "What is the Canon?",
+  subtitle: "Understanding how the Bible's boundaries were established",
+  duration: "6 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'What is the Canon?',
+      subtitle: '⏱️ About 6 minutes',
+      content: [
+        '**Learning Objective:** By the end of this lesson, you will understand what "canon" means and why it matters for reading the Bible today.',
+        'When you pick up a Bible, have you ever wondered: *Who decided which books belong in here?*',
+        'The word **"canon"** comes from a Greek word (*kanōn*) meaning "measuring stick" or "rule." In Christian usage, it refers to the official list of books recognized as Scripture.',
+        'But the canon didn\'t arrive overnight—it was a process involving communities, councils, and careful discernment over centuries.'
+      ],
+      highlight: '💭 Quick reflection: Have you ever heard of books like 1 Enoch or the Gospel of Thomas? Why aren\'t they in your Bible?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Canon as a "Measuring Stick"',
+      content: [
+        'Think of the canon as a boundary line: it separates books considered **divinely inspired Scripture** from other valuable but non-canonical writings.',
+        '📏 The canon answers three key questions:',
+        '1. **What books are authoritative?** (Which texts carry divine authority for teaching and doctrine?)',
+        '2. **What books are publicly read in worship?** (Which texts should be read aloud in church gatherings?)',
+        '3. **What books shape orthodox belief?** (Which texts define what Christians believe?)',
+        'Without a canon, every community could claim different books as Scripture, leading to confusion and conflicting doctrines.'
+      ],
+      highlight: '🔑 Key Point: The canon provides a shared foundation for Christian faith and practice across time and cultures.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What does the term "canon" originally mean?',
+      options: [
+        'A collection of sacred books',
+        'A measuring stick or rule',
+        'A church council decision',
+        'An ancient library catalog'
+      ],
+      correctAnswer: 1,
+      explanation: 'Canon comes from the Greek "kanōn," meaning "measuring stick" or "rule." It was used metaphorically to describe the standard list of books that measure or define true Scripture.'
+    },
+
+    {
+      type: 'content',
+      title: 'Two Canons: Old and New Testament',
+      content: [
+        'The Christian Bible has **two main sections**, each with its own canonical history:',
+        '📖 **Old Testament (Hebrew Bible):** The Jewish Scriptures that Jesus and the apostles read. The Hebrew canon was largely settled by the 1st century AD.',
+        '✝️ **New Testament:** The 27 books written by apostles and their associates (Gospels, Acts, Letters, Revelation). These were recognized as Scripture by the early church over the first few centuries.',
+        'Christians inherited the Old Testament from Judaism but also recognized new writings about Jesus as equally inspired Scripture.',
+        'This dual-canon structure reflects Christianity\'s roots in Jewish faith while affirming the new revelation in Jesus Christ.'
+      ]
+    },
+
+    {
+      type: 'matching',
+      title: 'Match the Testament',
+      pairs: [
+        {
+          term: 'Old Testament',
+          definition: 'Jewish Scriptures inherited by Christians'
+        },
+        {
+          term: 'New Testament',
+          definition: '27 books about Jesus and the early church'
+        },
+        {
+          term: 'Hebrew Bible',
+          definition: 'Jewish term for their Scriptures (Tanakh)'
+        },
+        {
+          term: 'Canon',
+          definition: 'Official list of inspired books'
+        }
+      ]
+    },
+
+    {
+      type: 'content',
+      title: 'How Were Books Chosen?',
+      content: [
+        'The canonization process wasn\'t arbitrary—early Christians used specific **criteria** to evaluate books:',
+        '✅ **Apostolic origin:** Was it written by an apostle or close associate of Jesus?',
+        '✅ **Orthodox content:** Did it align with the "rule of faith" (core Christian beliefs)?',
+        '✅ **Widespread use:** Was it accepted and read in churches across different regions?',
+        '✅ **Divine inspiration:** Did it demonstrate spiritual power and authority?',
+        'Books that failed these tests—like the *Gospel of Thomas* or *Shepherd of Hermas*—were valued but not included in the canon.',
+        'This process was *organic*, not dictated by a single council or authority.'
+      ],
+      highlight: '💡 Fun Fact: Some books (like 2 Peter and Revelation) were debated for a while before being universally accepted.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'Which criterion was MOST important for a book to be included in the canon?',
+      options: [
+        'It had to be written in Greek',
+        'It had to be approved by the Pope',
+        'It had apostolic origin and orthodox content',
+        'It had to be older than 100 AD'
+      ],
+      correctAnswer: 2,
+      explanation: 'Apostolic origin (written by or connected to apostles) and orthodox content (aligned with core Christian teaching) were the primary criteria. The canon formed organically through church consensus, not papal decree.'
+    },
+
+    {
+      type: 'content',
+      title: 'The Canon Today',
+      content: [
+        'By the late 4th century (councils of Hippo 393 AD and Carthage 397 AD), the 27-book New Testament canon was formally recognized.',
+        'The Old Testament canon, however, has some variation:',
+        '📚 **Protestant Bibles:** 39 OT books (following the Hebrew Bible)',
+        '📚 **Catholic Bibles:** 46 OT books (including the Deuterocanonical books/Apocrypha)',
+        '📚 **Orthodox Bibles:** Even more books in some traditions',
+        'We\'ll explore *why* these differences exist in the next lesson, but for now, know that **all Christians agree on the 27-book New Testament**.',
+        'The canon isn\'t just a historical artifact—it remains the foundation for Christian doctrine, worship, and life today.'
+      ]
+    },
+
+    {
+      type: 'reflection',
+      question: 'Why do you think it matters that Christians have a defined canon? What would be different without one?',
+      placeholder: 'Think about how the canon provides unity, authority, and clarity...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "What is the Canon?" You now understand what the canon is, why it was formed, and the criteria used to recognize Scripture.',
+      keyTakeaways: [
+        'The "canon" is the official list of books recognized as inspired Scripture',
+        'Books were chosen based on apostolic origin, orthodox content, widespread use, and divine inspiration',
+        'All Christians agree on the 27-book New Testament, but Old Testament canons vary slightly between traditions'
+      ],
+      badge: {
+        icon: '📏',
+        name: 'Canon Scholar',
+        description: 'Completed Lesson 9: What is the Canon?'
+      }
+    }
+  ]
+};
+
+// Lesson 10: The Old Testament Canon
+
+export const lesson10Data = {
+  id: 10,
+  title: "The Old Testament Canon",
+  subtitle: "How the Hebrew Bible was formed",
+  duration: "7 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'The Old Testament Canon',
+      subtitle: '⏱️ About 7 minutes',
+      content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how the Old Testament canon developed in Jewish tradition.',
+        'Before there was a "Bible," there was the **Hebrew Bible**—the sacred Scriptures of Judaism.',
+        'Jesus read from these scrolls in the synagogue. Paul quoted them in his letters. Early Christians treasured them as "the Scriptures."',
+        'But how did these particular books come to be recognized as holy writ?'
+      ],
+      highlight: '💭 Quick reflection: Jesus frequently quoted from "the Law and the Prophets." What books do you think He meant?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Three-Part Structure: TaNaKh',
+      content: [
+        'The Hebrew Bible is traditionally divided into **three sections**, collectively called the **TaNaKh** (an acronym):',
+        '📜 **Torah (Law):** The five books of Moses (Genesis, Exodus, Leviticus, Numbers, Deuteronomy)—the most sacred texts in Judaism.',
+        '📖 **Nevi\'im (Prophets):** Historical books (Joshua, Judges, Samuel, Kings) and prophetic books (Isaiah, Jeremiah, Ezekiel, the Twelve Minor Prophets).',
+        '✍️ **Ketuvim (Writings):** Poetry, wisdom literature, and other books (Psalms, Proverbs, Job, Ruth, Esther, Daniel, Chronicles, etc.).',
+        'This three-part structure was well-established by Jesus\' time—He even refers to "the Law, the Prophets, and the Psalms" (Luke 24:44).'
+      ],
+      highlight: '🔑 Key Point: The Torah (Law) was recognized as Scripture first, followed by the Prophets, and finally the Writings.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What does "TaNaKh" stand for?',
+      options: [
+        'Temple, Nazareth, Kingdom',
+        'Torah, Nevi\'im, Ketuvim',
+        'Ten, Abraham, King',
+        'Truth, Narrative, Knowledge'
+      ],
+      correctAnswer: 1,
+      explanation: 'TaNaKh is an acronym for the three sections of the Hebrew Bible: Torah (Law), Nevi\'im (Prophets), and Ketuvim (Writings).'
+    },
+
+    {
+      type: 'content',
+      title: 'When Was the Canon "Closed"?',
+      content: [
+        'There\'s a common misconception that the Jewish canon was officially "closed" at the **Council of Jamnia** (c. 90 AD). Modern scholars largely reject this view.',
+        'Instead, the Hebrew canon developed **gradually**:',
+        '📅 **Torah (5th century BC):** Recognized as Scripture after the Babylonian exile.',
+        '📅 **Prophets (3rd-2nd century BC):** Recognized by the time of Sirach (c. 180 BC), which refers to "the Law and the Prophets."',
+        '📅 **Writings (1st century AD):** The final section was more fluid, with some debates over books like Esther and Song of Solomon.',
+        'By Jesus\' time, the Torah and Prophets were universally accepted. The Writings were largely settled, though minor debates continued.',
+        'There was no single "council" that decided the canon—it was a gradual consensus among Jewish communities.'
+      ]
+    },
+
+    {
+      type: 'matching',
+      title: 'Match the Section with Its Books',
+      pairs: [
+        {
+          term: 'Torah',
+          definition: 'Genesis, Exodus, Leviticus, Numbers, Deuteronomy'
+        },
+        {
+          term: 'Nevi\'im',
+          definition: 'Isaiah, Jeremiah, Ezekiel, Joshua, Judges'
+        },
+        {
+          term: 'Ketuvim',
+          definition: 'Psalms, Proverbs, Job, Esther, Daniel'
+        },
+        {
+          term: 'TaNaKh',
+          definition: 'The complete Hebrew Bible'
+        }
+      ]
+    },
+
+    {
+      type: 'content',
+      title: 'Jesus and the Old Testament',
+      content: [
+        'Jesus clearly affirmed the authority of the Hebrew Scriptures:',
+        '🗣️ "Do not think that I have come to abolish the Law or the Prophets; I have not come to abolish them but to fulfill them" (Matthew 5:17).',
+        '🗣️ "These are my words that I spoke to you while I was still with you, that everything written about me in the Law of Moses and the Prophets and the Psalms must be fulfilled" (Luke 24:44).',
+        'Jesus\' three-part reference (Law, Prophets, Psalms/Writings) aligns with the TaNaKh structure.',
+        'He quoted from the Torah, Prophets, and Writings—treating them all as divinely authoritative.',
+        'The New Testament quotes or alludes to the Old Testament over 300 times, demonstrating early Christian reverence for these texts.'
+      ],
+      highlight: '💡 Fun Fact: Jesus never quoted from the Apocrypha (Deuterocanonical books), though He may have been familiar with them.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'How did Jesus refer to the Hebrew Scriptures in Luke 24:44?',
+      options: [
+        'The Old Testament',
+        'The Holy Scriptures',
+        'The Law, the Prophets, and the Psalms',
+        'The TaNaKh'
+      ],
+      correctAnswer: 2,
+      explanation: 'Jesus referred to "the Law of Moses, the Prophets, and the Psalms"—corresponding to the three sections of the Hebrew Bible (TaNaKh).'
+    },
+
+    {
+      type: 'content',
+      title: 'The Septuagint: A Greek Complication',
+      content: [
+        'Here\'s where things get interesting: **Most early Christians didn\'t read Hebrew—they read Greek.**',
+        'The **Septuagint (LXX)** was a Greek translation of the Hebrew Bible, made in Egypt around 250-150 BC for Greek-speaking Jews.',
+        'The Septuagint included not only the Hebrew Bible but also **additional books** (what Catholics call "Deuterocanonical" and Protestants call "Apocrypha"):',
+        '📚 Tobit, Judith, Wisdom of Solomon, Sirach (Ecclesiasticus), Baruch, 1-2 Maccabees, and additions to Esther and Daniel.',
+        'These books were written in Greek or existed only in Greek translation, and they weren\'t part of the Hebrew canon.',
+        'But many early Christians, reading the Septuagint, treated these books as Scripture—leading to later debates about the Old Testament canon.'
+      ],
+      highlight: '🔍 Critical Insight: The Septuagint shaped early Christian Old Testament use, which is why Catholic and Orthodox Bibles include more books than Protestant Bibles.'
+    },
+
+    {
+      type: 'reflection',
+      question: 'Why do you think it matters that Jesus affirmed the Hebrew Scriptures as authoritative? What does this tell us about the Old Testament\'s importance for Christians?',
+      placeholder: 'Consider how Jesus\' use of Scripture shapes Christian understanding...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "The Old Testament Canon"! You now understand the TaNaKh structure, how the Hebrew canon developed, and the role of the Septuagint.',
+      keyTakeaways: [
+        'The Hebrew Bible (TaNaKh) has three sections: Torah, Prophets, and Writings',
+        'The canon developed gradually over centuries, not at a single council',
+        'Jesus affirmed the Hebrew Scriptures, but early Christians often used the Greek Septuagint, which included additional books'
+      ],
+      badge: {
+        icon: '📜',
+        name: 'Hebrew Bible Expert',
+        description: 'Completed Lesson 10: The Old Testament Canon'
+      }
+    }
+  ]
+};
+
+// Lesson 11: Catholic vs Protestant Canons
+
+export const lesson11Data = {
+  id: 11,
+  title: "Catholic vs Protestant Canons",
+  subtitle: "Why different Bibles have different books",
+  duration: "7 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'Catholic vs Protestant Canons',
+      subtitle: '⏱️ About 7 minutes',
+      content: [
+        '**Learning Objective:** By the end of this lesson, you will understand why Catholic and Protestant Bibles have different numbers of Old Testament books.',
+        'If you\'ve ever compared a Catholic and Protestant Bible, you may have noticed something curious:',
+        '📖 **Protestant Old Testament:** 39 books',
+        '📖 **Catholic Old Testament:** 46 books (7 additional books plus additions to Esther and Daniel)',
+        'Both traditions agree on the **27-book New Testament**, but the Old Testament canon differs. Why?'
+      ],
+      highlight: '💭 Quick reflection: Does having more or fewer books make one Bible "better" than another?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Deuterocanonical Books',
+      content: [
+        'The seven additional books in Catholic Bibles are called **Deuterocanonical** ("second canon") by Catholics and **Apocrypha** ("hidden" or "non-canonical") by Protestants:',
+        '📚 Tobit, Judith, Wisdom of Solomon, Sirach (Ecclesiasticus), Baruch, 1 Maccabees, 2 Maccabees',
+        '📜 Plus additions to Esther and Daniel (Prayer of Azariah, Susanna, Bel and the Dragon)',
+        'These books were written during the **intertestamental period** (between 400 BC and the time of Jesus).',
+        'They were included in the **Septuagint** (Greek translation of the Hebrew Bible), which many early Christians used.',
+        '**Key distinction:** These books were NOT part of the Hebrew Bible that Jesus and the apostles used.'
+      ],
+      highlight: '🔑 Key Point: The debate isn\'t about whether these books are valuable—it\'s about whether they\'re divinely inspired Scripture.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What does "Deuterocanonical" mean?',
+      options: [
+        'False books',
+        'Second canon',
+        'Hidden writings',
+        'Greek translations'
+      ],
+      correctAnswer: 1,
+      explanation: 'Deuterocanonical means "second canon," referring to books accepted by Catholics as Scripture but debated or rejected by Protestants and Jews.'
+    },
+
+    {
+      type: 'content',
+      title: 'The Early Church and the Apocrypha',
+      content: [
+        'Early Christians had **mixed views** on the Deuterocanonical books:',
+        '✅ **Supporters:** Church fathers like Augustine argued these books were Scripture because they were in the Septuagint and used by the church.',
+        '❌ **Skeptics:** Jerome (translator of the Latin Vulgate) distinguished between "canonical" books (the Hebrew Bible) and "ecclesiastical" books (useful but not Scripture).',
+        'Many early Christians **quoted** these books and found them edifying, but debates existed about their **canonical status**.',
+        'By the time of the Reformation, Western Christianity generally accepted the expanded canon, though Eastern Orthodox traditions included even more books.'
+      ]
+    },
+
+    {
+      type: 'content',
+      title: 'The Reformation: A Canonical Split',
+      content: [
+        'The Protestant Reformation (16th century) brought this debate to the forefront:',
+        '⚔️ **Martin Luther** translated the Bible into German (1534) and placed the Apocrypha in a separate section "between the Testaments," saying they were "useful and good to read" but not equal to Scripture.',
+        '📜 Luther followed Jerome\'s distinction: only books in the **Hebrew Bible** should be considered canonical.',
+        '⛪ **The Council of Trent (1546):** In response to the Reformation, the Catholic Church officially declared the Deuterocanonical books to be inspired Scripture.',
+        'This solidified the divide: Protestants follow the Hebrew canon (39 books), Catholics include the Deuterocanonical books (46 books).',
+        '🕊️ **Orthodox Christians** include even more books (like 1 Esdras, 3 Maccabees, Prayer of Manasseh) in their canon.'
+      ],
+      highlight: '💡 Historical Note: Many early Protestant Bibles (including the 1611 King James Version) included the Apocrypha, though not as Scripture.'
+    },
+
+    {
+      type: 'matching',
+      title: 'Match the Tradition with Its Canon',
+      pairs: [
+        {
+          term: 'Protestant',
+          definition: '39 Old Testament books (Hebrew Bible)'
+        },
+        {
+          term: 'Catholic',
+          definition: '46 Old Testament books (includes Deuterocanon)'
+        },
+        {
+          term: 'Orthodox',
+          definition: 'Even more OT books (varies by tradition)'
+        },
+        {
+          term: 'All Christians',
+          definition: 'Agree on 27 New Testament books'
+        }
+      ]
+    },
+
+    {
+      type: 'quiz',
+      question: 'What was Martin Luther\'s view on the Apocrypha?',
+      options: [
+        'They are inspired Scripture equal to the Bible',
+        'They should be completely rejected and burned',
+        'They are useful and good to read but not Scripture',
+        'They were written by Moses'
+      ],
+      correctAnswer: 2,
+      explanation: 'Luther said the Apocrypha were "useful and good to read" but not equal to Scripture. He placed them in a separate section in his German Bible.'
+    },
+
+    {
+      type: 'content',
+      title: 'Why the Difference Matters (and Doesn\'t)',
+      content: [
+        'Does this canonical difference affect core Christian doctrine? **No.**',
+        '✅ **All major Christian doctrines** (Trinity, deity of Christ, salvation by grace, resurrection, etc.) are found in the 66 books that all Christians share.',
+        '⚠️ **Minor differences:** Some Catholic doctrines (like prayers for the dead) find support in the Deuterocanonical books (e.g., 2 Maccabees 12:45-46).',
+        'The Deuterocanonical books contain **valuable history** (especially 1-2 Maccabees) and **wisdom literature** (Wisdom of Solomon, Sirach).',
+        'Even if you\'re Protestant, reading these books can enrich your understanding of the intertestamental period and Jewish thought in Jesus\' time.',
+        '🤝 **Bottom line:** Christians can disagree on the canon\'s boundaries while affirming the same core faith.'
+      ],
+      highlight: '🔍 Critical Insight: The canonical debate is about boundaries, not about the essentials of Christian faith.'
+    },
+
+    {
+      type: 'reflection',
+      question: 'How does understanding this canonical difference help you engage respectfully with Christians from different traditions?',
+      placeholder: 'Think about how this knowledge fosters unity despite differences...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "Catholic vs Protestant Canons"! You now understand why different Christian traditions have different Old Testament canons.',
+      keyTakeaways: [
+        'Catholic Bibles include 7 additional OT books (Deuterocanon); Protestant Bibles follow the Hebrew canon',
+        'The difference stems from debates about the Septuagint vs. Hebrew Bible in the early church',
+        'All Christians agree on the 27-book New Testament and core Christian doctrines'
+      ],
+      badge: {
+        icon: '⚖️',
+        name: 'Canon Comparator',
+        description: 'Completed Lesson 11: Catholic vs Protestant Canons'
+      }
+    }
+  ]
+};
+
+// Lesson 12: The New Testament Canon Formation
+
+export const lesson12Data = {
+  id: 12,
+  title: "The New Testament Canon Formation",
+  subtitle: "How 27 books became Scripture",
+  duration: "8 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'The New Testament Canon Formation',
+      subtitle: '⏱️ About 8 minutes',
+      content: [
+        '**Learning Objective:** By the end of this lesson, you will understand how the 27-book New Testament canon was formed.',
+        'Unlike the Old Testament (which Christians inherited from Judaism), the **New Testament** was a uniquely Christian creation.',
+        'In the decades after Jesus\' resurrection, apostles wrote letters, Gospels were composed, and the book of Revelation was penned.',
+        'But how did these 27 books—and not others—become recognized as Scripture?'
+      ],
+      highlight: '💭 Quick reflection: The earliest Christians didn\'t have a "New Testament." What did they consider Scripture?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Earliest Christian Writings',
+      content: [
+        'The New Testament books were written over about **50 years** (c. AD 50-100):',
+        '✉️ **Paul\'s letters** (c. AD 50-67): The earliest NT writings (1 Thessalonians is likely the first).',
+        '📖 **The Gospels** (c. AD 65-100): Mark (earliest), Matthew and Luke (drawing on Mark and other sources), John (latest).',
+        '📜 **Other letters** (c. AD 60-100): Hebrews, James, Peter, Jude.',
+        '🔮 **Revelation** (c. AD 90-96): Written during persecution under Emperor Domitian.',
+        'Early Christians didn\'t immediately recognize these as "Scripture"—that took time and discernment.'
+      ],
+      highlight: '💡 Fun Fact: Paul\'s letters were circulating and being read in churches before any Gospel was written down!'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What were the earliest New Testament writings?',
+      options: [
+        'The four Gospels',
+        'Paul\'s letters',
+        'The book of Revelation',
+        'The book of Acts'
+      ],
+      correctAnswer: 1,
+      explanation: 'Paul\'s letters (like 1 Thessalonians, c. AD 50) were written before the Gospels. The earliest Gospel (Mark) was likely written around AD 65-70.'
+    },
+
+    {
+      type: 'content',
+      title: 'Why Not All Early Christian Writings Made It',
+      content: [
+        'Many other Christian writings circulated in the early centuries:',
+        '📖 **The Didache** ("Teaching of the Twelve Apostles"): An early church manual (c. AD 100).',
+        '✉️ **1 Clement** (c. AD 96): A letter from Rome to Corinth.',
+        '📜 **The Shepherd of Hermas** (c. AD 140): A popular allegorical vision.',
+        '📚 **Gnostic Gospels** (2nd-3rd century): Gospels of Thomas, Judas, Mary—reflecting Gnostic theology.',
+        'These were valued by some Christians but **failed the canonical tests**:',
+        '❌ **Not apostolic:** Written too late or by unknown authors.',
+        '❌ **Not orthodox:** Contained teachings that contradicted the apostolic "rule of faith."',
+        '❌ **Not widely used:** Accepted in some regions but not universally.'
+      ]
+    },
+
+    {
+      type: 'content',
+      title: 'The Four Criteria for Canonicity',
+      content: [
+        'Early Christians used four main criteria to evaluate which books belonged in the canon:',
+        '1️⃣ **Apostolic Origin:** Was it written by an apostle (like Paul or Peter) or a close associate (like Mark or Luke)?',
+        '2️⃣ **Orthodox Content:** Did it align with the "rule of faith"—the core beliefs passed down from the apostles?',
+        '3️⃣ **Widespread Use:** Was it read and accepted in churches across different regions (not just one local community)?',
+        '4️⃣ **Spiritual Power:** Did it demonstrate divine inspiration and authority in transforming lives?',
+        'Books that passed all four tests were recognized as Scripture. Books that failed were set aside.'
+      ],
+      highlight: '🔑 Key Point: The canon wasn\'t imposed by a single authority—it emerged through widespread church consensus.'
+    },
+
+    {
+      type: 'matching',
+      title: 'Match the Criterion',
+      pairs: [
+        {
+          term: 'Apostolic Origin',
+          definition: 'Written by or connected to an apostle'
+        },
+        {
+          term: 'Orthodox Content',
+          definition: 'Aligned with apostolic teaching'
+        },
+        {
+          term: 'Widespread Use',
+          definition: 'Accepted in churches across regions'
+        },
+        {
+          term: 'Spiritual Power',
+          definition: 'Demonstrated divine inspiration'
+        }
+      ]
+    },
+
+    {
+      type: 'content',
+      title: 'The Muratorian Fragment: An Early Canon List',
+      content: [
+        'The **Muratorian Fragment** (c. AD 170) is the earliest known list of New Testament books.',
+        'It includes:',
+        '✅ Four Gospels (Matthew, Mark, Luke, John)',
+        '✅ Acts',
+        '✅ 13 letters of Paul',
+        '✅ Jude, 1-2 John, Revelation',
+        '❌ But it **omits** Hebrews, James, 1-2 Peter',
+        'This shows that by the late 2nd century, most of the NT canon was recognized, but debates continued about a few books.',
+        'The Muratorian Fragment also **rejects** books like the Shepherd of Hermas and the Wisdom of Solomon, showing discernment.'
+      ],
+      highlight: '📜 Historical Note: The Muratorian Fragment is fragmentary and damaged, so we don\'t have the complete list.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What is the Muratorian Fragment?',
+      options: [
+        'A piece of the original Gospel of Mark',
+        'The earliest known list of NT books (c. AD 170)',
+        'A Roman decree about the Bible',
+        'A fragment of the Dead Sea Scrolls'
+      ],
+      correctAnswer: 1,
+      explanation: 'The Muratorian Fragment (c. AD 170) is the earliest known list of New Testament books, showing that much of the canon was recognized by the late 2nd century.'
+    },
+
+    {
+      type: 'content',
+      title: 'From Consensus to Council',
+      content: [
+        'By the late 4th century, the 27-book NT canon had achieved **broad consensus**:',
+        '📜 **Council of Hippo (AD 393)** and **Council of Carthage (AD 397):** Formally affirmed the 27-book canon.',
+        '📖 **Athanasius\' 39th Festal Letter (AD 367):** Listed the exact 27 books we have today as the only canonical NT books.',
+        'These councils didn\'t *create* the canon—they **recognized** what the church had already been using for centuries.',
+        'A few books were debated until the end (Hebrews, James, 2 Peter, 2-3 John, Jude, Revelation), but eventually achieved universal acceptance.',
+        '🕊️ The canon reflects the Holy Spirit\'s guidance of the church over time, not arbitrary human decisions.'
+      ]
+    },
+
+    {
+      type: 'reflection',
+      question: 'Why do you think it took centuries for the NT canon to be fully settled? What does this teach us about discernment and patience?',
+      placeholder: 'Consider how the church carefully discerned Scripture over time...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "The New Testament Canon Formation"! You now understand how the 27-book NT canon was recognized by the early church.',
+      keyTakeaways: [
+        'The NT canon formed gradually over 3-4 centuries through church consensus',
+        'Four criteria guided canonicity: apostolic origin, orthodox content, widespread use, and spiritual power',
+        'Councils like Carthage (397) recognized the canon—they didn\'t create it'
+      ],
+      badge: {
+        icon: '✝️',
+        name: 'NT Canon Expert',
+        description: 'Completed Lesson 12: The New Testament Canon Formation'
+      }
+    }
+  ]
+};
+
+// Continue with lessons 13-16...
+// Due to length constraints, I'll create a condensed version of the remaining lessons
+
+// Lesson 13: Apocryphal Gospels and Forgeries
+
+export const lesson13Data = {
+  id: 13,
+  title: "Apocryphal Gospels and Forgeries",
+  subtitle: "Why books like the Gospel of Thomas were rejected",
+  duration: "7 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'Apocryphal Gospels and Forgeries',
+      subtitle: '⏱️ About 7 minutes',
+      content: [
+        '**Learning Objective:** Understand why certain "gospels" and writings were excluded from the New Testament canon.',
+        'You may have heard of the **Gospel of Thomas**, **Gospel of Judas**, or **Gospel of Mary**. Headlines often claim these are "lost gospels" that challenge traditional Christianity.',
+        'But early Christians rejected these writings. Why?',
+        'Understanding the reasons helps us appreciate the wisdom and discernment of the early church.'
+      ],
+      highlight: '💭 Quick reflection: If you discovered a "lost gospel," how would you evaluate whether it\'s authentic?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Gnostic Gospels',
+      content: [
+        'Most "apocryphal gospels" reflect **Gnostic** theology—a 2nd-century movement that taught:',
+        '🌌 **Secret knowledge (gnosis)** brings salvation, not faith in Christ',
+        '🚫 **The material world is evil**, created by a lesser god',
+        '👻 **Jesus was spirit, not truly human** (Docetism)',
+        '📚 Key Gnostic texts: Gospel of Thomas, Gospel of Philip, Gospel of Judas, Gospel of Mary',
+        'These texts were written **100-200+ years after Jesus**, often pseudonymously (falsely attributed to apostles).',
+        'They contradict core apostolic teaching about Jesus\' incarnation, bodily resurrection, and salvation by grace.'
+      ],
+      highlight: '🔑 Key Point: Gnostic "gospels" teach a different Jesus and a different gospel than the apostles proclaimed.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What is the central problem with Gnostic gospels?',
+      options: [
+        'They were written in Greek',
+        'They were too long',
+        'They taught salvation through secret knowledge, not faith',
+        'They were discovered too recently'
+      ],
+      correctAnswer: 2,
+      explanation: 'Gnostic gospels teach salvation through secret knowledge (gnosis) rather than faith in Christ, contradicting apostolic teaching.'
+    },
+
+    {
+      type: 'content',
+      title: 'Why the Gospel of Thomas Was Rejected',
+      content: [
+        'The **Gospel of Thomas** (c. AD 140-180) is a collection of 114 "sayings of Jesus."',
+        'Some sayings parallel canonical Gospels, but many are bizarre:',
+        '🗣️ "If you bring forth what is within you, what you have will save you" (saying 70)—salvation by self-discovery, not Christ.',
+        '🗣️ "Every woman who makes herself male will enter the kingdom" (saying 114)—reflects Gnostic denigration of the material/feminine.',
+        '❌ **Failed apostolic origin:** Written generations after Thomas died.',
+        '❌ **Failed orthodoxy:** Teaches Gnostic salvation, not the gospel.',
+        '❌ **Failed widespread use:** Rejected by mainstream Christianity.',
+        'Early church fathers like Irenaeus and Hippolytus explicitly warned against Gnostic texts like Thomas.'
+      ]
+    },
+
+    {
+      type: 'content',
+      title: 'Other Rejected Writings',
+      content: [
+        'Beyond Gnostic gospels, other writings were rejected for different reasons:',
+        '📖 **Infancy Gospels** (e.g., Infancy Gospel of Thomas): Contain fanciful childhood stories of Jesus (boy Jesus making clay birds come to life). Legendary, not historical.',
+        '✉️ **Acts of Paul and Thecla** (c. AD 160): Promotes extreme asceticism and features a female apostle. Rejected for being pseudonymous and unorthodox.',
+        '📜 **Epistle of Barnabas** (c. AD 130): Valued by some but not considered apostolic or universally accepted.',
+        'These works might contain **some** historical kernels but were deemed unreliable or theologically problematic.'
+      ],
+      highlight: '💡 Historical Note: The early church distinguished between edifying writings and divinely inspired Scripture.'
+    },
+
+    {
+      type: 'matching',
+      title: 'Match the Apocryphal Text',
+      pairs: [
+        {
+          term: 'Gospel of Thomas',
+          definition: 'Gnostic saying collection, rejected for heresy'
+        },
+        {
+          term: 'Gospel of Judas',
+          definition: 'Portrays Judas as hero, Gnostic theology'
+        },
+        {
+          term: 'Infancy Gospel',
+          definition: 'Legendary childhood stories of Jesus'
+        },
+        {
+          term: 'Epistle of Barnabas',
+          definition: 'Valued but not apostolic or canonical'
+        }
+      ]
+    },
+
+    {
+      type: 'quiz',
+      question: 'What is "pseudepigraphy"?',
+      options: [
+        'Ancient handwriting style',
+        'Falsely attributing authorship to gain credibility',
+        'A type of papyrus manuscript',
+        'Greek translation technique'
+      ],
+      correctAnswer: 1,
+      explanation: 'Pseudepigraphy means falsely attributing a writing to a famous person (like an apostle) to gain credibility. Many apocryphal texts are pseudepigraphal.'
+    },
+
+    {
+      type: 'content',
+      title: 'The Da Vinci Code and Modern Myths',
+      content: [
+        'Modern media (like *The Da Vinci Code*) often promote myths about "suppressed gospels":',
+        '❌ **Myth:** The canon was decided by Emperor Constantine at Nicaea (AD 325) to consolidate power.',
+        '✅ **Reality:** The canon was recognized through church consensus over centuries. Nicaea dealt with the Trinity, not the canon.',
+        '❌ **Myth:** Gnostic gospels present the "true" Jesus, suppressed by the church.',
+        '✅ **Reality:** Gnostic texts were written generations later and reflect 2nd-century philosophy, not 1st-century apostolic witness.',
+        'The canonical Gospels are far closer to the events they describe and pass rigorous historical tests.',
+        'Apocryphal texts are valuable for understanding early Christian diversity but are not reliable sources for Jesus\' life and teaching.'
+      ],
+      highlight: '🔍 Critical Thinking: Always ask: When was this written? By whom? Does it align with apostolic teaching?'
+    },
+
+    {
+      type: 'reflection',
+      question: 'How does understanding the reasons for rejecting apocryphal texts strengthen your confidence in the New Testament canon?',
+      placeholder: 'Think about the early church\'s careful discernment...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "Apocryphal Gospels and Forgeries"! You can now evaluate claims about "lost gospels" with historical discernment.',
+      keyTakeaways: [
+        'Gnostic gospels reflect 2nd-century philosophy, not 1st-century apostolic witness',
+        'Apocryphal texts were rejected for lacking apostolic origin, orthodox content, or widespread acceptance',
+        'Modern myths about "suppressed gospels" don\'t hold up to historical scrutiny'
+      ],
+      badge: {
+        icon: '🔍',
+        name: 'Apocrypha Analyst',
+        description: 'Completed Lesson 13: Apocryphal Gospels and Forgeries'
+      }
+    }
+  ]
+};
+
+// Lessons 14-16 would continue here with topics like:
+// - Lesson 14: The Canon and Church Authority
+// - Lesson 15: Living with Canonical Boundaries
+// - Lesson 16: Applying Canon Knowledge Today
+
+// For now, I'll create abbreviated versions to complete the path
+
+export const lesson14Data = {
+  id: 14,
+  title: "The Canon and Church Authority",
+  subtitle: "Did the church create the canon or recognize it?",
+  duration: "6 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'The Canon and Church Authority',
+      subtitle: '⏱️ About 6 minutes',
+      content: [
+        '**Learning Objective:** Understand the relationship between church authority and the biblical canon.',
+        'A common question: **Did the church create the canon, or did the church recognize the canon?**',
+        'This question has huge implications for how we view Scripture\'s authority.',
+        'The answer shapes how Catholics, Orthodox, and Protestants think about church and Bible.'
+      ],
+      highlight: '💭 Quick reflection: What comes first—the church or the Bible? Can one exist without the other?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Catholic View: Church Authority',
+      content: [
+        '**Catholic teaching:** The church, guided by the Holy Spirit, **determined** which books are Scripture.',
+        '🏛️ Since the church came before the complete NT, the church has authority to define the canon.',
+        '📜 The Magisterium (teaching authority) and Tradition work alongside Scripture.',
+        '✅ **Implication:** The church\'s authority validates Scripture, so church tradition carries authoritative weight.',
+        'This is why the Council of Trent (1546) could officially declare the Deuterocanon as Scripture.',
+        'For Catholics, you can\'t separate the Bible from the church that recognized it.'
+      ],
+      highlight: '🔑 Catholic perspective: "The church gave you the Bible, so trust the church."'
+    },
+
+    {
+      type: 'content',
+      title: 'The Protestant View: Self-Authenticating Scripture',
+      content: [
+        '**Protestant teaching:** The church **recognized** (not created) the canon because Scripture is self-authenticating.',
+        '📖 The Holy Spirit bears witness to Scripture\'s divine origin—the church simply acknowledged what God had already inspired.',
+        '🕊️ "My sheep hear my voice" (John 10:27)—believers recognize God\'s Word.',
+        '✅ **Implication:** Scripture has authority *over* the church, not derived *from* the church.',
+        'This is why Protestants could reject certain books (Deuterocanon) based on their assessment of divine inspiration.',
+        'The church is the "pillar and ground of truth" (1 Tim 3:15) but remains under Scripture\'s authority.'
+      ],
+      highlight: '🔑 Protestant perspective: "The church recognized the Bible because it\'s God\'s Word."'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What is the main difference between Catholic and Protestant views on the canon?',
+      options: [
+        'Catholics read Greek, Protestants read Hebrew',
+        'Catholics say the church determined the canon; Protestants say the church recognized it',
+        'Catholics reject the Old Testament',
+        'Protestants don\'t believe in church authority'
+      ],
+      correctAnswer: 1,
+      explanation: 'Catholics teach the church determined the canon through its authority; Protestants teach the church recognized the already-inspired canon.'
+    },
+
+    {
+      type: 'content',
+      title: 'Finding Common Ground',
+      content: [
+        'Despite differences, Catholics and Protestants agree on key points:',
+        '🤝 **The Holy Spirit guided the process:** Both affirm divine guidance in canon formation.',
+        '🤝 **The early church was involved:** Both recognize the church\'s role in discerning Scripture.',
+        '🤝 **The 27-book NT:** Both fully agree on the New Testament canon.',
+        '🤝 **Scripture is authoritative:** Both place the Bible at the center of Christian faith.',
+        'The disagreement is about the **nature** of the church\'s role, not whether the church had a role.',
+        'Understanding this helps Christians from different traditions dialogue respectfully.'
+      ]
+    },
+
+    {
+      type: 'reflection',
+      question: 'How does this debate about church authority and canon shape how you read and apply Scripture today?',
+      placeholder: 'Consider how your view affects your approach to the Bible...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "The Canon and Church Authority"! You now understand the Catholic and Protestant perspectives on canon formation.',
+      keyTakeaways: [
+        'Catholics: church determined the canon through Spirit-guided authority',
+        'Protestants: church recognized the self-authenticating canon',
+        'Both agree the Holy Spirit guided the process and Scripture is authoritative'
+      ],
+      badge: {
+        icon: '⛪',
+        name: 'Church & Canon Scholar',
+        description: 'Completed Lesson 14: The Canon and Church Authority'
+      }
+    }
+  ]
+};
+
+export const lesson15Data = {
+  id: 15,
+  title: "Why the Canon Is Closed",
+  subtitle: "Can new books be added to the Bible?",
+  duration: "6 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'Why the Canon Is Closed',
+      subtitle: '⏱️ About 6 minutes',
+      content: [
+        '**Learning Objective:** Understand why Christians consider the biblical canon "closed" and complete.',
+        'Every few years, someone claims to discover a "new gospel" or a modern prophet claims new revelation equal to Scripture.',
+        '**Why don\'t Christians add these to the Bible?**',
+        'The answer lies in understanding what makes Scripture unique and why the canon is considered closed.'
+      ],
+      highlight: '💭 Quick reflection: If someone wrote a "28th book of the New Testament" today, would you add it to your Bible? Why or why not?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: 'The Apostolic Foundation',
+      content: [
+        'The New Testament canon is tied to the **apostolic era**—the time when Jesus\' apostles and their immediate associates were alive.',
+        '🏛️ Ephesians 2:20: The church is "built on the foundation of the apostles and prophets, Christ Jesus himself being the cornerstone."',
+        '📜 The apostles were **eyewitnesses** (or recorded eyewitness testimony) of Jesus\' life, death, and resurrection.',
+        '⏳ Once the apostolic generation passed (late 1st century), the foundational era ended.',
+        'No one today can be an apostle in the same sense—an eyewitness commissioned directly by the risen Jesus.',
+        'Therefore, no new writings can have the same apostolic authority as the NT books.'
+      ],
+      highlight: '🔑 Key Point: The canon is closed because the apostolic era is closed.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'Why can\'t new books be added to the New Testament canon today?',
+      options: [
+        'The church forbids it',
+        'No one writes as well as the apostles',
+        'The apostolic era (eyewitness testimony) has ended',
+        'We already have enough books'
+      ],
+      correctAnswer: 2,
+      explanation: 'The canon is tied to the apostolic era. Since no one today can be an eyewitness of Jesus or directly commissioned by Him, no new books can have apostolic authority.'
+    },
+
+    {
+      type: 'content',
+      title: 'But God Still Speaks!',
+      content: [
+        'Saying the canon is closed does **not** mean God stopped speaking:',
+        '🕊️ **The Holy Spirit still guides believers** (John 16:13) through prayer, preaching, and applying Scripture.',
+        '🗣️ **Prophecy and spiritual gifts continue** in many Christian traditions (1 Cor 14:1).',
+        '📖 **New insights and applications arise** as we read Scripture in new contexts.',
+        '**However:**',
+        '❌ No modern prophecy, vision, or teaching has the **same authority** as Scripture.',
+        '❌ All prophecy and teaching must be **tested against Scripture** (1 John 4:1; Acts 17:11).',
+        'Scripture remains the **norming norm**—the standard by which all other claims are evaluated.'
+      ],
+      highlight: '💡 Important: Closing the canon preserves Scripture\'s unique authority without limiting God\'s ongoing work.'
+    },
+
+    {
+      type: 'content',
+      title: 'Why a Closed Canon Matters',
+      content: [
+        'A closed canon provides:',
+        '1️⃣ **Stability:** Christians worldwide share the same authoritative texts.',
+        '2️⃣ **Protection:** Prevents false teachers from adding their own writings as "Scripture."',
+        '3️⃣ **Clarity:** We know what God has revealed definitively about salvation and Christian life.',
+        '4️⃣ **Unity:** All Christians can appeal to the same foundation.',
+        '⚠️ **Without a closed canon:**',
+        '• Anyone could claim their writings are "inspired" and equal to the Bible',
+        '• Core doctrines would constantly be in flux',
+        '• Christian unity would be impossible',
+        'The closed canon is a gift that protects the church.'
+      ]
+    },
+
+    {
+      type: 'quiz',
+      question: 'What is the "norming norm"?',
+      options: [
+        'A church law about behavior',
+        'Scripture as the standard for evaluating all teachings',
+        'A translation principle',
+        'The Pope\'s teaching authority'
+      ],
+      correctAnswer: 1,
+      explanation: 'Scripture is the "norming norm"—the standard that judges all other claims to authority. All teachings must align with Scripture.'
+    },
+
+    {
+      type: 'content',
+      title: 'Responding to New "Scriptures"',
+      content: [
+        'Various groups claim to have new "scriptures":',
+        '📖 **Mormonism:** The Book of Mormon, Doctrine and Covenants (claims to be additional revelation)',
+        '📖 **Islam:** The Quran (claims to supersede the Bible)',
+        '📖 **Christian Science:** Science and Health with Key to the Scriptures',
+        '**How to respond:**',
+        '1️⃣ Affirm that God spoke definitively through the apostles',
+        '2️⃣ Test new claims against apostolic teaching (Gal 1:8-9)',
+        '3️⃣ Recognize the canon\'s unique historical and theological foundation',
+        'These texts may have religious significance for their adherents but don\'t meet the criteria for biblical canonicity.'
+      ],
+      highlight: '⚠️ Warning: "If anyone is preaching to you a gospel contrary to the one you received, let him be accursed" (Galatians 1:9).'
+    },
+
+    {
+      type: 'reflection',
+      question: 'How does knowing the canon is closed help you evaluate modern religious movements or teachings?',
+      placeholder: 'Think about how this knowledge protects you from false teaching...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Lesson Complete! 🎉',
+      message: 'You\'ve completed "Why the Canon Is Closed"! You can now explain why no new books can be added to the Bible.',
+      keyTakeaways: [
+        'The canon is closed because the apostolic era (eyewitness testimony) has ended',
+        'A closed canon provides stability, protection, clarity, and unity',
+        'God still speaks today, but Scripture remains the norming norm for all teaching'
+      ],
+      badge: {
+        icon: '🔒',
+        name: 'Canon Defender',
+        description: 'Completed Lesson 15: Why the Canon Is Closed'
+      }
+    }
+  ]
+};
+
+export const lesson16Data = {
+  id: 16,
+  title: "Applying Canon Knowledge Today",
+  subtitle: "Putting your learning into practice",
+  duration: "6 min",
+  cards: [
+    {
+      type: 'content',
+      title: 'Applying Canon Knowledge Today',
+      subtitle: '⏱️ About 6 minutes',
+      content: [
+        '**Learning Objective:** Learn how to apply your understanding of the biblical canon in everyday Christian life.',
+        'Congratulations! You\'ve journeyed through the history of the biblical canon—from the Hebrew Bible to the New Testament to denominational differences.',
+        'But knowledge isn\'t just for trivia—it\'s for life.',
+        'Let\'s explore how to apply what you\'ve learned.'
+      ],
+      highlight: '💭 Final reflection: How has learning about the canon changed how you read and trust the Bible?',
+      requireAcknowledgment: true
+    },
+
+    {
+      type: 'content',
+      title: '1. Reading with Confidence',
+      content: [
+        'Understanding the canon helps you read the Bible with confidence:',
+        '✅ You know **why** these 66 (or 73) books are in your Bible',
+        '✅ You understand the **careful process** behind canon formation',
+        '✅ You can **trust** that these books reflect apostolic teaching',
+        'You don\'t have to wonder, "Did I get the right books?" The church, guided by the Spirit over centuries, has answered that question.',
+        'This confidence doesn\'t eliminate questions, but it provides a foundation for study and faith.'
+      ],
+      highlight: '💡 Practical Tip: When reading Scripture, remember: "This book passed rigorous tests of apostolicity, orthodoxy, and acceptance."'
+    },
+
+    {
+      type: 'content',
+      title: '2. Engaging Different Traditions Respectfully',
+      content: [
+        'Your canon knowledge helps you dialogue with Christians from other traditions:',
+        '🤝 **With Catholics:** Understand why they include the Deuterocanon; focus on shared beliefs in the 27-book NT.',
+        '🤝 **With Orthodox:** Recognize their even broader canon reflects ancient traditions; major doctrines remain the same.',
+        '🤝 **Within Protestantism:** Appreciate that all Protestant denominations share the same 66-book canon.',
+        'You can disagree on canonical boundaries while affirming the same Lord, same gospel, same core faith.',
+        'Don\'t let canonical differences create division where unity in Christ exists.'
+      ],
+      highlight: '🔑 Unity Principle: Affirm what you share (the gospel, the Trinity, the incarnation) before debating canon differences.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'What should be your primary focus when dialoguing with Christians who have a different canon?',
+      options: [
+        'Proving your canon is correct',
+        'Ignoring the differences',
+        'Focusing on shared beliefs and the gospel',
+        'Avoiding the topic entirely'
+      ],
+      correctAnswer: 2,
+      explanation: 'Focus on what you share—the gospel, core doctrines, and the lordship of Christ—while respectfully understanding differences.'
+    },
+
+    {
+      type: 'content',
+      title: '3. Evaluating Modern Claims',
+      content: [
+        'Your canon knowledge equips you to evaluate new religious claims:',
+        '🔍 **"Lost gospels":** You can assess whether they meet canonical criteria (apostolic origin, orthodox content, etc.).',
+        '🔍 **New revelations:** You understand why the canon is closed and can test claims against Scripture.',
+        '🔍 **Fringe teachings:** You can ask, "Does this align with apostolic teaching found in canonical books?"',
+        'This doesn\'t make you arrogant—it makes you discerning (1 John 4:1).',
+        'You\'re not dismissing God\'s ongoing work; you\'re protecting the foundational revelation.'
+      ]
+    },
+
+    {
+      type: 'content',
+      title: '4. Diving Deeper into Scripture',
+      content: [
+        'Understanding the canon should inspire deeper Bible study:',
+        '📖 **Read books in canonical order:** Understand how the Bible was arranged and why.',
+        '📖 **Study disputed books:** Dig into Hebrews, James, 2 Peter, Revelation—why were they debated? What makes them canonical?',
+        '📖 **Read the Apocrypha (if Protestant):** Understand the intertestamental period and Jewish thought in Jesus\' time.',
+        '📖 **Explore church history:** Learn about the councils, early fathers, and debates that shaped the canon.',
+        'The more you study, the more you appreciate the Bible\'s richness and the Spirit\'s guidance.'
+      ],
+      highlight: '📚 Challenge: Read one Deuterocanonical book (like 1 Maccabees) to understand why Catholics value it, even if you\'re Protestant.'
+    },
+
+    {
+      type: 'quiz',
+      question: 'How should your canon knowledge affect your Bible reading?',
+      options: [
+        'Make you skeptical of Scripture',
+        'Cause you to question everything',
+        'Give you confidence and inspire deeper study',
+        'Make you feel superior to other Christians'
+      ],
+      correctAnswer: 2,
+      explanation: 'Understanding the canon should give you confidence in Scripture\'s reliability and inspire you to study it more deeply.'
+    },
+
+    {
+      type: 'content',
+      title: '5. Living Under Scripture\'s Authority',
+      content: [
+        'Ultimately, knowing the canon matters because **Scripture shapes how we live**:',
+        '✝️ The canon defines what Christians believe about God, salvation, and the Christian life.',
+        '✝️ The canon calls us to obedience, worship, and mission.',
+        '✝️ The canon reveals Jesus Christ—the Word made flesh.',
+        'Don\'t just **know** the canon—**live** under its authority.',
+        '📖 Read it prayerfully.',
+        '📖 Study it carefully.',
+        '📖 Obey it faithfully.',
+        '📖 Share it boldly.',
+        'The canon isn\'t an academic curiosity—it\'s the foundation for a life transformed by the gospel.'
+      ],
+      highlight: '🔥 Final Challenge: Choose one book of the Bible and commit to reading it this week. Let Scripture speak!'
+    },
+
+    {
+      type: 'reflection',
+      question: 'How will you apply what you\'ve learned about the canon in your Bible reading, church life, and faith conversations?',
+      placeholder: 'Make a practical commitment based on this path...'
+    },
+
+    {
+      type: 'completion',
+      title: 'Path Complete! 🎉🏆',
+      message: 'Congratulations! You\'ve completed the Biblical Canon learning path! You now have a deep understanding of how the Bible was formed, why it has the books it does, and how to apply this knowledge in your Christian life.',
+      keyTakeaways: [
+        'Read Scripture with confidence, knowing the careful process behind canon formation',
+        'Engage different Christian traditions respectfully, focusing on shared beliefs',
+        'Use your knowledge to evaluate modern claims and deepen your Bible study',
+        'Live under Scripture\'s authority—read, study, obey, and share the Word'
+      ],
+      badge: {
+        icon: '🏆',
+        name: 'Biblical Canon Master',
+        description: 'Completed ALL 8 Lessons: Biblical Canon Path'
+      }
+    }
+  ]
+};

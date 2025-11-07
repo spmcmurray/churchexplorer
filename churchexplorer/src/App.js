@@ -5,6 +5,13 @@ import DenominationVisualizer from "./DenominationVisualizer";
 import ChurchHistoryGuide from "./ChurchHistoryGuide";
 import BibleHistoryGuide from "./BibleHistoryGuide";
 import ApologeticsGuide from "./ApologeticsGuide";
+import BiblicalCanonGuide from "./BiblicalCanonGuide";
+import EarlyChristianityGuide from "./EarlyChristianityGuide";
+import InterpretationGuide from "./InterpretationGuide";
+import CouncilsWorshipGuide from "./CouncilsWorshipGuide";
+import TranslationsGuide from "./TranslationsGuide";
+import GospelMessageGuide from "./GospelMessageGuide";
+import DiscerningTruthGuide from "./DiscerningTruthGuide";
 import { Home as HomeIcon, Scroll, Globe, Trophy, User, LogOut, ChevronDown, Trash2, Menu, X, Sparkles, Settings } from 'lucide-react';
 import Home from './Home';
 import Paths from './Paths';
@@ -19,6 +26,7 @@ import AIPathViewer from './AIPathViewer';
 import AILessonViewerPage from './AILessonViewerPage';
 import Profile from './Profile';
 import Legal from './Legal';
+import StudyBuddy from './StudyBuddy';
 import { onAuthChange, logOut, deleteAccount } from './firebase/authService';
 import { getUserProgress } from './firebase/progressService';
 import { notifyAchievement, onAchievement } from './services/progressService';
@@ -235,6 +243,41 @@ function BibleHistoryWrapper({ userProgress, onProgressUpdate }) {
 function ApologeticsWrapper({ userProgress, onProgressUpdate }) {
   const navigate = useNavigate();
   return <ApologeticsGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function BiblicalCanonWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <BiblicalCanonGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function EarlyChristianityWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <EarlyChristianityGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function InterpretationWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <InterpretationGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function CouncilsWorshipWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <CouncilsWorshipGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function TranslationsWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <TranslationsGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function GospelMessageWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <GospelMessageGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
+}
+
+function DiscerningTruthWrapper({ userProgress, onProgressUpdate }) {
+  const navigate = useNavigate();
+  return <DiscerningTruthGuide userProgress={userProgress} onNavigate={(view) => navigate(`/${view}`)} onGoBack={() => navigate(-1)} onProgressUpdate={onProgressUpdate} />;
 }
 
 function ExploreChurchWrapper() {
@@ -559,6 +602,13 @@ function AppContent() {
             <Route path="/study-guide" element={<ChurchHistoryWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/bible-history" element={<BibleHistoryWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/apologetics" element={<ApologeticsWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/biblical-canon" element={<BiblicalCanonWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/early-christianity" element={<EarlyChristianityWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/interpretation" element={<InterpretationWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/councils-worship" element={<CouncilsWorshipWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/translations" element={<TranslationsWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/gospel-message" element={<GospelMessageWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
+            <Route path="/discerning-truth" element={<DiscerningTruthWrapper userProgress={userProgress} onProgressUpdate={refreshUserProgress} />} />
             <Route path="/explore-church" element={<ExploreChurchWrapper />} />
             <Route path="/explore-bible" element={<ExploreBibleWrapper />} />
             <Route path="/explore-denominations" element={<ExploreDenominationsWrapper />} />
@@ -666,6 +716,9 @@ function AppContent() {
           </div>
         </div>
       )}
+
+      {/* Floating Study Buddy - available on all pages */}
+      <StudyBuddy currentUser={currentUser} />
     </div>
   );
 }

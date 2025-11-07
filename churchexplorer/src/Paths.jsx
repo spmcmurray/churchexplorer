@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Scroll, Shield, CheckCircle2, ArrowLeft, Sparkles, Play, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, Scroll, Shield, CheckCircle2, ArrowLeft, Sparkles, Play, ChevronDown, ChevronUp, Book, Cross, Users, Church, Languages, Heart, Scale } from 'lucide-react';
 
 const Paths = ({ onNavigate, onGoBack, userProgress }) => {
   const [showCompletedPaths, setShowCompletedPaths] = useState(false);
@@ -14,6 +14,34 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
   };
   const apologetics = {
     completedCount: userProgress?.courses?.apologetics?.completedLessons?.length || 0,
+    total: 8
+  };
+  const biblicalCanon = {
+    completedCount: userProgress?.courses?.biblicalCanon?.completedLessons?.length || 0,
+    total: 8
+  };
+  const earlyChristianity = {
+    completedCount: userProgress?.courses?.earlyChristianity?.completedLessons?.length || 0,
+    total: 8
+  };
+  const interpretation = {
+    completedCount: userProgress?.courses?.interpretation?.completedLessons?.length || 0,
+    total: 8
+  };
+  const councilsWorship = {
+    completedCount: userProgress?.courses?.councilsWorship?.completedLessons?.length || 0,
+    total: 8
+  };
+  const translations = {
+    completedCount: userProgress?.courses?.translations?.completedLessons?.length || 0,
+    total: 8
+  };
+  const gospelMessage = {
+    completedCount: userProgress?.courses?.gospelMessage?.completedLessons?.length || 0,
+    total: 8
+  };
+  const discerningTruth = {
+    completedCount: userProgress?.courses?.discerningTruth?.completedLessons?.length || 0,
     total: 8
   };
 
@@ -47,6 +75,62 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
       color: 'from-indigo-600 to-purple-600',
       progress: apologetics,
     },
+    {
+      id: 'biblical-canon',
+      title: 'Biblical Canon',
+      subtitle: 'How the Bible came to be and why it has these books',
+      icon: Book,
+      color: 'from-emerald-600 to-teal-600',
+      progress: biblicalCanon,
+    },
+    {
+      id: 'early-christianity',
+      title: 'Early Christianity',
+      subtitle: 'What Christians believed before denominations',
+      icon: Cross,
+      color: 'from-rose-600 to-pink-600',
+      progress: earlyChristianity,
+    },
+    {
+      id: 'interpretation',
+      title: 'Biblical Interpretation',
+      subtitle: 'Why Christians read Scripture differently',
+      icon: Scale,
+      color: 'from-cyan-600 to-blue-600',
+      progress: interpretation,
+    },
+    {
+      id: 'councils-worship',
+      title: 'Councils & Worship',
+      subtitle: 'Church councils and worship practices explained',
+      icon: Church,
+      color: 'from-violet-600 to-purple-600',
+      progress: councilsWorship,
+    },
+    {
+      id: 'translations',
+      title: 'Bible Translations',
+      subtitle: 'Why so many versions and which to choose',
+      icon: Languages,
+      color: 'from-fuchsia-600 to-pink-600',
+      progress: translations,
+    },
+    {
+      id: 'gospel-message',
+      title: 'The Gospel Message',
+      subtitle: 'Understanding the gospel in first-century context',
+      icon: Heart,
+      color: 'from-red-600 to-orange-600',
+      progress: gospelMessage,
+    },
+    {
+      id: 'discerning-truth',
+      title: 'Discerning Truth',
+      subtitle: 'How to tell if a teaching is orthodox or fringe',
+      icon: Shield,
+      color: 'from-slate-600 to-gray-600',
+      progress: discerningTruth,
+    },
   ];
 
   return (
@@ -60,7 +144,7 @@ const Paths = ({ onNavigate, onGoBack, userProgress }) => {
         <div className="relative max-w-6xl mx-auto z-10">
           <h1 className="text-4xl md:text-5xl font-black mb-4">Curated Learning Paths</h1>
           <p className="text-lg md:text-xl text-blue-100 max-w-3xl">
-            Three guided journeys to understand the Bible, Church, and Christian faith.
+            Ten guided journeys to understand the Bible, Church, and Christian faith.
           </p>
         </div>
       </div>
