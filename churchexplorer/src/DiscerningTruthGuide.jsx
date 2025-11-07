@@ -1,29 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Lock, ArrowLeft } from 'lucide-react';
+import { CheckCircle, ChevronDown, ChevronRight, Shield, Lock, ArrowLeft } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import InteractiveLesson from './InteractiveLesson';
+import ReviewSession from './ReviewSession';
+import { completeCourseLesson } from './firebase/progressService';
+import { getCurrentUser } from './firebase/authService';
+import { scheduleReviews } from './services/reviewService';
 
-const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack }) => {
+const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpdate }) => {
+  const location = useLocation();
+  const [expandedLesson, setExpandedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
+  const [interactiveMode, setInteractiveMode] = useState(null);
+  const [reviewMode, setReviewMode] = useState(null);
+
+  useEffect(() => {
+    if (location.state?.reviewMode && location.state.reviewMode.path === 'discerningTruth') {
+      setReviewMode(location.state.reviewMode);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
     if (userProgress?.courses?.discerningTruth?.completedLessons) {
       setCompletedLessons(userProgress.courses.discerningTruth.completedLessons);
     }
   }, [userProgress]);
 
+  const getTotalXP = () => userProgress?.courses?.discerningTruth?.totalXP || 0;
+
   const lessons = [
-    { number: 57, title: 'Orthodox vs Heterodox: What\'s the Difference?', duration: '7 min' },
-    { number: 58, title: 'Red Flags in Doctrine', duration: '8 min' },
-    { number: 59, title: 'The Church Fathers as Guides', duration: '7 min' },
-    { number: 60, title: 'Theological Triage', duration: '7 min' },
-    { number: 61, title: 'Evaluating Modern Teachers', duration: '7 min' },
-    { number: 62, title: 'When Good People Teach Bad Theology', duration: '7 min' },
-    { number: 63, title: 'Building a Theology Toolkit', duration: '6 min' },
-    { number: 64, title: 'Discernment with Grace', duration: '6 min' },
+    { number: 57, title: 'Orthodox vs Heterodox: What\'s the Difference?', duration: '7 min', data: null },
+    { number: 58, title: 'Red Flags in Doctrine', duration: '8 min', data: null },
+    { number: 59, title: 'The Church Fathers as Guides', duration: '7 min', data: null },
+    { number: 60, title: 'Theological Triage', duration: '7 min', data: null },
+    { number: 61, title: 'Evaluating Modern Teachers', duration: '7 min', data: null },
+    { number: 62, title: 'When Good People Teach Bad Theology', duration: '7 min', data: null },
+    { number: 63, title: 'Building a Theology Toolkit', duration: '6 min', data: null },
+    { number: 64, title: 'Discernment with Grace', duration: '6 min', data: null },
   ];
 
+  const handleLessonComplete = async (lessonNumber, xp) => {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    await completeCourseLesson(user.uid, 'discerningTruth', lessonNumber, xp);
+    await scheduleReviews(user.uid, 'discerningTruth', lessonNumber);
+    
+    if (onProgressUpdate) await onProgressUpdate();
+
+    setInteractiveMode(null);
+    setExpandedLesson(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleReviewComplete = () => {
+    setReviewMode(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (reviewMode) {
+    const lesson = lessons.find(l => l.number === reviewMode.lessonNumber);
+    if (lesson?.data) {
+      return <ReviewSession lessonData={lesson.data} onComplete={handleReviewComplete} onBack={handleReviewComplete} />;
+    }
+  }
+
+  if (interactiveMode !== null) {
+    const lesson = lessons.find(l => l.number === interactiveMode);
+    if (lesson?.data) {
+      return <InteractiveLesson lessonData={lesson.data} onComplete={(xp) => handleLessonComplete(interactiveMode, xp)} onBack={() => { setInteractiveMode(null); setExpandedLesson(null); }} />;
+    }
+  }
+
   const progressPercent = Math.round((completedLessons.length / lessons.length) * 100);
-  const getTotalXP = () => userProgress?.courses?.discerningTruth?.totalXP || 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -33,8 +86,8 @@ const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack }) => {
           <div className="flex items-center gap-3 mb-4">
             <Shield className="w-12 h-12" />
             <div>
-              <h1 className="text-4xl md:text-5xl font-black">Discerning Truth</h1>
-              <p className="text-slate-200">How to tell if a teaching is orthodox or fringe</p>
+              <h1 className="text-4xl md:text-5xl font-black">How to Tell If Teaching Is Orthodox</h1>
+              <p className="text-slate-200">Discerning truth from fringe theology</p>
             </div>
           </div>
         </div>
@@ -66,14 +119,35 @@ const DiscerningTruthGuide = ({ userProgress, onNavigate, onGoBack }) => {
         </div>
 
         <div className="space-y-4">
-          {lessons.map(lesson => (
-            <div key={lesson.number} className="bg-white rounded-2xl border-2 border-slate-200 opacity-60 p-6">
-              <div className="flex items-center gap-4">
-                <Lock className="w-6 h-6 text-slate-400" />
-                <div><h3 className="font-bold text-lg text-slate-900">{lesson.title}</h3><p className="text-sm text-slate-600">{lesson.duration}</p></div>
+          {lessons.map((lesson, index) => {
+            const isCompleted = completedLessons.includes(lesson.number);
+            const isLocked = index > 0 && !completedLessons.includes(lessons[index - 1].number);
+            const isExpanded = expandedLesson === lesson.number;
+
+            return (
+              <div key={lesson.number} className={`bg-white rounded-2xl border-2 transition ${isLocked ? 'border-slate-200 opacity-60' : 'border-slate-200 hover:border-slate-400'}`}>
+                <div className="p-6 cursor-pointer" onClick={() => !isLocked && setExpandedLesson(isExpanded ? null : lesson.number)}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 flex-1">
+                      {isLocked ? <Lock className="w-6 h-6 text-slate-400" /> : isCompleted ? <CheckCircle className="w-6 h-6 text-slate-600" /> : <div className="w-6 h-6 rounded-full border-2 border-slate-300" />}
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-slate-900">{lesson.title}</h3>
+                        <p className="text-sm text-slate-600">{lesson.duration}</p>
+                      </div>
+                    </div>
+                    {!isLocked && (isExpanded ? <ChevronDown className="w-5 h-5 text-slate-400" /> : <ChevronRight className="w-5 h-5 text-slate-400" />)}
+                  </div>
+                </div>
+                {isExpanded && !isLocked && (
+                  <div className="border-t-2 border-slate-100 p-6">
+                    <button onClick={() => lesson.data ? setInteractiveMode(lesson.number) : null} disabled={!lesson.data} className={`w-full py-3 px-6 rounded-xl font-semibold transition ${lesson.data ? 'bg-gradient-to-r from-slate-600 to-gray-600 text-white hover:shadow-lg cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
+                      {lesson.data ? (isCompleted ? 'Review Lesson' : 'Start Lesson') : 'Coming Soon'}
+                    </button>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

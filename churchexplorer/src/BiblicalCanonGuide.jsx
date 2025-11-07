@@ -108,8 +108,8 @@ const BiblicalCanonGuide = ({ userProgress, onNavigate, onGoBack, onProgressUpda
           <div className="flex items-center gap-3 mb-4">
             <Book className="w-12 h-12" />
             <div>
-              <h1 className="text-4xl md:text-5xl font-black">Biblical Canon</h1>
-              <p className="text-emerald-100">How the Bible came to be and why it has these books</p>
+              <h1 className="text-4xl md:text-5xl font-black">Where Did the Bible Come From?</h1>
+              <p className="text-emerald-100">Canon formation and Catholic vs Protestant differences</p>
             </div>
           </div>
         </div>
