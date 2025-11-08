@@ -23,6 +23,30 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
     productUpdates: false,
   });
 
+  // Denomination preference state
+  const [denomination, setDenomination] = useState('');
+
+  // Load denomination preference from Firestore
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    const loadDenomination = async () => {
+      try {
+        const { db } = await import('./firebase/config');
+        const { doc, getDoc } = await import('firebase/firestore');
+        
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists() && userDoc.data().denomination) {
+          setDenomination(userDoc.data().denomination);
+        }
+      } catch (error) {
+        console.error('Error loading denomination:', error);
+      }
+    };
+    
+    loadDenomination();
+  }, [currentUser]);
+
   // Load subscription data with real-time updates
   useEffect(() => {
     if (!currentUser) return;
@@ -258,10 +282,10 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
 
         {/* Tab Navigation */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
-          <div className="flex border-b border-slate-200">
+          <div className="flex border-b border-slate-200 overflow-x-auto scrollbar-hide">
             <button
               onClick={() => setActiveTab('account')}
-              className={`flex-1 px-6 py-4 font-medium transition ${
+              className={`flex-shrink-0 px-6 py-4 font-medium transition ${
                 activeTab === 'account'
                   ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
                   : 'text-slate-600 hover:bg-slate-50'
@@ -269,12 +293,12 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
             >
               <div className="flex items-center justify-center space-x-2">
                 <User className="w-4 h-4" />
-                <span>Account</span>
+                <span className="whitespace-nowrap">Account</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('subscription')}
-              className={`flex-1 px-6 py-4 font-medium transition ${
+              className={`flex-shrink-0 px-6 py-4 font-medium transition ${
                 activeTab === 'subscription'
                   ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
                   : 'text-slate-600 hover:bg-slate-50'
@@ -282,12 +306,12 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
             >
               <div className="flex items-center justify-center space-x-2">
                 <CreditCard className="w-4 h-4" />
-                <span>Subscription</span>
+                <span className="whitespace-nowrap">Subscription</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('preferences')}
-              className={`flex-1 px-6 py-4 font-medium transition ${
+              className={`flex-shrink-0 px-6 py-4 font-medium transition ${
                 activeTab === 'preferences'
                   ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
                   : 'text-slate-600 hover:bg-slate-50'
@@ -295,12 +319,12 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
             >
               <div className="flex items-center justify-center space-x-2">
                 <Shield className="w-4 h-4" />
-                <span>Preferences</span>
+                <span className="whitespace-nowrap">Preferences</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('about')}
-              className={`flex-1 px-6 py-4 font-medium transition ${
+              className={`flex-shrink-0 px-6 py-4 font-medium transition ${
                 activeTab === 'about'
                   ? 'bg-purple-50 text-purple-600 border-b-2 border-purple-600'
                   : 'text-slate-600 hover:bg-slate-50'
@@ -308,7 +332,7 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
             >
               <div className="flex items-center justify-center space-x-2">
                 <Star className="w-4 h-4" />
-                <span>Our Approach</span>
+                <span className="whitespace-nowrap">Our Approach</span>
               </div>
             </button>
           </div>
@@ -609,7 +633,58 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
           {/* Preferences Tab */}
           {activeTab === 'preferences' && (
             <div className="p-6 space-y-6">
+              {/* Denomination Preference */}
               <div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">Your Denomination</h3>
+                <p className="text-sm text-slate-600 mb-4">
+                  Help us personalize your learning experience. This helps the AI relate concepts to your tradition while remaining objective.
+                </p>
+                <select
+                  value={denomination}
+                  onChange={async (e) => {
+                    const newDenom = e.target.value;
+                    setDenomination(newDenom);
+                    
+                    // Save to Firestore
+                    try {
+                      const { db } = await import('./firebase/config');
+                      const { doc, setDoc } = await import('firebase/firestore');
+                      await setDoc(doc(db, 'users', currentUser.uid), {
+                        denomination: newDenom,
+                        updatedAt: new Date()
+                      }, { merge: true });
+                      console.log('✅ Denomination saved');
+                    } catch (error) {
+                      console.error('Error saving denomination:', error);
+                    }
+                  }}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="">Select your denomination (optional)</option>
+                  <option value="Catholic">Catholic (Roman Catholic)</option>
+                  <option value="Eastern Orthodox">Eastern Orthodox</option>
+                  <option value="Lutheran">Lutheran</option>
+                  <option value="Baptist">Baptist</option>
+                  <option value="Methodist">Methodist</option>
+                  <option value="Presbyterian">Presbyterian/Reformed</option>
+                  <option value="Anglican">Anglican/Episcopal</option>
+                  <option value="Pentecostal">Pentecostal</option>
+                  <option value="Assemblies of God">Assemblies of God</option>
+                  <option value="Church of Christ">Church of Christ</option>
+                  <option value="Seventh-day Adventist">Seventh-day Adventist</option>
+                  <option value="Non-denominational">Non-denominational</option>
+                  <option value="Other Protestant">Other Protestant</option>
+                  <option value="Exploring">Exploring/Undecided</option>
+                </select>
+                <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start space-x-2">
+                  <AlertCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-blue-800">
+                    This helps our AI provide more relatable explanations (e.g., "In your Catholic tradition, X is understood as..."). All content remains balanced and educational.
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-200 pt-6">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">Email Notifications</h3>
                 <div className="space-y-4">
                   {[

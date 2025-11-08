@@ -292,10 +292,25 @@ const AIPathsView = ({ currentUser, onNavigate, onGoBack }) => {
     setPathOutline(null);
 
     try {
-  if (pathType === 'quick') {
+      // Get user's denomination preference
+      let userDenomination = '';
+      if (currentUser?.uid) {
+        try {
+          const { db } = await import('./firebase/config');
+          const { doc, getDoc } = await import('firebase/firestore');
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists() && userDoc.data().denomination) {
+            userDenomination = userDoc.data().denomination;
+          }
+        } catch (error) {
+          console.error('Error loading denomination:', error);
+        }
+      }
+
+      if (pathType === 'quick') {
         // Single lesson - create as a 1-lesson path
         setPathProgress('Generating lesson...');
-  const result = await generateAILesson(topic, additionalContext, currentUser?.uid);
+        const result = await generateAILesson(topic, additionalContext, currentUser?.uid, userDenomination);
         
         if (result.success) {
           const singleLessonPath = {

@@ -303,13 +303,15 @@ app.use(express.json());
 // OpenAI API endpoint proxy
 app.post('/api/ai/generate-lesson', async (req, res) => {
   try {
-    const { topic, additionalContext } = req.body;
+    const { topic, additionalContext, denomination } = req.body;
 
     if (!process.env.REACT_APP_OPENAI_API_KEY) {
       return res.status(500).json({ error: 'OpenAI API key not configured on server' });
     }
 
-        const systemPrompt = `You are a Christian education expert with deep knowledge of Bible history, church history, theology, and apologetics. You MUST create lessons that are 100% theologically accurate and fact-checked.
+    const systemPrompt = `You are a Christian education expert with deep knowledge of Bible history, church history, theology, and apologetics. You MUST create lessons that are 100% theologically accurate and fact-checked.
+
+${denomination ? `IMPORTANT CONTEXT: The user identifies as ${denomination}. When explaining different denominational perspectives or theological concepts, you may reference their tradition to provide relatable context (e.g., "In your ${denomination} tradition, this is understood as X, while other traditions view it as Y"). However, ALWAYS present all views fairly, objectively, and respectfully. Your goal is to educate, not to promote one view over another.` : ''}
 
 IMPORTANT: You ONLY create lessons about Christian topics. If the user requests a lesson about:
 - Cooking, recipes, food (UNLESS it's biblical food/culture or communion)

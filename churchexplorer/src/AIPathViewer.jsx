@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle, Award, ArrowLeft, Play, BookOpen, Sparkles, Lock, Trophy, Star } from 'lucide-react';
 import AILessonViewer from './AILessonViewer';
 import RatePathModal from './RatePathModal';
+import { scheduleReviews } from './services/reviewService';
 
 /**
  * Dedicated viewer for a single AI-generated learning path
@@ -62,6 +63,10 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
           const { saveAIPathProgressToFirestore } = await import('./firebase/progressService');
           await saveAIPathProgressToFirestore(currentUser.uid, path.id, updated);
           console.log('✅ AI path progress saved to Firestore');
+          
+          // Schedule reviews for this lesson
+          await scheduleReviews(currentUser.uid, `ai_path_${path.id}`, lessonIndex);
+          console.log('✅ Reviews scheduled for AI path lesson');
         } catch (error) {
           console.error('Error saving progress to Firestore:', error);
         }
