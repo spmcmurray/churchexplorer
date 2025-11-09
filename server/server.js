@@ -1067,12 +1067,11 @@ app.post('/api/backfill-reviews', async (req, res) => {
       const completedLessons = progress.completedLessons || [];
       
       console.log(`  Total lessons: ${pathData.lessons.length}`);
-      console.log(`  Completed lessons: ${completedLessons.length}`);
+      console.log(`  Completed lessons:`, completedLessons);
       
       // Process each completed lesson
-      for (let lessonIndex = 0; lessonIndex < completedLessons.length; lessonIndex++) {
-        if (!completedLessons[lessonIndex]) continue;
-        
+      // completedLessons is an array of indices like [0, 1, 2]
+      for (const lessonIndex of completedLessons) {
         totalLessonsProcessed++;
         const lesson = pathData.lessons[lessonIndex];
         const lessonKey = `ai_path_${pathId}_${lessonIndex}`;
