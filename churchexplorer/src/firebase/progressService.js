@@ -462,23 +462,23 @@ export const migratePathToNewLocation = async (uid, pathId) => {
  */
 export const getAIPathsFromFirestore = async (uid) => {
   try {
-    console.log('🔍 Loading AI paths for user:', uid);
+    // console.log('🔍 Loading AI paths for user:', uid);
     const { collection, getDocs, query, where, orderBy, getDoc: getDocFn } = await import('firebase/firestore');
     
     let paths = [];
     
     // 1. Get user's OWNED paths from OLD location (user subcollection) - backward compatibility
     try {
-      console.log('📂 Checking OLD location: users/' + uid + '/aiPaths');
+      // console.log('📂 Checking OLD location: users/' + uid + '/aiPaths');
       const oldPathsRef = collection(db, 'users', uid, 'aiPaths');
       const oldQuery = query(oldPathsRef, orderBy('savedAt', 'desc'));
       const oldSnapshot = await getDocs(oldQuery);
       
-      console.log('📊 Found', oldSnapshot.size, 'paths in OLD location');
+      // console.log('📊 Found', oldSnapshot.size, 'paths in OLD location');
       
       oldSnapshot.forEach((doc) => {
         const data = doc.data();
-        console.log('  ✓ Owned path (old):', doc.id, data.title);
+        // console.log('  ✓ Owned path (old):', doc.id, data.title);
         paths.push({
           ...data,
           id: doc.id,
@@ -494,12 +494,12 @@ export const getAIPathsFromFirestore = async (uid) => {
     // Also use this to update rating data for paths from old location
     const newLocationPaths = new Map();
     try {
-      console.log('📂 Checking NEW location: aiPaths where userId ==', uid);
+      // console.log('📂 Checking NEW location: aiPaths where userId ==', uid);
       const globalPathsRef = collection(db, 'aiPaths');
       const globalQuery = query(globalPathsRef, where('userId', '==', uid), orderBy('savedAt', 'desc'));
       const globalSnapshot = await getDocs(globalQuery);
       
-      console.log('📊 Found', globalSnapshot.size, 'owned paths in NEW location');
+      // console.log('📊 Found', globalSnapshot.size, 'owned paths in NEW location');
       
       globalSnapshot.forEach((doc) => {
         const data = doc.data();
@@ -507,7 +507,7 @@ export const getAIPathsFromFirestore = async (uid) => {
         
         // Only add if not already in paths (avoid duplicates)
         if (!paths.find(p => p.id === doc.id)) {
-          console.log('  ✓ Owned path (new):', doc.id, data.title);
+          // console.log('  ✓ Owned path (new):', doc.id, data.title);
           paths.push({
             ...data,
             id: doc.id,
@@ -520,11 +520,11 @@ export const getAIPathsFromFirestore = async (uid) => {
       paths = paths.map(path => {
         if (path._fromOldLocation && newLocationPaths.has(path.id)) {
           const newData = newLocationPaths.get(path.id);
-          console.log('  🔄 Merging rating data for:', path.id, {
-            ratingCount: newData.ratingCount,
-            averageRating: newData.averageRating,
-            isPublic: newData.isPublic
-          });
+          // console.log('  🔄 Merging rating data for:', path.id, {
+          //   ratingCount: newData.ratingCount,
+          //   averageRating: newData.averageRating,
+          //   isPublic: newData.isPublic
+          // });
           return {
             ...path,
             averageRating: newData.averageRating || 0,
@@ -542,11 +542,11 @@ export const getAIPathsFromFirestore = async (uid) => {
     
     // 3. Get user's REFERENCED paths (community paths they've cloned)
     try {
-      console.log('📂 Checking REFERENCES: users/' + uid + '/pathReferences');
+      // console.log('📂 Checking REFERENCES: users/' + uid + '/pathReferences');
       const referencesRef = collection(db, 'users', uid, 'pathReferences');
-      const referencesSnapshot = await getDocs(referencesRef);
+      const referencesSnapshot = await getDocs(referencesSnapshot);
       
-      console.log('📊 Found', referencesSnapshot.size, 'referenced paths');
+      // console.log('📊 Found', referencesSnapshot.size, 'referenced paths');
       
       // Fetch the actual path data for each reference
       for (const refDoc of referencesSnapshot.docs) {
@@ -559,7 +559,7 @@ export const getAIPathsFromFirestore = async (uid) => {
         
         if (pathDoc.exists()) {
           const pathData = pathDoc.data();
-          console.log('  ✓ Referenced path:', pathId, pathData.title);
+          // console.log('  ✓ Referenced path:', pathId, pathData.title);
           paths.push({
             ...pathData,
             id: pathId,
@@ -568,8 +568,6 @@ export const getAIPathsFromFirestore = async (uid) => {
             clonedAt: refData.clonedAt,
             originalCreator: refData.originalCreator
           });
-        } else {
-          console.warn('  ⚠️ Referenced path not found:', pathId);
         }
       }
     } catch (refError) {
@@ -583,9 +581,9 @@ export const getAIPathsFromFirestore = async (uid) => {
       return bTime - aTime;
     });
     
-    console.log('✅ Total paths loaded:', paths.length);
-    console.log('   - Owned:', paths.filter(p => p.isOwned).length);
-    console.log('   - Referenced:', paths.filter(p => p.isReference).length);
+    // console.log('✅ Total paths loaded:', paths.length);
+    // console.log('   - Owned:', paths.filter(p => p.isOwned).length);
+    // console.log('   - Referenced:', paths.filter(p => p.isReference).length);
     
     return { success: true, paths };
   } catch (error) {
