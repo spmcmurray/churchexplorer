@@ -1093,12 +1093,25 @@ app.post('/api/backfill-reviews', async (req, res) => {
         }
         
         // Create review schedule
+        // For backfilled lessons, set the first review to be due TODAY
+        // so users can immediately review their old lessons
         const completedDate = progress.lastCompletedAt || new Date().toISOString();
-        const completedTime = new Date(completedDate);
+        const now = new Date();
         
         const reviews = REVIEW_INTERVALS.map((interval, index) => {
-          const dueDate = new Date(completedTime);
-          dueDate.setDate(dueDate.getDate() + interval);
+          const dueDate = new Date(now);
+          // First review is due today, subsequent reviews scheduled normally
+          if (index === 0) {
+            // Set to today
+            dueDate.setHours(0, 0, 0, 0);
+          } else {
+            // Schedule future reviews based on today + previous intervals
+            let totalDays = 0;
+            for (let i = 0; i <= index; i++) {
+              totalDays += REVIEW_INTERVALS[i];
+            }
+            dueDate.setDate(now.getDate() + totalDays - REVIEW_INTERVALS[0]); // Subtract first interval since it's today
+          }
           
           return {
             dueDate: dueDate.toISOString(),
