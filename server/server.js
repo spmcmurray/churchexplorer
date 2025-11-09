@@ -333,13 +333,16 @@ APPROVED TOPICS ONLY:
 - How Christianity addresses modern issues
 - Christian worship, prayer, spiritual disciplines
 
-CRITICAL ACCURACY REQUIREMENTS:
+CRITICAL ACCURACY REQUIREMENTS - ZERO TOLERANCE FOR ERRORS:
 - All historical dates, events, and figures must be factually correct
 - Biblical references must be accurate and properly cited
+- **CHRONOLOGICAL ERRORS ARE FORBIDDEN**: Jesus lived ~4 BC to ~30 AD. He could NOT have quoted New Testament books (written 50-100 AD). He quoted Old Testament/Hebrew Bible ONLY.
 - Quiz questions must have definitively correct answers based on Scripture and historical fact
 - Never confuse different biblical events (e.g., Pentecost vs. Jesus's birth)
+- Never attribute quotes/verses to wrong sources (e.g., Paul's words to Jesus, etc.)
 - Cross-verify all theological claims against orthodox Christian teaching
-- For quiz questions, double-check the correct answer before marking it
+- For quiz questions, triple-check the correct answer before marking it
+- If uncertain about ANY fact, DO NOT include it - choose verifiable information only
 
 Create a comprehensive Christian education lesson with these components:
 
@@ -398,6 +401,9 @@ Do not include any text before or after the JSON object.`;
     QUIZ QUESTION REQUIREMENTS:
     - Each question must test factual knowledge from the lesson
     - Verify the correct answer against Scripture or historical records
+    - **CRITICAL**: Never ask about Jesus quoting New Testament (NT didn't exist in His lifetime)
+    - Jesus only quoted the Hebrew Bible/Old Testament (Torah, Prophets, Writings)
+    - Verify ALL biblical references are from the correct time period
     - Include an explanation that cites biblical references or historical sources
     - Ensure wrong answers are plausible but definitively incorrect
     - Never guess - if unsure about a fact, research it or choose a different topic
@@ -444,11 +450,88 @@ Do not include any text before or after the JSON object.`;
 
     const lessonData = JSON.parse(cleanedResponse);
 
+    // FACT-CHECK STEP: Validate the lesson before returning
+    console.log('🔍 Fact-checking lesson...');
+    const factCheckPrompt = `You are a Christian theology and history fact-checker. Review this lesson for CRITICAL ERRORS ONLY:
+
+LESSON TO REVIEW:
+${JSON.stringify(lessonData, null, 2)}
+
+CHECK FOR THESE CRITICAL ERRORS:
+1. **Chronological impossibilities** (e.g., Jesus quoting New Testament verses, which didn't exist yet)
+2. **Biblical misattribution** (verses attributed to wrong books/authors)
+3. **Historical inaccuracies** (wrong dates, events, people, councils)
+4. **Theological errors** that contradict core Christian orthodoxy (Nicene Creed, etc.)
+5. **Quiz questions with factually wrong answers marked as correct**
+
+IGNORE minor stylistic issues, different theological interpretations, or denominational variations.
+
+Respond with ONLY this JSON format:
+{
+  "hasErrors": true/false,
+  "errors": [
+    {
+      "location": "quiz question 3" or "section 2" or "memory verse",
+      "error": "Specific description of the factual error",
+      "correction": "What the correct information should be"
+    }
+  ]
+}
+
+If NO critical errors found, return: {"hasErrors": false, "errors": []}`;
+
+    const factCheckResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: 'You are a meticulous Christian theology and history fact-checker. Only flag CRITICAL factual errors, not stylistic or interpretive differences.' },
+          { role: 'user', content: factCheckPrompt }
+        ],
+        temperature: 0.1, // Very low temperature for consistency
+        max_tokens: 1000
+      })
+    });
+
+    if (!factCheckResponse.ok) {
+      console.error('Fact-check API failed, proceeding without validation');
+    } else {
+      const factCheckData = await factCheckResponse.json();
+      let factCheckContent = factCheckData.choices[0].message.content.trim();
+      
+      // Clean JSON formatting
+      if (factCheckContent.startsWith('```json')) {
+        factCheckContent = factCheckContent.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
+      } else if (factCheckContent.startsWith('```')) {
+        factCheckContent = factCheckContent.replace(/```\n?/g, '');
+      }
+      
+      const factCheckResult = JSON.parse(factCheckContent);
+      
+      if (factCheckResult.hasErrors && factCheckResult.errors.length > 0) {
+        console.error('❌ FACT-CHECK FAILED:', factCheckResult.errors);
+        
+        // Return error with details
+        return res.status(400).json({
+          error: 'Generated lesson contains factual errors',
+          factCheckErrors: factCheckResult.errors,
+          message: 'The AI generated a lesson with factual inaccuracies. Please try again with a different topic or phrasing.'
+        });
+      } else {
+        console.log('✅ Fact-check passed');
+      }
+    }
+
     res.json({
       lesson: {
         ...lessonData,
         generatedAt: new Date().toISOString(),
-        topic: topic
+        topic: topic,
+        factChecked: true
       },
       usage: data.usage
     });

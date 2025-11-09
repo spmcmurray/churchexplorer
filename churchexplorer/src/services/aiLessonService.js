@@ -161,9 +161,18 @@ export const generateAILesson = async (topic, additionalContext = '', userId = n
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI API Error:', errorText);
-      throw new Error(`AI API error: ${response.status} ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('AI API Error:', errorData);
+      
+      // Handle fact-check errors specifically
+      if (errorData.factCheckErrors) {
+        const errorDetails = errorData.factCheckErrors
+          .map(e => `${e.location}: ${e.error}`)
+          .join('\n');
+        throw new Error(`Fact-check failed:\n${errorDetails}\n\nPlease try rephrasing your topic or try a different subject.`);
+      }
+      
+      throw new Error(errorData.error || `AI API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
