@@ -41,7 +41,6 @@ export const scheduleReviews = async (path, lessonNumber, lessonTitle = null) =>
   
   if (!user) {
     console.error('❌ Cannot schedule reviews - user not logged in');
-    alert('ERROR: User not logged in - reviews cannot be scheduled');
     return;
   }
 
@@ -93,10 +92,8 @@ export const scheduleReviews = async (path, lessonNumber, lessonTitle = null) =>
     console.log('💾 Writing to Firestore:', scheduleData);
     await setDoc(reviewRef, scheduleData);
     console.log('✅ Review schedule created successfully in Firestore!');
-    alert('SUCCESS: Review scheduled for ' + (lessonTitle || lessonKey));
   } catch (error) {
     console.error('❌ Error scheduling reviews:', error);
-    alert('ERROR scheduling review: ' + error.message);
   }
 };
 
