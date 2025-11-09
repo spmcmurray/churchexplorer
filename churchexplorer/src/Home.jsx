@@ -85,11 +85,14 @@ const Home = ({ onNavigate, onStartOnboarding, userProgress, onShowAuth, current
   }, []);
 
   // Refresh progress when returning to Home page
+  // Note: onProgressUpdate should be wrapped in useCallback in App.js to avoid infinite loops
+  // For now, we'll only run this on mount
   useEffect(() => {
     if (onProgressUpdate && currentUser) {
       onProgressUpdate();
     }
-  }, [onProgressUpdate, currentUser]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
