@@ -118,8 +118,12 @@ export const getReviewSchedule = async () => {
  */
 export const getDueReviews = async () => {
   const scheduleData = await getReviewSchedule();
+  console.log('📚 Review schedule data:', scheduleData);
+  console.log('📚 Number of lesson schedules:', Object.keys(scheduleData).length);
+  
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  console.log('📅 Today (for comparison):', today.toISOString());
   
   const dueReviews = [];
   
@@ -129,6 +133,13 @@ export const getDueReviews = async () => {
     if (nextReview) {
       const dueDate = new Date(nextReview.dueDate);
       dueDate.setHours(0, 0, 0, 0);
+      
+      console.log(`📖 ${lessonKey}:`, {
+        title: data.lessonTitle,
+        dueDate: dueDate.toISOString(),
+        today: today.toISOString(),
+        isDue: dueDate <= today
+      });
       
       if (dueDate <= today) {
         dueReviews.push({
@@ -144,6 +155,8 @@ export const getDueReviews = async () => {
       }
     }
   });
+  
+  console.log('✅ Due reviews found:', dueReviews.length);
   
   // Sort by due date (oldest first)
   return dueReviews.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
