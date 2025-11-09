@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backfill AI Lesson Reviews - Church Explorer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #1a202c;
+            margin-top: 0;
+        }
+        p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+        .status.loading {
+            background: #bee3f8;
+            color: #2c5282;
+            border: 1px solid #90cdf4;
+        }
+        .stats {
+            margin-top: 15px;
+            font-family: monospace;
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔄 Backfill AI Lesson Reviews</h1>
+        <p>
+            This tool will create review schedules for all your completed AI lessons that don't already have them.
+            This is a one-time operation to ensure your past lessons show up in the review system.
+        </p>
+        <p>
+            <strong>Note:</strong> You must be logged in to Church Explorer for this to work.
+        </p>
+        
+        <button id="backfillBtn" onclick="runBackfill()">
+            Start Backfill
+        </button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+
+        // Firebase config (from your app)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBfXqb0rxI65xAEOzDrhBGPtXc11y26Ozw",
+            authDomain: "churchexplorer-e5b4f.firebaseapp.com",
+            projectId: "churchexplorer-e5b4f",
+            storageBucket: "churchexplorer-e5b4f.firebasestorage.app",
+            messagingSenderId: "693773099833",
+            appId: "1:693773099833:web:87a30b2fc7c58d0ed0a7b9",
+            measurementId: "G-MJMHXDFQ3H"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        let currentUserId = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                console.log('User logged in:', user.uid);
+            } else {
+                showStatus('Please log in to Church Explorer first', 'error');
+                document.getElementById('backfillBtn').disabled = true;
+            }
+        });
+
+        window.runBackfill = async function() {
+            if (!currentUserId) {
+                showStatus('Please log in to Church Explorer first', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('backfillBtn');
+            btn.disabled = true;
+            showStatus('Processing your AI lessons... This may take a minute.', 'loading');
+
+            try {
+                const API_ENDPOINT = 'https://churchexplorer-server.vercel.app';
+                
+                const response = await fetch(`${API_ENDPOINT}/api/backfill-reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: currentUserId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    let message = '✅ Backfill complete!\n\n';
+                    message += `Total AI Paths: ${data.stats.totalPaths}\n`;
+                    message += `Completed Lessons Processed: ${data.stats.lessonsProcessed}\n`;
+                    message += `New Reviews Created: ${data.stats.reviewsCreated}\n`;
+                    message += `Reviews Already Existed: ${data.stats.reviewsSkipped}`;
+                    
+                    showStatus(message, 'success');
+                } else {
+                    showStatus('Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('Error: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            status.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

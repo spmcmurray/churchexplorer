@@ -933,6 +933,136 @@ app.post('/api/cancel-subscription', async (req, res) => {
   }
 });
 
+// Backfill reviews for completed AI lessons (one-time use)
+app.post('/api/backfill-reviews', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID required' });
+    }
+    
+    console.log(`\n🔍 Starting review backfill for user: ${userId}`);
+    
+    // Review intervals in days
+    const REVIEW_INTERVALS = [1, 3, 7, 14];
+    
+    // Get all AI paths for the user
+    const pathsSnapshot = await db
+      .collection('aiPaths')
+      .where('userId', '==', userId)
+      .get();
+    
+    if (pathsSnapshot.empty) {
+      return res.json({ 
+        success: true, 
+        message: 'No AI paths found for this user',
+        stats: { totalPaths: 0, lessonsProcessed: 0, reviewsCreated: 0 }
+      });
+    }
+    
+    console.log(`Found ${pathsSnapshot.size} AI learning paths`);
+    
+    let totalLessonsProcessed = 0;
+    let reviewsCreated = 0;
+    let reviewsSkipped = 0;
+    
+    // Process each path
+    for (const pathDoc of pathsSnapshot.docs) {
+      const pathData = pathDoc.data();
+      const pathId = pathDoc.id;
+      
+      console.log(`\n📚 Processing path: ${pathData.title || 'Untitled'} (${pathId})`);
+      
+      if (!pathData.lessons || pathData.lessons.length === 0) {
+        console.log('  ⚠️  No lessons in this path, skipping');
+        continue;
+      }
+      
+      // Check progress to see which lessons are completed
+      const progress = pathData.progress || {};
+      const completedLessons = progress.completedLessons || [];
+      
+      console.log(`  Total lessons: ${pathData.lessons.length}`);
+      console.log(`  Completed lessons: ${completedLessons.length}`);
+      
+      // Process each completed lesson
+      for (let lessonIndex = 0; lessonIndex < completedLessons.length; lessonIndex++) {
+        if (!completedLessons[lessonIndex]) continue;
+        
+        totalLessonsProcessed++;
+        const lesson = pathData.lessons[lessonIndex];
+        const lessonKey = `ai_path_${pathId}_${lessonIndex}`;
+        
+        // Check if review schedule already exists
+        const reviewRef = db
+          .collection('users')
+          .doc(userId)
+          .collection('reviewSchedule')
+          .doc(lessonKey);
+        
+        const existingReview = await reviewRef.get();
+        
+        if (existingReview.exists()) {
+          console.log(`  ✓ Review already exists for lesson ${lessonIndex + 1}`);
+          reviewsSkipped++;
+          continue;
+        }
+        
+        // Create review schedule
+        const completedDate = progress.lastCompletedAt || new Date().toISOString();
+        const completedTime = new Date(completedDate);
+        
+        const reviews = REVIEW_INTERVALS.map((interval, index) => {
+          const dueDate = new Date(completedTime);
+          dueDate.setDate(dueDate.getDate() + interval);
+          
+          return {
+            dueDate: dueDate.toISOString(),
+            completed: false,
+            completedDate: null,
+            interval: interval,
+            reviewNumber: index + 1
+          };
+        });
+        
+        const scheduleData = {
+          path: `ai_path_${pathId}`,
+          lessonNumber: lessonIndex,
+          completedDate: completedDate,
+          reviews,
+          masteryLevel: 0,
+          lessonTitle: lesson?.title || 'AI Lesson',
+          pathTitle: pathData.title || 'AI Learning Path'
+        };
+        
+        await reviewRef.set(scheduleData);
+        reviewsCreated++;
+        console.log(`  ✅ Created review for lesson ${lessonIndex + 1}: ${lesson?.title || 'Untitled'}`);
+      }
+    }
+    
+    const stats = {
+      totalPaths: pathsSnapshot.size,
+      lessonsProcessed: totalLessonsProcessed,
+      reviewsCreated: reviewsCreated,
+      reviewsSkipped: reviewsSkipped
+    };
+    
+    console.log(`\n📊 Backfill Summary:`, stats);
+    
+    res.json({
+      success: true,
+      message: 'Review backfill complete',
+      stats
+    });
+    
+  } catch (error) {
+    console.error('❌ Error backfilling reviews:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
