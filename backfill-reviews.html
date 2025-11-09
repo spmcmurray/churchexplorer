@@ -88,8 +88,8 @@
             <strong>Note:</strong> You must be logged in to Church Explorer for this to work.
         </p>
         
-        <button id="backfillBtn" onclick="runBackfill()">
-            Start Backfill
+        <button id="backfillBtn" onclick="runBackfill()" disabled>
+            Loading...
         </button>
         
         <div id="status" class="status"></div>
@@ -114,20 +114,34 @@
         const auth = getAuth(app);
 
         let currentUserId = null;
+        let authReady = false;
 
         onAuthStateChanged(auth, (user) => {
+            authReady = true;
+            const btn = document.getElementById('backfillBtn');
+            
             if (user) {
                 currentUserId = user.uid;
                 console.log('User logged in:', user.uid);
+                btn.disabled = false;
+                btn.textContent = 'Start Backfill';
+                const status = document.getElementById('status');
+                status.style.display = 'none'; // Clear any error message
             } else {
-                showStatus('Please log in to Church Explorer first', 'error');
-                document.getElementById('backfillBtn').disabled = true;
+                btn.textContent = 'Not Logged In';
+                showStatus('Please log in to Church Explorer first, then refresh this page', 'error');
+                btn.disabled = true;
             }
         });
 
         window.runBackfill = async function() {
+            if (!authReady) {
+                showStatus('Authentication still loading... Please wait a moment and try again.', 'loading');
+                return;
+            }
+
             if (!currentUserId) {
-                showStatus('Please log in to Church Explorer first', 'error');
+                showStatus('Please log in to Church Explorer first, then refresh this page', 'error');
                 return;
             }
 
