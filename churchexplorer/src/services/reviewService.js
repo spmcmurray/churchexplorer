@@ -34,14 +34,22 @@ export const getLessonKey = (path, lessonNumber) => {
  * @param {string} lessonTitle - Optional lesson title for display
  */
 export const scheduleReviews = async (path, lessonNumber, lessonTitle = null) => {
+  console.log('🔔 scheduleReviews called:', { path, lessonNumber, lessonTitle });
+  
   const user = getCurrentUser();
+  console.log('👤 Current user:', user ? user.uid : 'NO USER');
+  
   if (!user) {
-    console.warn('Cannot schedule reviews - user not logged in');
+    console.error('❌ Cannot schedule reviews - user not logged in');
+    alert('ERROR: User not logged in - reviews cannot be scheduled');
     return;
   }
 
   const lessonKey = getLessonKey(path, lessonNumber);
   const completedDate = new Date().toISOString();
+  
+  console.log('🔑 Lesson key:', lessonKey);
+  console.log('📍 Firestore path:', `users/${user.uid}/reviewSchedule/${lessonKey}`);
   
   try {
     // Check if review schedule already exists
@@ -49,9 +57,11 @@ export const scheduleReviews = async (path, lessonNumber, lessonTitle = null) =>
     const existingDoc = await getDoc(reviewRef);
     
     if (existingDoc.exists()) {
-      console.log('Review schedule already exists for', lessonKey);
+      console.log('⚠️ Review schedule already exists for', lessonKey);
       return;
     }
+    
+    console.log('📝 Creating new review schedule...');
     
     // Create review schedule
     const reviews = REVIEW_INTERVALS.map((interval, index) => {
@@ -80,10 +90,13 @@ export const scheduleReviews = async (path, lessonNumber, lessonTitle = null) =>
       scheduleData.lessonTitle = lessonTitle;
     }
     
+    console.log('💾 Writing to Firestore:', scheduleData);
     await setDoc(reviewRef, scheduleData);
-    console.log('✅ Review schedule created in Firestore:', lessonKey, lessonTitle || '');
+    console.log('✅ Review schedule created successfully in Firestore!');
+    alert('SUCCESS: Review scheduled for ' + (lessonTitle || lessonKey));
   } catch (error) {
-    console.error('Error scheduling reviews:', error);
+    console.error('❌ Error scheduling reviews:', error);
+    alert('ERROR scheduling review: ' + error.message);
   }
 };
 
