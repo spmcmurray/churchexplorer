@@ -107,12 +107,13 @@ const Scribe = ({ currentUser }) => {
 
       try {
         const { doc, getDoc } = await import('firebase/firestore');
-        const { db } = await import('./firebase/firebaseConfig');
+        const { db } = await import('./firebase/config');
         
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setDenomination(userData.denomination || '');
+          console.log('✅ Loaded denomination for Scribe:', userData.denomination || 'none set');
         }
       } catch (error) {
         console.error('Error loading denomination:', error);
