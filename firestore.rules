@@ -48,6 +48,12 @@ service cloud.firestore {
         allow read: if isOwner(userId);
         allow write: if isOwner(userId);
       }
+      
+      // Review schedule subcollection - for spaced repetition
+      match /reviewSchedule/{lessonKey} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId);
+      }
     }
     
     // Leaderboard collection - everyone can read, only owners can write their own
