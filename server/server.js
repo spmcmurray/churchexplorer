@@ -753,13 +753,12 @@ app.post('/api/ai/study-buddy', async (req, res) => {
     let denominationContext = '';
     if (denomination) {
       denominationContext = `\n\nUSER'S DENOMINATION: ${denomination}
-When discussing theological topics, you can acknowledge the user's ${denomination} tradition and provide context relevant to their background. For example:
-- Reference how their tradition typically understands certain doctrines
-- Note similarities and differences with other denominations when relevant
-- Use terminology familiar to their tradition
-- Be respectful and educational, helping them understand their own tradition better while also learning about others
+When the user asks questions about theological topics, you may reference their ${denomination} tradition for context. For example:
+- "In the ${denomination} tradition, this is typically understood as..."
+- "While ${denomination} churches generally teach X, other denominations hold to Y"
+- Use terminology familiar to their tradition when appropriate
 
-However, remain objective and educational. Don't assume the user agrees with all aspects of their tradition, and always present multiple perspectives fairly.`;
+Important: Simply state facts about different denominational views. Do not suggest the user should reflect on, consider, or validate other perspectives. Present information objectively without encouraging any particular stance.`;
       console.log('Adding denomination context:', denomination);
     }
 
