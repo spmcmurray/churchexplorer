@@ -702,6 +702,43 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
                 </div>
               </div>
 
+              {/* AI Review Backfill Tool */}
+              <div className="border-t border-slate-200 pt-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">AI Lesson Reviews</h3>
+                <p className="text-sm text-slate-600 mb-4">
+                  If you completed AI lessons before the review system was added, use this tool to add them to your review schedule.
+                </p>
+                <button
+                  onClick={async () => {
+                    const confirmed = window.confirm('This will scan all your completed AI lessons and add them to the spaced repetition review system. Continue?');
+                    if (!confirmed) return;
+
+                    try {
+                      const API_ENDPOINT = process.env.REACT_APP_AI_API_ENDPOINT || 'http://localhost:3001/api/ai';
+                      const response = await fetch(`${API_ENDPOINT.replace('/api/ai', '')}/api/backfill-reviews`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUser.uid })
+                      });
+
+                      const data = await response.json();
+                      
+                      if (data.success) {
+                        alert(`✅ Backfill complete!\n\nTotal AI Paths: ${data.stats.totalPaths}\nCompleted Lessons: ${data.stats.lessonsProcessed}\nNew Reviews Created: ${data.stats.reviewsCreated}\nAlready Existed: ${data.stats.reviewsSkipped}`);
+                      } else {
+                        alert('Error: ' + (data.error || 'Unknown error'));
+                      }
+                    } catch (error) {
+                      console.error('Backfill error:', error);
+                      alert('Error running backfill: ' + error.message);
+                    }
+                  }}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-medium"
+                >
+                  🔄 Backfill AI Lesson Reviews
+                </button>
+              </div>
+
               <div className="border-t border-slate-200 pt-6">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">Email Notifications</h3>
                 <div className="space-y-4">
