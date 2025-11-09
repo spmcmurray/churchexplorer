@@ -634,49 +634,67 @@ export default function Profile({ currentUser, onDeleteAccount, onSignOut }) {
           {activeTab === 'preferences' && (
             <div className="p-6 space-y-6">
               {/* Denomination Preference */}
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">Your Denomination</h3>
-                <p className="text-sm text-slate-600 mb-4">
-                  Help us personalize your learning experience. This helps the AI relate concepts to your tradition while remaining objective.
+              <div className="bg-gradient-to-br from-slate-50 to-purple-50 rounded-xl p-6 border border-slate-200 shadow-sm">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-md">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900">Your Denomination</h3>
+                    <p className="text-xs text-slate-500">Personalize your learning experience</p>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                  Help Scribe understand your background. This helps the AI relate concepts to your tradition while remaining objective and educational.
                 </p>
-                <select
-                  value={denomination}
-                  onChange={async (e) => {
-                    const newDenom = e.target.value;
-                    setDenomination(newDenom);
-                    
-                    // Save to Firestore
-                    try {
-                      const { db } = await import('./firebase/config');
-                      const { doc, setDoc } = await import('firebase/firestore');
-                      await setDoc(doc(db, 'users', currentUser.uid), {
-                        denomination: newDenom,
-                        updatedAt: new Date()
-                      }, { merge: true });
-                      console.log('✅ Denomination saved');
-                    } catch (error) {
-                      console.error('Error saving denomination:', error);
-                    }
-                  }}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="">Select your denomination (optional)</option>
-                  <option value="Catholic">Catholic (Roman Catholic)</option>
-                  <option value="Eastern Orthodox">Eastern Orthodox</option>
-                  <option value="Lutheran">Lutheran</option>
-                  <option value="Baptist">Baptist</option>
-                  <option value="Methodist">Methodist</option>
-                  <option value="Presbyterian">Presbyterian/Reformed</option>
-                  <option value="Anglican">Anglican/Episcopal</option>
-                  <option value="Pentecostal">Pentecostal</option>
-                  <option value="Assemblies of God">Assemblies of God</option>
-                  <option value="Church of Christ">Church of Christ</option>
-                  <option value="Seventh-day Adventist">Seventh-day Adventist</option>
-                  <option value="Non-denominational">Non-denominational</option>
-                  <option value="Other Protestant">Other Protestant</option>
-                  <option value="Exploring">Exploring/Undecided</option>
-                </select>
-                <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start space-x-2">
+                <div className="relative">
+                  <select
+                    value={denomination}
+                    onChange={async (e) => {
+                      const newDenom = e.target.value;
+                      setDenomination(newDenom);
+                      
+                      // Save to Firestore
+                      try {
+                        const { db } = await import('./firebase/config');
+                        const { doc, setDoc } = await import('firebase/firestore');
+                        await setDoc(doc(db, 'users', currentUser.uid), {
+                          denomination: newDenom,
+                          updatedAt: new Date()
+                        }, { merge: true });
+                        console.log('✅ Denomination saved');
+                      } catch (error) {
+                        console.error('Error saving denomination:', error);
+                      }
+                    }}
+                    className="w-full px-4 py-3.5 pr-10 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-slate-900 font-medium shadow-sm hover:border-slate-300 cursor-pointer appearance-none"
+                  >
+                    <option value="" className="text-slate-400">Choose your tradition (optional)</option>
+                    <option value="Catholic">⛪ Catholic (Roman Catholic)</option>
+                    <option value="Eastern Orthodox">☦️ Eastern Orthodox</option>
+                    <option value="Lutheran">✝️ Lutheran</option>
+                    <option value="Baptist">💧 Baptist</option>
+                    <option value="Methodist">🔥 Methodist</option>
+                    <option value="Presbyterian">📖 Presbyterian/Reformed</option>
+                    <option value="Anglican">👑 Anglican/Episcopal</option>
+                    <option value="Pentecostal">🕊️ Pentecostal</option>
+                    <option value="Assemblies of God">✨ Assemblies of God</option>
+                    <option value="Church of Christ">⚡ Church of Christ</option>
+                    <option value="Seventh-day Adventist">🌟 Seventh-day Adventist</option>
+                    <option value="Non-denominational">🤝 Non-denominational</option>
+                    <option value="Other Protestant">✝️ Other Protestant</option>
+                    <option value="Exploring">🔍 Exploring/Undecided</option>
+                  </select>
+                  {/* Custom dropdown arrow */}
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start space-x-2">
                   <AlertCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-blue-800">
                     This helps our AI provide more relatable explanations (e.g., "In your Catholic tradition, X is understood as..."). All content remains balanced and educational.

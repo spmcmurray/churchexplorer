@@ -303,15 +303,13 @@ app.use(express.json());
 // OpenAI API endpoint proxy
 app.post('/api/ai/generate-lesson', async (req, res) => {
   try {
-    const { topic, additionalContext, denomination } = req.body;
+    const { topic, additionalContext } = req.body;
 
     if (!process.env.REACT_APP_OPENAI_API_KEY) {
       return res.status(500).json({ error: 'OpenAI API key not configured on server' });
     }
 
     const systemPrompt = `You are a Christian education expert with deep knowledge of Bible history, church history, theology, and apologetics. You MUST create lessons that are 100% theologically accurate and fact-checked.
-
-${denomination ? `IMPORTANT CONTEXT: The user identifies as ${denomination}. When explaining different denominational perspectives or theological concepts, you may reference their tradition to provide relatable context (e.g., "In your ${denomination} tradition, this is understood as X, while other traditions view it as Y"). However, ALWAYS present all views fairly, objectively, and respectfully. Your goal is to educate, not to promote one view over another.` : ''}
 
 IMPORTANT: You ONLY create lessons about Christian topics. If the user requests a lesson about:
 - Cooking, recipes, food (UNLESS it's biblical food/culture or communion)
@@ -692,7 +690,7 @@ Respond with ONLY valid JSON in this format:
 // Study Buddy Chat - AI assistant for premium users
 app.post('/api/ai/study-buddy', async (req, res) => {
   try {
-    const { messages, userId, pageContext } = req.body;
+    const { messages, userId, pageContext, denomination } = req.body;
 
     if (!userId) {
       return res.status(400).json({ error: 'User ID required' });
@@ -751,6 +749,20 @@ app.post('/api/ai/study-buddy', async (req, res) => {
       console.log('No page context provided');
     }
 
+    // Add denomination context if available
+    let denominationContext = '';
+    if (denomination) {
+      denominationContext = `\n\nUSER'S DENOMINATION: ${denomination}
+When discussing theological topics, you can acknowledge the user's ${denomination} tradition and provide context relevant to their background. For example:
+- Reference how their tradition typically understands certain doctrines
+- Note similarities and differences with other denominations when relevant
+- Use terminology familiar to their tradition
+- Be respectful and educational, helping them understand their own tradition better while also learning about others
+
+However, remain objective and educational. Don't assume the user agrees with all aspects of their tradition, and always present multiple perspectives fairly.`;
+      console.log('Adding denomination context:', denomination);
+    }
+
     // System prompt for the Study Buddy
     const systemPrompt = `You are a knowledgeable and encouraging Christian study companion for Church Explorer users. Your role is to help users deepen their understanding of the Bible, Christian theology, church history, apologetics, and denominational beliefs.
 
@@ -783,7 +795,7 @@ IMPORTANT GUIDELINES:
    - Encourage deeper study and personal reflection
    - Ask thought-provoking questions when appropriate
 
-5. Tone: Friendly, knowledgeable, non-judgmental, and Christ-centered${contextInfo}
+5. Tone: Friendly, knowledgeable, non-judgmental, and Christ-centered${contextInfo}${denominationContext}
 
 Remember: You're a study companion, not a replacement for church community, pastoral counsel, or medical/legal advice. Encourage users to seek appropriate help when needed.`;
 

@@ -125,7 +125,7 @@ const validateTopic = async (topic, additionalContext = '') => {
  * Generate AI lesson with usage tracking
  * Now requires userId to check subscription limits
  */
-export const generateAILesson = async (topic, additionalContext = '', userId = null, denomination = '') => {
+export const generateAILesson = async (topic, additionalContext = '', userId = null) => {
   // Check subscription limits if userId provided
   if (userId) {
     const { canCreateAILesson, incrementAILessonUsage } = await import('../firebase/subscriptionService');
@@ -156,8 +156,7 @@ export const generateAILesson = async (topic, additionalContext = '', userId = n
       },
       body: JSON.stringify({
         topic,
-        additionalContext,
-        denomination: denomination || null
+        additionalContext
       })
     });
 

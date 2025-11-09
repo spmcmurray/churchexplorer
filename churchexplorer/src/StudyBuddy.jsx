@@ -35,6 +35,7 @@ const Scribe = ({ currentUser }) => {
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
   const [lastPath, setLastPath] = useState(location.pathname);
+  const [denomination, setDenomination] = useState('');
   const messagesEndRef = useRef(null);
   const lastAssistantMessageRef = useRef(null);
   const inputRef = useRef(null);
@@ -97,6 +98,28 @@ const Scribe = ({ currentUser }) => {
     };
 
     loadSubscription();
+  }, [currentUser]);
+
+  // Load user's denomination
+  useEffect(() => {
+    const loadDenomination = async () => {
+      if (!currentUser?.uid) return;
+
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const { db } = await import('./firebase/firebaseConfig');
+        
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setDenomination(userData.denomination || '');
+        }
+      } catch (error) {
+        console.error('Error loading denomination:', error);
+      }
+    };
+
+    loadDenomination();
   }, [currentUser]);
 
   // Reset chat when navigating to a different page for fresh context
@@ -278,7 +301,8 @@ const Scribe = ({ currentUser }) => {
             content: msg.content
           })),
           userId: currentUser?.uid,
-          pageContext: pageContext // Include page context for context-aware responses
+          pageContext: pageContext, // Include page context for context-aware responses
+          denomination: denomination // Include user's denomination
         })
       });
 
