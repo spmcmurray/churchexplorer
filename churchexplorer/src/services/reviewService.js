@@ -29,8 +29,11 @@ export const getLessonKey = (path, lessonNumber) => {
 
 /**
  * Schedule reviews when a lesson is completed - saves to Firestore
+ * @param {string} path - The learning path (e.g., 'ai_generated', 'ai_path_123', 'bible', 'church')
+ * @param {string|number} lessonNumber - Lesson number or ID
+ * @param {string} lessonTitle - Optional lesson title for display
  */
-export const scheduleReviews = async (path, lessonNumber) => {
+export const scheduleReviews = async (path, lessonNumber, lessonTitle = null) => {
   const user = getCurrentUser();
   if (!user) {
     console.warn('Cannot schedule reviews - user not logged in');
@@ -72,8 +75,13 @@ export const scheduleReviews = async (path, lessonNumber) => {
       masteryLevel: 0
     };
     
+    // Add lesson title if provided (for AI lessons)
+    if (lessonTitle) {
+      scheduleData.lessonTitle = lessonTitle;
+    }
+    
     await setDoc(reviewRef, scheduleData);
-    console.log('✅ Review schedule created in Firestore:', lessonKey);
+    console.log('✅ Review schedule created in Firestore:', lessonKey, lessonTitle || '');
   } catch (error) {
     console.error('Error scheduling reviews:', error);
   }
@@ -127,6 +135,7 @@ export const getDueReviews = async () => {
           lessonKey,
           path: data.path,
           lessonNumber: data.lessonNumber,
+          lessonTitle: data.lessonTitle || null, // Include lesson title if available
           reviewNumber: nextReview.reviewNumber,
           dueDate: nextReview.dueDate,
           masteryLevel: data.masteryLevel,

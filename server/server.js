@@ -411,6 +411,7 @@ Do not include any text before or after the JSON object.`;
     Please generate a complete lesson following the specified structure. Ensure the content is:
     - Theologically accurate according to historic Christian orthodoxy
     - Appropriate for adult learners with conservative Christian values
+    - Make vocabulary appropriate fora high school graduate or adult audience
     - Balanced and neutral when presenting different denominational views
     - Engaging and educational
     - Well-structured with clear sections and key takeaways`;

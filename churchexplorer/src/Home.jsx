@@ -579,8 +579,16 @@ const ReviewsAlert = ({ onNavigate }) => {
     return null; // Don't show anything if no reviews due
   }
 
-  const getLessonTitle = (path, lessonNumber) => {
-    // This is a simplified mapping - could be enhanced
+  const getLessonTitle = (review) => {
+    // Check if lesson title is stored in review data (for AI lessons)
+    if (review.lessonTitle) {
+      return review.lessonTitle;
+    }
+    
+    const path = review.path;
+    const lessonNumber = review.lessonNumber;
+    
+    // Fallback to hardcoded titles for curated lessons
     const titles = {
       bible: {
         1: 'From Mouth to Manuscript',
@@ -617,6 +625,12 @@ const ReviewsAlert = ({ onNavigate }) => {
   };
 
   const getPathName = (path) => {
+    if (path === 'ai_generated') {
+      return 'AI Lesson';
+    }
+    if (path && path.startsWith('ai_path_')) {
+      return 'AI Learning Path';
+    }
     const names = {
       bible: 'Bible History',
       church: 'Church History',
@@ -627,10 +641,21 @@ const ReviewsAlert = ({ onNavigate }) => {
 
   const handleStartReview = (review) => {
     // Navigate to the appropriate path with review mode passed via state
-    // No localStorage - review data passed directly via navigation
-    if (review.path === 'bible') onNavigate('bible-history', { state: { reviewMode: review } });
-    else if (review.path === 'church') onNavigate('study-guide', { state: { reviewMode: review } });
-    else if (review.path === 'apologetics') onNavigate('apologetics', { state: { reviewMode: review } });
+    if (review.path === 'bible') {
+      onNavigate('bible-history', { state: { reviewMode: review } });
+    } else if (review.path === 'church') {
+      onNavigate('study-guide', { state: { reviewMode: review } });
+    } else if (review.path === 'apologetics') {
+      onNavigate('apologetics', { state: { reviewMode: review } });
+    } else if (review.path === 'ai_generated') {
+      // For standalone AI lessons, navigate to AI viewer
+      // Need to get the lesson ID from lessonNumber (which is the lesson.id for AI lessons)
+      onNavigate('ai-lesson-viewer', { state: { lessonId: review.lessonNumber, reviewMode: true } });
+    } else if (review.path && review.path.startsWith('ai_path_')) {
+      // For AI path lessons, navigate to the path viewer
+      const pathId = review.path.replace('ai_path_', '');
+      onNavigate('ai-path-viewer', { state: { pathId, reviewLessonIndex: review.lessonNumber } });
+    }
   };
 
   return (
@@ -665,7 +690,7 @@ const ReviewsAlert = ({ onNavigate }) => {
                 <div>
                   <div className="font-bold text-white flex items-center gap-2">
                     <span>{mastery.icon}</span>
-                    {getPathName(review.path)}: {getLessonTitle(review.path, review.lessonNumber)}
+                    {getPathName(review.path)}: {getLessonTitle(review)}
                   </div>
                   <div className="text-sm text-white/80 mt-1">
                     Review #{review.reviewNumber} • {mastery.label}

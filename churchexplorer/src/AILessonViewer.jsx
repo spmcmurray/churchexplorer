@@ -177,7 +177,7 @@ const AILessonViewer = ({ lesson, currentUser, onComplete, onGoBack, onProgressU
         
         if (result.success) {
           // Schedule spaced repetition reviews for this AI lesson
-          await scheduleReviews('ai_generated', lesson.id);
+          await scheduleReviews('ai_generated', lesson.id, lesson.title);
           
           // If lesson belongs to an AI path, update path progress
           if (lesson.pathId) {

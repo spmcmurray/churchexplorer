@@ -65,7 +65,8 @@ const AIPathViewer = ({ path, currentUser, onGoBack }) => {
           console.log('✅ AI path progress saved to Firestore');
           
           // Schedule reviews for this lesson
-          await scheduleReviews(currentUser.uid, `ai_path_${path.id}`, lessonIndex);
+          const lessonTitle = path.lessons[lessonIndex]?.title || `Lesson ${lessonIndex + 1}`;
+          await scheduleReviews(currentUser.uid, `ai_path_${path.id}`, lessonIndex, lessonTitle);
           console.log('✅ Reviews scheduled for AI path lesson');
         } catch (error) {
           console.error('Error saving progress to Firestore:', error);
